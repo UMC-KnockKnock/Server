@@ -1,8 +1,7 @@
-package com.example.knockknock.model;
+package com.example.knockknock.domain.model;
 
 import com.example.knockknock.constant.UserStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
