@@ -1,13 +1,20 @@
 package com.example.knockknock.domain.model;
 
+import com.example.knockknock.dto.PostUpdateRequestDto;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Post {
     @Id
@@ -26,13 +33,8 @@ public class Post {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "post")
     private List<Comment> comments = new ArrayList<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "PostHashtag",
-            joinColumns = @JoinColumn(name = "POST_ID"),
-            inverseJoinColumns = @JoinColumn(name = "HASHTAG_ID")
-    )
-    private List<HashTag> hashTags = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "post")
+    private List<Hashtag> hashTags = new ArrayList<>();
 
     @Column(name = "TITLE")
     private String title;
@@ -60,12 +62,9 @@ public class Post {
         this.likeCount -= 1;
     }
 
-    public void addHashtag(HashTag hashTag){
-        this.hashTags.add(hashTag);
-    }
 
-    public void deleteHashtag(HashTag hashTag) {
-        this.hashTags.remove(hashTag);
+    public void updatePost(PostUpdateRequestDto request) {
+        this.title = request.getTitle();
+        this.content = request.getContent();
     }
-
 }
