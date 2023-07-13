@@ -46,6 +46,9 @@ public class Post {
     @Column(name = "LIKE_COUNT")
     private int likeCount;
 
+    @Column(name = "IS_ANONYMOUS")
+    private Boolean isAnonymous;
+
     @Column(name = "CREATED_AT")
     private LocalDateTime createdAt;
 

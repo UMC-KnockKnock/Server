@@ -32,8 +32,6 @@ public class Member {
     @Column(name = "NICKNAME")
     private String nickName;
 
-    @Column(name = "IS_ANONYMOUS")
-    private boolean isAnonymous;
 
     @Column(name = "PHONE")
     private String phone;
@@ -43,6 +41,9 @@ public class Member {
 
     @Column(name = "BIRTHDAY")
     private Integer birthDay;
+
+    @Column(name = "AGE")
+    private Integer age;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "USER_STATUS")
@@ -56,6 +57,7 @@ public class Member {
 
     @Column(name = "DELETED_AT")
     private LocalDateTime deletedAt;
+
 
     public void updateMember(MemberUpdateRequestDto request) {
         if (request.getName() != null) {

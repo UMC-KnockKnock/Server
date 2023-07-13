@@ -32,18 +32,21 @@ public class PostService {
 
     @Transactional
     public void createPost(PostCreateRequestDto request) {
-        Member member = memberRepository.findById(request.getMemberId())
+        Member member =  memberRepository.findById(request.getMemberId())
                 .orElseThrow(() -> new NotFoundMemberException("사용자를 찾을 수 없습니다."));
         Board board = boardRepository.findById(request.getBoardId())
                 .orElseThrow(() -> new NotFoundBoardException("게시판을 찾을 수 없습니다."));
 
-        postRepository.save(Post.builder()
+        Post post = Post.builder()
                 .member(member)
                 .board(board)
                 .title(request.getTitle())
                 .content(request.getContent())
                 .likeCount(0)
-                .build());
+                .isAnonymous(request.getIsAnonymous())
+                .build();
+
+        postRepository.save(post);
 
     }
 

@@ -1,5 +1,6 @@
 package com.example.knockknock.dto;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -13,9 +14,10 @@ public class PostCreateRequestDto {
     private Long memberId;
     @NotNull
     private Long boardId;
+    @NotNull
+    private Boolean isAnonymous = false;
     @NotBlank
     private String title;
-
     @NotBlank
     private String content;
 }
