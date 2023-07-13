@@ -5,9 +5,9 @@ import com.example.knockknock.domain.repository.*;
 import com.example.knockknock.dto.*;
 import com.example.knockknock.exception.*;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -65,6 +65,26 @@ public class PostService {
         return posts.stream()
                 .map(GetPostListResponseDto::from)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<GetPostListByAgeResponseDto> getPostsByAgeGroup(GetPostListByAgeRequestDto request) {
+        Board board = boardRepository.findById(request.getBoardId())
+                .orElseThrow(() -> new NotFoundBoardException("게시판을 찾을 수 없습니다."));
+        List<Post> posts = postRepository.findByBoard(board);
+        List<GetPostListByAgeResponseDto> responseDtoList = new ArrayList<>();
+        for (Post post : posts) {
+            Member member = post.getMember();
+            int age = member.getAge();
+            int ageGroupStart = request.getAgeGroup();
+            int ageGroupEnd = ageGroupStart + 9;
+
+            if (age >= ageGroupStart && age <= ageGroupEnd) {
+                GetPostListByAgeResponseDto responseDto = GetPostListByAgeResponseDto.from(post);
+                responseDtoList.add(responseDto);
+            }
+        }
+        return responseDtoList;
     }
 
     @Transactional
