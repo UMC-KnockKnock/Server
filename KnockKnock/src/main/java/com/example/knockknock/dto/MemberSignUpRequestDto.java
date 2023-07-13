@@ -14,4 +14,5 @@ public class MemberSignUpRequestDto {
     private String name;
     @NotNull
     private String nickName;
+    private String birthDay;
 }
