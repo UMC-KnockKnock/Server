@@ -8,7 +8,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostCreateRequestDto {
-
+    @NotBlank
+    private Long memberId;
     @NotBlank
     private Long boardId;
     @NotBlank

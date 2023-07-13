@@ -20,5 +20,7 @@ public class Board {
     @Column(name = "BOARD_NAME")
     private String name;
 
-
+    public void addPost(Post post) {
+        this.posts.add(post);
+    }
 }

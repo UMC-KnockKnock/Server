@@ -1,21 +1,28 @@
 package com.example.knockknock.domain.model;
 
 import com.example.knockknock.constant.UserStatus;
+import com.example.knockknock.dto.MemberUpdateRequestDto;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
-public class User {
+public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "USER_ID")
+    @Column(name = "MEMBER_ID")
     private Long id;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "member")
     private List<Post> posts;
 
     @Column(name = "USERNAME")
@@ -49,5 +56,13 @@ public class User {
 
     @Column(name = "DELETED_AT")
     private LocalDateTime deletedAt;
+
+    public void updateUser(MemberUpdateRequestDto request) {
+        this.name = request.getName();
+        this.nickName = request.getNickName();
+        this.phone = request.getPhone();
+        this.email = request.getEmail();
+        this.birthDay = request.getBirthDay();
+    }
 
 }
