@@ -19,10 +19,16 @@ public class PostDetailResponseDto {
     private int commentCount;
 
     public static PostDetailResponseDto of(Post post) {
+        String nickName;
+        if (post.getIsAnonymous()) {
+            nickName = "익명";
+        } else {
+            nickName = post.getMember().getNickName();
+        }
 
         return PostDetailResponseDto.builder()
                 .postId(post.getId())
-                .nickName(post.getMember().getNickName())
+                .nickName(nickName)
                 .title(post.getTitle())
                 .content(post.getContent())
                 .commentCount(post.getComments().size())

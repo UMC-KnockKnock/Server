@@ -16,10 +16,16 @@ public class GetPostListResponseDto {
 
 
     public static GetPostListResponseDto from(Post post) {
+        String nickName;
+        if (post.getIsAnonymous()) {
+            nickName = "익명";
+        } else {
+            nickName = post.getMember().getNickName();
+        }
         return GetPostListResponseDto.builder()
                 .postId(post.getId())
                 .boardId(post.getBoard().getId())
-                .nickName(post.getMember().getNickName())
+                .nickName(nickName)
                 .title(post.getTitle())
                 .build();
     }
