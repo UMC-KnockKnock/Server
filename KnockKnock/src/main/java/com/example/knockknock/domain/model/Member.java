@@ -1,7 +1,7 @@
 package com.example.knockknock.domain.model;
 
 import com.example.knockknock.constant.UserStatus;
-import com.example.knockknock.dto.MemberUpdateRequestDto;
+import com.example.knockknock.global.dto.request.MemberUpdateRequestDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

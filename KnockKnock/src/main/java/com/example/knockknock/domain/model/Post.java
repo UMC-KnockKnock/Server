@@ -1,6 +1,6 @@
 package com.example.knockknock.domain.model;
 
-import com.example.knockknock.dto.PostUpdateRequestDto;
+import com.example.knockknock.global.dto.request.PostUpdateRequestDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
