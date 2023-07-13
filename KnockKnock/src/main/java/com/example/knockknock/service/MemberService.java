@@ -39,7 +39,7 @@ public class MemberService {
     public void updateMember(Long id, MemberUpdateRequestDto request) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new NotFoundMemberException("사용자를 찾을 수 없습니다."));
-        member.updateUser(request);
+        member.updateMember(request);
     }
 
     @Transactional

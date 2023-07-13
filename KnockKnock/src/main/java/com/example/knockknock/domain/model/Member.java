@@ -42,7 +42,7 @@ public class Member {
     private String email;
 
     @Column(name = "BIRTHDAY")
-    private int birthDay;
+    private Integer birthDay;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "USER_STATUS")
@@ -57,12 +57,22 @@ public class Member {
     @Column(name = "DELETED_AT")
     private LocalDateTime deletedAt;
 
-    public void updateUser(MemberUpdateRequestDto request) {
-        this.name = request.getName();
-        this.nickName = request.getNickName();
-        this.phone = request.getPhone();
-        this.email = request.getEmail();
-        this.birthDay = request.getBirthDay();
+    public void updateMember(MemberUpdateRequestDto request) {
+        if (request.getName() != null) {
+            this.name = request.getName();
+        }
+        if (request.getNickName() != null) {
+            this.nickName = request.getNickName();
+        }
+        if (request.getPhone() != null) {
+            this.phone = request.getPhone();
+        }
+        if (request.getEmail() != null) {
+            this.email = request.getEmail();
+        }
+        if (request.getBirthDay() != null) {
+            this.birthDay = request.getBirthDay();
+        }
     }
 
 }
