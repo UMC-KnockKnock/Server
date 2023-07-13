@@ -28,7 +28,7 @@ public class PostController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("/get/{boardId}")
+    @GetMapping("/getAll/{boardId}")
     public ResponseEntity<List<GetPostListResponseDto>> getPostList(
             @PathVariable("boardId") Long id
     ) {
