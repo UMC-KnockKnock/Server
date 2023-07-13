@@ -20,22 +20,30 @@ public class PostService {
     private LikeRepository likeRepository;
     private CommentRepository commentRepository;
     private HashtagRepository hashtagRepository;
-    private UserService userService;
+    private MemberRepository memberRepository;
 
     @Transactional
     public void createPost(PostCreateRequestDto request) {
-        User user = userService.findUserFromToken();
+        Member member = memberRepository.findById(request.getMemberId())
+                .orElseThrow(() -> new NotFoundMemberException("사용자를 찾을 수 없습니다."));
         Board board = boardRepository.findById(request.getBoardId())
                 .orElseThrow(() -> new NotFoundBoardException("게시판을 찾을 수 없습니다."));
 
         postRepository.save(Post.builder()
-                .user(user)
+                .member(member)
                 .board(board)
                 .title(request.getTitle())
                 .content(request.getContent())
                 .likeCount(0)
                 .build());
 
+    }
+
+    @Transactional
+    public PostDetailResponseDto getPostDetail(Long id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new NotFoundPostException("게시글을 찾을 수 없습니다."));
+        return PostDetailResponseDto.of(post);
     }
 
     @Transactional
@@ -46,14 +54,6 @@ public class PostService {
         return posts.stream()
                 .map(GetPostListResponseDto::from)
                 .collect(Collectors.toList());
-    }
-
-
-    @Transactional
-    public PostDetailResponseDto getPostDetail(Long id) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new NotFoundPostException("게시글을 찾을 수 없습니다."));
-        return PostDetailResponseDto.of(post);
     }
 
     @Transactional
@@ -71,13 +71,14 @@ public class PostService {
     }
 
     @Transactional
-    public void likePost(Long id) {
-        User user = userService.findUserFromToken();
+    public void likePost(Long userId, Long postId) {
+        Member member = memberRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundMemberException("사용자를 찾을 수 없습니다."));
 
-        Post post = postRepository.findById(id)
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundPostException("게시글을 찾을 수 없습니다."));
 
-        Optional<Like> likeOptional = likeRepository.findByUserAndPost(user, post);
+        Optional<Like> likeOptional = likeRepository.findByMemberAndPost(member, post);
 
         if (likeOptional.isPresent() && likeOptional.get().isLiked()) {
             throw new AlreadyLikeException("이미 좋아요한 게시물입니다.");
@@ -85,7 +86,7 @@ public class PostService {
 
         if (likeOptional.isEmpty()) {
             likeRepository.save(Like.builder()
-                    .user(user)
+                    .member(member)
                     .post(post)
                     .isLiked(true)
                     .build());
@@ -96,12 +97,13 @@ public class PostService {
     }
 
     @Transactional
-    public void deletePostLike(Long id) {
-        User user = userService.findUserFromToken();
+    public void deletePostLike(Long userId, Long postId) {
+        Member member = memberRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundMemberException("사용자를 찾을 수 없습니다."));
 
-        Post post = postRepository.findById(id)
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundPostException("게시글을 찾을 수 없습니다."));
-        Like like = likeRepository.findByUserAndPost(user, post)
+        Like like = likeRepository.findByMemberAndPost(member, post)
                 .orElseThrow(() -> new NotFoundLikeException("좋아요 정보를 찾을 수 없습니다."));
 
         if (!like.isLiked()) {
@@ -113,13 +115,14 @@ public class PostService {
 
     @Transactional
     public CommentRegisterResponseDto registerComment(Long id, CommentRegisterRequestDto request) {
-        User user = userService.findUserFromToken();
+        Member member = memberRepository.findById(request.getMemberId())
+                .orElseThrow(() -> new NotFoundMemberException("사용자를 찾을 수 없습니다."));;
 
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new NotFoundPostException("게시글을 찾을 수 없습니다."));
 
         commentRepository.save(Comment.builder()
-                .user(user)
+                .member(member)
                 .post(post)
                 .content(request.getContent())
                 .build());

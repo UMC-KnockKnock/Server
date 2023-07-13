@@ -19,7 +19,7 @@ public class GetPostListResponseDto {
         return GetPostListResponseDto.builder()
                 .postId(post.getId())
                 .boardId(post.getBoard().getId())
-                .nickName(post.getUser().getNickName())
+                .nickName(post.getMember().getNickName())
                 .title(post.getTitle())
                 .build();
     }

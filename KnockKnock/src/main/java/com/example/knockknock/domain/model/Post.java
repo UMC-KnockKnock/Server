@@ -23,16 +23,17 @@ public class Post {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER_ID")
-    private User user;
+    @JoinColumn(name = "MEMBER_ID")
+    private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "BOARD_ID")
     private Board board;
 
+    @Builder.Default
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "post")
     private List<Comment> comments = new ArrayList<>();
-
+    @Builder.Default
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "post")
     private List<Hashtag> hashTags = new ArrayList<>();
 
@@ -66,5 +67,10 @@ public class Post {
     public void updatePost(PostUpdateRequestDto request) {
         this.title = request.getTitle();
         this.content = request.getContent();
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
+        board.addPost(this);
     }
 }

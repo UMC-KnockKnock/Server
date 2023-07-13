@@ -22,7 +22,7 @@ public class PostDetailResponseDto {
 
         return PostDetailResponseDto.builder()
                 .postId(post.getId())
-                .nickName(post.getUser().getNickName())
+                .nickName(post.getMember().getNickName())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .commentCount(post.getComments().size())
