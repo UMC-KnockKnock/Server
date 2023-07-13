@@ -35,6 +35,14 @@ public class PostController {
         return new ResponseEntity<>(postService.getPostsByBoard(id), HttpStatus.OK);
     }
 
+    @GetMapping("/ageGroup")
+    public ResponseEntity<List<GetPostListByAgeResponseDto>> getPostByAge(
+            @RequestBody GetPostListByAgeRequestDto request
+    ) {
+        return new ResponseEntity<>(postService.getPostsByAgeGroup(request), HttpStatus.OK);
+    }
+
+
     @GetMapping("/get/{postId}")
     public ResponseEntity getPostDetail(
             @PathVariable("postId") Long id
