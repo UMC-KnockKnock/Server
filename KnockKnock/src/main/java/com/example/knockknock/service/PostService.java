@@ -71,20 +71,12 @@ public class PostService {
     public List<GetPostListByAgeResponseDto> getPostsByAgeGroup(GetPostListByAgeRequestDto request) {
         Board board = boardRepository.findById(request.getBoardId())
                 .orElseThrow(() -> new NotFoundBoardException("게시판을 찾을 수 없습니다."));
-        List<Post> posts = postRepository.findByBoard(board);
-        List<GetPostListByAgeResponseDto> responseDtoList = new ArrayList<>();
-        for (Post post : posts) {
-            Member member = post.getMember();
-            int age = member.getAge();
-            int ageGroupStart = request.getAgeGroup();
-            int ageGroupEnd = ageGroupStart + 9;
-
-            if (age >= ageGroupStart && age <= ageGroupEnd) {
-                GetPostListByAgeResponseDto responseDto = GetPostListByAgeResponseDto.from(post);
-                responseDtoList.add(responseDto);
-            }
-        }
-        return responseDtoList;
+        int ageGroupStart = request.getAgeGroup();
+        int ageGroupEnd = ageGroupStart + 9;
+        List<Post> posts = postRepository.findByBoardAndMemberAgeBetween(board, ageGroupStart, ageGroupEnd);
+        return posts.stream()
+                .map(GetPostListByAgeResponseDto::from)
+                .collect(Collectors.toList());
     }
 
     @Transactional
