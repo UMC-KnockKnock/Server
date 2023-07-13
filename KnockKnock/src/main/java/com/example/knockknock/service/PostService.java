@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
 @Service
 public class PostService {
     private PostRepository postRepository;
@@ -21,6 +20,15 @@ public class PostService {
     private CommentRepository commentRepository;
     private HashtagRepository hashtagRepository;
     private MemberRepository memberRepository;
+
+    public PostService(PostRepository postRepository, BoardRepository boardRepository, LikeRepository likeRepository, CommentRepository commentRepository, HashtagRepository hashtagRepository, MemberRepository memberRepository) {
+        this.postRepository = postRepository;
+        this.boardRepository = boardRepository;
+        this.likeRepository = likeRepository;
+        this.commentRepository = commentRepository;
+        this.hashtagRepository = hashtagRepository;
+        this.memberRepository = memberRepository;
+    }
 
     @Transactional
     public void createPost(PostCreateRequestDto request) {
