@@ -22,18 +22,19 @@ public class MemberService {
 
     @Transactional
     public void createMember(MemberSignUpRequestDto request) {
-        memberRepository.save(Member.builder()
-                .id(request.getId())
+        Member member = Member.builder()
                 .name(request.getName())
                 .nickName(request.getNickName())
-                .build());
+                .birthDay(request.getBirthDay())
+                .build();
+        member.calculateAge();
+        memberRepository.save(member);
     }
 
     @Transactional
     public MemberDetailResponseDto getMemberDetail(Long id) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new NotFoundPostException("사용자를 찾을 수 없습니다."));
-        log.info("User: {}", member);
         return MemberDetailResponseDto.of(member);
     }
 
