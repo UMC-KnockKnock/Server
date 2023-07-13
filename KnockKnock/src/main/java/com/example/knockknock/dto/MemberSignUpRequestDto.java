@@ -12,7 +12,6 @@ public class MemberSignUpRequestDto {
     private Long id;
     @NotNull
     private String name;
-
     @NotNull
     private String nickName;
 }

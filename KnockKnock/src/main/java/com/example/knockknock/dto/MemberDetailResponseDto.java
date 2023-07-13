@@ -17,6 +17,7 @@ public class MemberDetailResponseDto {
     public static MemberDetailResponseDto of(Member member) {
         return MemberDetailResponseDto.builder()
                 .memberId(member.getId())
+                .name(member.getName())
                 .nickName(member.getNickName())
                 .build();
     }
