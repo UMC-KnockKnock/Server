@@ -19,7 +19,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public void createUser(MemberSignUpRequestDto request) {
+    public void createMember(MemberSignUpRequestDto request) {
         memberRepository.save(Member.builder()
                 .id(request.getId())
                 .name(request.getName())
@@ -28,7 +28,7 @@ public class MemberService {
     }
 
     @Transactional
-    public MemberDetailResponseDto getUserDetail(Long id) {
+    public MemberDetailResponseDto getMemberDetail(Long id) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new NotFoundPostException("사용자를 찾을 수 없습니다."));
         log.info("User: {}", member);
@@ -36,14 +36,14 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateUser(Long id, MemberUpdateRequestDto request) {
+    public void updateMember(Long id, MemberUpdateRequestDto request) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new NotFoundMemberException("사용자를 찾을 수 없습니다."));
         member.updateUser(request);
     }
 
     @Transactional
-    public void deleteUser(Long id) {
+    public void deleteMember(Long id) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new NotFoundMemberException("사용자를 찾을 수 없습니다."));
         memberRepository.delete(member);

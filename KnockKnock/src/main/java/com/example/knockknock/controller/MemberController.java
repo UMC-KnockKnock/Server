@@ -22,7 +22,7 @@ public class MemberController {
     public ResponseEntity<Void> createUser(
             @RequestBody MemberSignUpRequestDto request
     ) {
-        memberService.createUser(request);
+        memberService.createMember(request);
         return ResponseEntity.created(null).build();
     }
 
@@ -30,7 +30,7 @@ public class MemberController {
     public ResponseEntity<MemberDetailResponseDto> getUserDetail(
             @PathVariable("userId") Long id
     ) {
-        MemberDetailResponseDto userDetail = memberService.getUserDetail(id);
+        MemberDetailResponseDto userDetail = memberService.getMemberDetail(id);
         return ResponseEntity.ok(userDetail);
     }
 
@@ -39,7 +39,7 @@ public class MemberController {
             @PathVariable("userId") Long id,
             @RequestBody MemberUpdateRequestDto request
     ) {
-        memberService.updateUser(id, request);
+        memberService.updateMember(id, request);
         return ResponseEntity.ok().build();
     }
 
@@ -47,7 +47,7 @@ public class MemberController {
     public ResponseEntity deleteUser(
             @PathVariable("userId") Long id
     ) {
-        memberService.deleteUser(id);
+        memberService.deleteMember(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
