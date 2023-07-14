@@ -10,13 +10,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 public class Member extends TimeStamped {
     @Id
@@ -49,7 +48,6 @@ public class Member extends TimeStamped {
 
     @Column(name = "AGE")
     private Integer age;
-
 
     public void updateMember(MemberUpdateRequestDto request) {
         if (request.getName() != null) {
