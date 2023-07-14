@@ -10,7 +10,7 @@ import lombok.*;
 public class GetPostsResponseDto {
 
     private Long postId;
-    private Long boardId;
+    private String boardName;
     private String nickName;
     private String title;
 
@@ -24,7 +24,7 @@ public class GetPostsResponseDto {
         }
         return GetPostsResponseDto.builder()
                 .postId(post.getId())
-                .boardId(post.getBoard().getId())
+                .boardName(post.getBoard().getBoardName())
                 .nickName(nickName)
                 .title(post.getTitle())
                 .build();

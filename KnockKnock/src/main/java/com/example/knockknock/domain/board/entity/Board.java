@@ -19,15 +19,17 @@ public class Board {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "BOARD_ID")
-    private Long id;
+    private Long boardId;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "board")
     private List<Post> posts = new ArrayList<>();
 
     @Column(name = "BOARD_NAME")
-    private String name;
+    private String boardName;
 
     public void addPost(Post post) {
         this.posts.add(post);
     }
+    public void removePost(Post post){
+        this.posts.remove(post);}
 }

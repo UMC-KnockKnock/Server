@@ -22,7 +22,7 @@ public class GetPostsByAgeResponseDto {
         }
         return GetPostsByAgeResponseDto.builder()
                 .postId(post.getId())
-                .boardId(post.getBoard().getId())
+                .boardId(post.getBoard().getBoardId())
                 .nickName(nickName)
                 .title(post.getTitle())
                 .build();
