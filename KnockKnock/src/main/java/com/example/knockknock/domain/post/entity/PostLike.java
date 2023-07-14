@@ -1,6 +1,7 @@
-package com.example.knockknock.domain.board.entity;
+package com.example.knockknock.domain.post.entity;
 
 import com.example.knockknock.domain.member.entity.Member;
+import com.example.knockknock.domain.post.entity.Post;
 import com.example.knockknock.global.timestamp.TimeStamped;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

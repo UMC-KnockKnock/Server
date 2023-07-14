@@ -1,6 +1,7 @@
-package com.example.knockknock.domain.board.dto.response;
+package com.example.knockknock.domain.post.dto;
+import com.example.knockknock.domain.post.entity.Post;
 import lombok.*;
-import com.example.knockknock.domain.board.entity.Post;
+
 @Getter
 @Setter
 @Builder

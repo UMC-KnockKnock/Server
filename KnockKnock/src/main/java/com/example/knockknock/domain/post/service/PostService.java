@@ -1,11 +1,25 @@
-package com.example.knockknock.domain.board.service;
+package com.example.knockknock.domain.post.service;
 
-import com.example.knockknock.domain.board.dto.request.*;
-import com.example.knockknock.domain.board.dto.response.*;
+
 import com.example.knockknock.domain.board.entity.*;
 import com.example.knockknock.domain.board.repository.*;
+import com.example.knockknock.domain.comment.dto.CommentRegisterRequestDto;
+import com.example.knockknock.domain.comment.dto.CommentRegisterResponseDto;
+import com.example.knockknock.domain.comment.dto.CommentUpdateRequestDto;
+import com.example.knockknock.domain.comment.dto.GetCommentsResponseDto;
+import com.example.knockknock.domain.comment.entity.Comment;
+import com.example.knockknock.domain.comment.repository.CommentRepository;
+import com.example.knockknock.domain.post.entity.Hashtag;
+import com.example.knockknock.domain.post.dto.HashtagRegisterRequestDto;
+import com.example.knockknock.domain.post.dto.HashtagRegisterResponseDto;
+import com.example.knockknock.domain.post.repository.HashtagRepository;
 import com.example.knockknock.domain.member.entity.Member;
 import com.example.knockknock.domain.member.repository.MemberRepository;
+import com.example.knockknock.domain.post.repository.PostLikeRepository;
+import com.example.knockknock.domain.post.repository.PostRepository;
+import com.example.knockknock.domain.post.dto.*;
+import com.example.knockknock.domain.post.entity.Post;
+import com.example.knockknock.domain.post.entity.PostLike;
 import com.example.knockknock.global.exception.*;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -19,16 +33,13 @@ public class PostService {
     private PostRepository postRepository;
     private BoardRepository boardRepository;
     private PostLikeRepository postLikeRepository;
-    private CommentRepository commentRepository;
     private HashtagRepository hashtagRepository;
     private MemberRepository memberRepository;
 
-    public PostService(PostRepository postRepository, BoardRepository boardRepository, PostLikeRepository postLikeRepository,
-                       CommentRepository commentRepository, HashtagRepository hashtagRepository, MemberRepository memberRepository) {
+    public PostService(PostRepository postRepository, BoardRepository boardRepository, PostLikeRepository postLikeRepository, HashtagRepository hashtagRepository, MemberRepository memberRepository) {
         this.postRepository = postRepository;
         this.boardRepository = boardRepository;
         this.postLikeRepository = postLikeRepository;
-        this.commentRepository = commentRepository;
         this.hashtagRepository = hashtagRepository;
         this.memberRepository = memberRepository;
     }
@@ -137,60 +148,6 @@ public class PostService {
         }
         post.removeLike();
         postLike.deletePostLike();
-    }
-
-    @Transactional
-    public CommentRegisterResponseDto registerComment(Long id, CommentRegisterRequestDto request) {
-        Member member = memberRepository.findById(request.getMemberId())
-                .orElseThrow(() -> new NotFoundMemberException("사용자를 찾을 수 없습니다."));;
-
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new NotFoundPostException("게시글을 찾을 수 없습니다."));
-
-        commentRepository.save(Comment.builder()
-                .member(member)
-                .post(post)
-                .content(request.getContent())
-                .build());
-        return new CommentRegisterResponseDto(request.getContent());
-    }
-
-    @Transactional
-    public List<GetCommentsResponseDto> getComments(Long id) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new NotFoundPostException("게시글을 찾을 수 없습니다."));
-        List<Comment> comments = commentRepository.findByPost(post);
-        return comments.stream()
-                .map(GetCommentsResponseDto::from)
-                .collect(Collectors.toList());
-    }
-    @Transactional
-    public void updateComment(Long id, CommentUpdateRequestDto request) {
-
-        Comment comment = commentRepository.findById(id)
-                .orElseThrow(() -> new NotFoundCommentException("댓글을 찾을 수 없습니다."));
-
-        comment.updateComment(request.getContent());
-    }
-
-    @Transactional
-    public void deleteComment(Long id) {
-
-        Comment comment = commentRepository.findById(id)
-                .orElseThrow(() -> new NotFoundCommentException("댓글을 찾을 수 없습니다."));
-
-        commentRepository.delete(comment);
-    }
-
-    @Transactional
-    public GetLikeCountResponseDto getLikeCount(Long id) {
-
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new NotFoundPostException("게시글을 찾을 수 없습니다."));
-
-        return GetLikeCountResponseDto.builder()
-                .likeCount(post.getLikeCount())
-                .build();
     }
 
     @Transactional

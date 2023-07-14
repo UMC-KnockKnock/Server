@@ -1,7 +1,7 @@
-package com.example.knockknock.domain.board.repository;
+package com.example.knockknock.domain.comment.repository;
 
-import com.example.knockknock.domain.board.entity.Comment;
-import com.example.knockknock.domain.board.entity.Post;
+import com.example.knockknock.domain.comment.entity.Comment;
+import com.example.knockknock.domain.post.entity.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,6 +1,6 @@
 package com.example.knockknock.domain.board.entity;
 
-import com.example.knockknock.domain.board.entity.Post;
+import com.example.knockknock.domain.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

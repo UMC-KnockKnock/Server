@@ -1,9 +1,9 @@
 package com.example.knockknock.domain.board.service;
 
-import com.example.knockknock.domain.board.dto.response.GetBoardsResponseDto;
+import com.example.knockknock.domain.board.dto.GetBoardsResponseDto;
 import com.example.knockknock.domain.board.entity.Board;
 import com.example.knockknock.domain.board.repository.BoardRepository;
-import com.example.knockknock.domain.board.repository.PostRepository;
+import com.example.knockknock.domain.post.repository.PostRepository;
 import com.example.knockknock.domain.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

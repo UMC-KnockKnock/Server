@@ -1,8 +1,12 @@
-package com.example.knockknock.domain.board.controller;
+package com.example.knockknock.domain.post.controller;
 
-import com.example.knockknock.domain.board.dto.request.*;
-import com.example.knockknock.domain.board.dto.response.*;
-import com.example.knockknock.domain.board.service.PostService;
+import com.example.knockknock.domain.comment.dto.CommentRegisterRequestDto;
+import com.example.knockknock.domain.comment.dto.CommentRegisterResponseDto;
+import com.example.knockknock.domain.comment.dto.CommentUpdateRequestDto;
+import com.example.knockknock.domain.comment.dto.GetCommentsResponseDto;
+import com.example.knockknock.domain.post.dto.*;
+import com.example.knockknock.domain.post.service.CommentService;
+import com.example.knockknock.domain.post.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +22,7 @@ import java.util.List;
 @RestController
 public class PostController {
     private final PostService postService;
+
 
     @PostMapping("/create")
     public ResponseEntity createPost(
@@ -85,35 +90,5 @@ public class PostController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/{postId}/comment")
-    public ResponseEntity<CommentRegisterResponseDto> registerComment(
-            @RequestBody @Valid CommentRegisterRequestDto request,
-            @PathVariable("postId") Long id
-    ) {
-        return new ResponseEntity<>(postService.registerComment(id, request), HttpStatus.OK);
-    }
 
-    @GetMapping("/{postId}/comments")
-    public ResponseEntity<List<GetCommentsResponseDto>> getComments(
-            @PathVariable("postId") Long id
-    ) {
-        return new ResponseEntity<>(postService.getComments(id), HttpStatus.OK);
-    }
-
-    @PutMapping("/comment/edit/{commentId}")
-    public ResponseEntity updateComment(
-            @RequestBody @Valid CommentUpdateRequestDto request,
-            @PathVariable("commentId") Long id
-    ) {
-        postService.updateComment(id, request);
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/comment/delete/{commentId}")
-    public ResponseEntity deleteComment(
-            @PathVariable("commentId") Long id
-    ) {
-        postService.deleteComment(id);
-        return ResponseEntity.ok().build();
-    }
 }

@@ -1,4 +1,4 @@
-package com.example.knockknock.domain.board.dto.request;
+package com.example.knockknock.domain.comment.dto;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -13,4 +13,6 @@ public class CommentRegisterRequestDto {
     private Long memberId;
     @NotBlank
     private String content;
+    @NotNull
+    private Boolean isAnonymous = false;
 }

@@ -1,4 +1,4 @@
-package com.example.knockknock.domain.board.dto.request;
+package com.example.knockknock.domain.comment.dto;
 import jakarta.transaction.Transactional;
 import lombok.*;
 import jakarta.validation.constraints.NotBlank;

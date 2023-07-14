@@ -1,5 +1,5 @@
-package com.example.knockknock.domain.board.dto.response;
-import com.example.knockknock.domain.board.entity.Post;
+package com.example.knockknock.domain.post.dto;
+import com.example.knockknock.domain.post.entity.Post;
 import lombok.*;
 
 @Getter
@@ -7,24 +7,28 @@ import lombok.*;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetPostsByAgeResponseDto {
+public class GetPostsResponseDto {
+
     private Long postId;
-    private Long boardId;
+    private String boardName;
     private String nickName;
     private String title;
 
-    public static GetPostsByAgeResponseDto from(Post post) {
+
+    public static GetPostsResponseDto from(Post post) {
         String nickName;
         if (post.getIsAnonymous()) {
             nickName = "익명";
         } else {
             nickName = post.getMember().getNickName();
         }
-        return GetPostsByAgeResponseDto.builder()
+        return GetPostsResponseDto.builder()
                 .postId(post.getId())
-                .boardId(post.getBoard().getBoardId())
+                .boardName(post.getBoard().getBoardName())
                 .nickName(nickName)
                 .title(post.getTitle())
                 .build();
     }
+
+
 }

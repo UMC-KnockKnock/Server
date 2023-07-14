@@ -1,6 +1,6 @@
 package com.example.knockknock.domain.board.controller;
 
-import com.example.knockknock.domain.board.dto.response.GetBoardsResponseDto;
+import com.example.knockknock.domain.board.dto.GetBoardsResponseDto;
 import com.example.knockknock.domain.board.entity.Board;
 import com.example.knockknock.domain.board.service.BoardService;
 import lombok.RequiredArgsConstructor;

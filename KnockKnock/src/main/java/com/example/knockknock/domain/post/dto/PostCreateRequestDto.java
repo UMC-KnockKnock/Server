@@ -1,4 +1,4 @@
-package com.example.knockknock.domain.board.dto.request;
+package com.example.knockknock.domain.post.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
