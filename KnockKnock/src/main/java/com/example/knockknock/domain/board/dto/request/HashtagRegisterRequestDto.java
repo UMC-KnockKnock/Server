@@ -1,0 +1,13 @@
+package com.example.knockknock.domain.board.dto.request;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
+
+@Getter
+@Builder
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+public class HashtagRegisterRequestDto {
+    @NotBlank
+    private String tagName;
+}
