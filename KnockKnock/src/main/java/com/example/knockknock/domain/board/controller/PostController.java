@@ -100,7 +100,7 @@ public class PostController {
         return new ResponseEntity<>(postService.getComments(id), HttpStatus.OK);
     }
 
-    @PutMapping("/comment/{commentId}")
+    @PutMapping("/comment/edit/{commentId}")
     public ResponseEntity updateComment(
             @RequestBody @Valid CommentUpdateRequestDto request,
             @PathVariable("commentId") Long id
@@ -109,7 +109,7 @@ public class PostController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/comment/{commentId}")
+    @DeleteMapping("/comment/delete/{commentId}")
     public ResponseEntity deleteComment(
             @PathVariable("commentId") Long id
     ) {

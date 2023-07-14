@@ -1,4 +1,5 @@
 package com.example.knockknock.domain.board.dto.request;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import jakarta.validation.constraints.NotBlank;
@@ -8,7 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommentRegisterRequestDto {
-    @NotBlank
+    @NotNull
     private Long memberId;
     @NotBlank
     private String content;

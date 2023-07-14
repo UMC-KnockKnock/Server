@@ -21,24 +21,23 @@ public class Member extends TimeStamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MEMBER_ID")
-    private Long id;
+    private Long memberId;
 
     @OneToMany(mappedBy = "member")
     private List<Post> posts;
 
-    @Column(name = "NAME")
-    private String name;
+    @Column(name = "MEMBER_NAME")
+    private String memberName;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "GENDER")
+    @Column(name = "MEMBER_GENDER")
     private Gender memberGender;
 
     @Column(name = "NICKNAME")
     private String nickName;
 
-
-    @Column(name = "PHONE")
-    private String phone;
+    @Column(name = "PHONENUMBER")
+    private String phoneNumber;
 
     @Column(name = "EMAIL")
     private String email;
@@ -50,14 +49,14 @@ public class Member extends TimeStamped {
     private Integer age;
 
     public void updateMember(MemberUpdateRequestDto request) {
-        if (request.getName() != null) {
-            this.name = request.getName();
+        if (request.getMemberName() != null) {
+            this.memberName = request.getMemberName();
         }
         if (request.getNickName() != null) {
             this.nickName = request.getNickName();
         }
-        if (request.getPhone() != null) {
-            this.phone = request.getPhone();
+        if (request.getPhoneNumber() != null) {
+            this.phoneNumber = request.getPhoneNumber();
         }
         if (request.getEmail() != null) {
             this.email = request.getEmail();

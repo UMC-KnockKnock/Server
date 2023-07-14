@@ -13,8 +13,8 @@ public class GetMembersResponseDto {
 
     public static GetMembersResponseDto from(Member member) {
         return GetMembersResponseDto.builder()
-                .memberId(member.getId())
-                .memberName(member.getName())
+                .memberId(member.getMemberId())
+                .memberName(member.getMemberName())
                 .build();
     }
 }

@@ -26,8 +26,11 @@ public class MemberService {
     @Transactional
     public void createMember(MemberSignUpRequestDto request) {
         Member member = Member.builder()
-                .name(request.getName())
+                .memberName(request.getMemberName())
+                .memberGender(request.getMemberGender())
                 .nickName(request.getNickName())
+                .phoneNumber(request.getPhoneNumber())
+                .email(request.getEmail())
                 .birthDay(request.getBirthDay())
                 .build();
         member.calculateAge();
