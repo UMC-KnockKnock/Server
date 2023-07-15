@@ -3,15 +3,12 @@ package com.example.knockknock.domain.post.service;
 
 import com.example.knockknock.domain.board.entity.*;
 import com.example.knockknock.domain.board.repository.*;
-import com.example.knockknock.domain.post.dto.request.GetPostsByAgeRequestDto;
-import com.example.knockknock.domain.post.dto.request.PostCreateRequestDto;
-import com.example.knockknock.domain.post.dto.request.PostUpdateRequestDto;
+import com.example.knockknock.domain.post.dto.request.*;
 import com.example.knockknock.domain.post.dto.response.GetPostsByAgeResponseDto;
+import com.example.knockknock.domain.post.dto.response.GetPostsByHashtagResponseDto;
 import com.example.knockknock.domain.post.dto.response.GetPostsResponseDto;
 import com.example.knockknock.domain.post.dto.response.PostDetailResponseDto;
 import com.example.knockknock.domain.post.entity.Hashtag;
-import com.example.knockknock.domain.post.dto.request.HashtagRegisterRequestDto;
-import com.example.knockknock.domain.post.dto.response.HashtagRegisterResponseDto;
 import com.example.knockknock.domain.post.repository.HashtagRepository;
 import com.example.knockknock.domain.member.entity.Member;
 import com.example.knockknock.domain.member.repository.MemberRepository;
@@ -64,15 +61,15 @@ public class PostService {
     }
 
     @Transactional
-    public PostDetailResponseDto getPostDetail(Long id) {
-        Post post = postRepository.findById(id)
+    public PostDetailResponseDto getPostDetail(Long postId) {
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundPostException("게시글을 찾을 수 없습니다."));
         return PostDetailResponseDto.of(post);
     }
 
     @Transactional
-    public List<GetPostsResponseDto> getPostsByBoard(Long id) {
-        Board board = boardRepository.findById(id)
+    public List<GetPostsResponseDto> getPostsByBoard(Long boardId) {
+        Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new NotFoundBoardException("게시판을 찾을 수 없습니다."));
         List<Post> posts = postRepository.findByBoard(board);
         return posts.stream()
@@ -100,8 +97,8 @@ public class PostService {
     }
 
     @Transactional
-    public void deletePost(Long id) {
-        Post post = postRepository.findById(id)
+    public void deletePost(Long postId) {
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundPostException("게시글을 찾을 수 없습니다."));
         postRepository.delete(post);
     }
@@ -150,8 +147,8 @@ public class PostService {
     }
 
     @Transactional
-    public HashtagRegisterResponseDto addHashtag(Long id, HashtagRegisterRequestDto request) {
-        Post post = postRepository.findById(id)
+    public void addHashtag(Long postId, HashtagRegisterRequestDto request) {
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundPostException("게시글을 찾을 수 없습니다."));
 
         hashtagRepository.save(Hashtag.builder()
@@ -159,7 +156,17 @@ public class PostService {
                 .tagName(request.getTagName())
                 .build());
 
-        return new HashtagRegisterResponseDto(request.getTagName());
+    }
+
+    @Transactional
+    public List<GetPostsByHashtagResponseDto> getPostsByHashtag(GetPostsByHashtagRequestDto request) {
+        Board board = boardRepository.findById(request.getBoardId())
+                .orElseThrow(() -> new NotFoundBoardException("게시판을 찾을 수 없습니다."));
+
+        List<Post> posts = postRepository.findByHashtags_TagName(request.getTagName());
+        return posts.stream()
+                .map(GetPostsByHashtagResponseDto::from)
+                .collect(Collectors.toList());
     }
 
     @Transactional

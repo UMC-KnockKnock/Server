@@ -38,7 +38,7 @@ public class Post extends TimeStamped {
     private List<Comment> comments = new ArrayList<>();
     @Builder.Default
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "post")
-    private List<Hashtag> hashTags = new ArrayList<>();
+    private List<Hashtag> hashtags = new ArrayList<>();
 
     @Column(name = "TITLE")
     private String title;

@@ -18,7 +18,7 @@ public class PostLike extends TimeStamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "POSTLIKE_ID")
-    private Long id;
+    private Long postLikeId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")

@@ -16,7 +16,7 @@ public class Hashtag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "HASHTAG_ID")
-    private Long id;
+    private Long hashtagId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "POST_ID")
@@ -25,8 +25,4 @@ public class Hashtag {
     @Column(name = "TAG")
     private String tagName;
 
-
-    public void setTagName(String tagName) {
-        this.tagName = tagName;
-    }
 }

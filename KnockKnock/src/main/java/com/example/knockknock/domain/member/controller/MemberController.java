@@ -28,12 +28,12 @@ public class MemberController {
         return ResponseEntity.created(null).build();
     }
 
-    @GetMapping("/get/{userId}")
-    public ResponseEntity<MemberDetailResponseDto> getUserDetail(
-            @PathVariable("userId") Long id
+    @GetMapping("/get/{memberId}")
+    public ResponseEntity<MemberDetailResponseDto> getMemberDetail(
+            @PathVariable Long memberId
     ) {
-        MemberDetailResponseDto userDetail = memberService.getMemberDetail(id);
-        return ResponseEntity.ok(userDetail);
+        MemberDetailResponseDto memberDetail = memberService.getMemberDetail(memberId);
+        return ResponseEntity.ok(memberDetail);
     }
 
     @GetMapping("/getAll")
@@ -41,20 +41,20 @@ public class MemberController {
         return new ResponseEntity<>(memberService.getAllMembers(), HttpStatus.OK);
     }
 
-    @PutMapping("/update/{userId}")
+    @PutMapping("/update/{memberId}")
     public ResponseEntity updateUser(
-            @PathVariable("userId") Long id,
+            @PathVariable Long memberId,
             @RequestBody MemberUpdateRequestDto request
     ) {
-        memberService.updateMember(id, request);
+        memberService.updateMember(memberId, request);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/delete/{userId}")
+    @DeleteMapping("/delete/{memberId}")
     public ResponseEntity deleteUser(
-            @PathVariable("userId") Long id
+            @PathVariable Long memberId
     ) {
-        memberService.deleteMember(id);
+        memberService.deleteMember(memberId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -23,32 +23,32 @@ public class CommentController {
     @PostMapping("/{postId}")
     public ResponseEntity<CommentRegisterResponseDto> registerComment(
             @RequestBody @Valid CommentRegisterRequestDto request,
-            @PathVariable("postId") Long id
+            @PathVariable Long postId
     ) {
-        return new ResponseEntity<>(commentService.registerComment(id, request), HttpStatus.OK);
+        return new ResponseEntity<>(commentService.registerComment(postId, request), HttpStatus.OK);
     }
 
     @GetMapping("/{postId}/all")
     public ResponseEntity<List<GetCommentsResponseDto>> getComments(
-            @PathVariable("postId") Long id
+            @PathVariable Long postId
     ) {
-        return new ResponseEntity<>(commentService.getComments(id), HttpStatus.OK);
+        return new ResponseEntity<>(commentService.getComments(postId), HttpStatus.OK);
     }
 
     @PutMapping("/edit/{commentId}")
     public ResponseEntity updateComment(
             @RequestBody @Valid CommentUpdateRequestDto request,
-            @PathVariable("commentId") Long id
+            @PathVariable Long commentId
     ) {
-        commentService.updateComment(id, request);
+        commentService.updateComment(commentId, request);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/delete/{commentId}")
     public ResponseEntity deleteComment(
-            @PathVariable("commentId") Long id
+            @PathVariable Long commentId
     ) {
-        commentService.deleteComment(id);
+        commentService.deleteComment(commentId);
         return ResponseEntity.ok().build();
     }
 }

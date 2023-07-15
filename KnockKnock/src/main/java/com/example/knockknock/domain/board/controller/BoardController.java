@@ -1,6 +1,8 @@
 package com.example.knockknock.domain.board.controller;
 
 import com.example.knockknock.domain.board.dto.GetBoardsResponseDto;
+import com.example.knockknock.domain.board.dto.PostSearchRequestDto;
+import com.example.knockknock.domain.board.dto.PostSearchResponseDto;
 import com.example.knockknock.domain.board.entity.Board;
 import com.example.knockknock.domain.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
@@ -29,5 +31,10 @@ public class BoardController {
     @GetMapping("/get")
     public ResponseEntity<List<GetBoardsResponseDto>> getAllBoards(){
         return new ResponseEntity<>(boardService.getAllBoards(), HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<PostSearchResponseDto>> searchPosts(@RequestBody PostSearchRequestDto request) {
+        return new ResponseEntity<>(boardService.searchPost(request), HttpStatus.OK);
     }
 }

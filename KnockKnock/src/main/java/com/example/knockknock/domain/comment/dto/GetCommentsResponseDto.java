@@ -26,7 +26,7 @@ public class GetCommentsResponseDto {
             nickName = comment.getMember().getNickName();
         }
         return GetCommentsResponseDto.builder()
-                .commentId(comment.getId())
+                .commentId(comment.getCommentId())
                 .postId(comment.getPost().getId())
                 .nickName(nickName)
                 .content(comment.getContent())

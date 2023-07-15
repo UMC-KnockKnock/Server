@@ -1,4 +1,5 @@
 package com.example.knockknock.domain.post.dto.response;
+
 import com.example.knockknock.domain.post.entity.Hashtag;
 import com.example.knockknock.domain.post.entity.Post;
 import lombok.*;
@@ -11,15 +12,14 @@ import java.util.stream.Collectors;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetPostsByAgeResponseDto {
+public class GetPostsByHashtagResponseDto {
     private Long postId;
-    private String boardName;
     private String nickName;
     private String title;
     private String content;
     private List<String> hashtags;
 
-    public static GetPostsByAgeResponseDto from(Post post) {
+    public static GetPostsByHashtagResponseDto from(Post post) {
         String nickName;
         if (post.getIsAnonymous()) {
             nickName = "익명";
@@ -29,9 +29,9 @@ public class GetPostsByAgeResponseDto {
         List<String> hashtagNames = post.getHashtags().stream()
                 .map(Hashtag::getTagName)
                 .collect(Collectors.toList());
-        return GetPostsByAgeResponseDto.builder()
+
+        return GetPostsByHashtagResponseDto.builder()
                 .postId(post.getId())
-                .boardName(post.getBoard().getBoardName())
                 .nickName(nickName)
                 .title(post.getTitle())
                 .content(post.getContent())

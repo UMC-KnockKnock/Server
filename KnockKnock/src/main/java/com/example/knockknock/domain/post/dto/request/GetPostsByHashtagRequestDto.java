@@ -1,4 +1,5 @@
 package com.example.knockknock.domain.post.dto.request;
+
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -7,10 +8,9 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetPostsByAgeRequestDto {
+public class GetPostsByHashtagRequestDto {
     @NotNull
     private Long boardId;
     @NotNull
-    private Integer ageGroup;
-
+    private String tagName;
 }

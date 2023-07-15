@@ -51,8 +51,8 @@ public class CommentService {
     }
 
     @Transactional
-    public List<GetCommentsResponseDto> getComments(Long id) {
-        Post post = postRepository.findById(id)
+    public List<GetCommentsResponseDto> getComments(Long postId) {
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundPostException("게시글을 찾을 수 없습니다."));
         List<Comment> comments = commentRepository.findByPost(post);
         return comments.stream()
@@ -60,18 +60,18 @@ public class CommentService {
                 .collect(Collectors.toList());
     }
     @Transactional
-    public void updateComment(Long id, CommentUpdateRequestDto request) {
+    public void updateComment(Long commentId, CommentUpdateRequestDto request) {
 
-        Comment comment = commentRepository.findById(id)
+        Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new NotFoundCommentException("댓글을 찾을 수 없습니다."));
 
         comment.updateComment(request.getContent());
     }
 
     @Transactional
-    public void deleteComment(Long id) {
+    public void deleteComment(Long commentId) {
 
-        Comment comment = commentRepository.findById(id)
+        Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new NotFoundCommentException("댓글을 찾을 수 없습니다."));
 
         commentRepository.delete(comment);

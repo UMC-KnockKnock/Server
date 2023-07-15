@@ -1,9 +1,8 @@
 package com.example.knockknock.domain.post.controller;
 
-import com.example.knockknock.domain.post.dto.request.GetPostsByAgeRequestDto;
-import com.example.knockknock.domain.post.dto.request.PostCreateRequestDto;
-import com.example.knockknock.domain.post.dto.request.PostUpdateRequestDto;
+import com.example.knockknock.domain.post.dto.request.*;
 import com.example.knockknock.domain.post.dto.response.GetPostsByAgeResponseDto;
+import com.example.knockknock.domain.post.dto.response.GetPostsByHashtagResponseDto;
 import com.example.knockknock.domain.post.dto.response.GetPostsResponseDto;
 import com.example.knockknock.domain.post.service.PostService;
 import jakarta.validation.Valid;
@@ -33,10 +32,9 @@ public class PostController {
     }
 
     @GetMapping("/getAll/{boardId}")
-    public ResponseEntity<List<GetPostsResponseDto>> getPosts(
-            @PathVariable("boardId") Long id
-    ) {
-        return new ResponseEntity<>(postService.getPostsByBoard(id), HttpStatus.OK);
+    public ResponseEntity<List<GetPostsResponseDto>> getPostsByBoard(
+            @PathVariable Long boardId) {
+        return new ResponseEntity<>(postService.getPostsByBoard(boardId), HttpStatus.OK);
     }
 
     @GetMapping("/ageGroup")
@@ -46,28 +44,34 @@ public class PostController {
         return new ResponseEntity<>(postService.getPostsByAgeGroup(request), HttpStatus.OK);
     }
 
+    @GetMapping("/hashtag")
+    public ResponseEntity<List<GetPostsByHashtagResponseDto>> getPostsByHashtag(
+            @RequestBody GetPostsByHashtagRequestDto request
+            ){
+        return new ResponseEntity<>(postService.getPostsByHashtag(request), HttpStatus.OK);
+    }
 
     @GetMapping("/get/{postId}")
     public ResponseEntity getPostDetail(
-            @PathVariable("postId") Long id
+            @PathVariable Long postId
     ) {
-        return new ResponseEntity<>(postService.getPostDetail(id), HttpStatus.OK);
+        return new ResponseEntity<>(postService.getPostDetail(postId), HttpStatus.OK);
     }
 
     @PutMapping("/edit/{postId}")
     public ResponseEntity updatePost(
-            @PathVariable("postId") Long id,
+            @PathVariable Long postId,
             @RequestBody @Valid PostUpdateRequestDto request
     ) {
-        postService.updatePost(id, request);
+        postService.updatePost(postId, request);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/delete/{postId}")
     public ResponseEntity deletePost(
-            @PathVariable("postId") Long id
+            @PathVariable Long postId
     ) {
-        postService.deletePost(id);
+        postService.deletePost(postId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -89,5 +93,20 @@ public class PostController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/hashtag/{postId}")
+    public ResponseEntity addHashtag(
+            @PathVariable Long postId,
+            @RequestBody HashtagRegisterRequestDto request
+    ) {
+        postService.addHashtag(postId, request);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
 
+    @DeleteMapping("/hashtag/delete/{postId}")
+    public ResponseEntity deleteHashtag(
+            @PathVariable Long postId
+    ){
+        postService.deleteHashtag(postId);
+        return ResponseEntity.ok().build();
+    }
 }

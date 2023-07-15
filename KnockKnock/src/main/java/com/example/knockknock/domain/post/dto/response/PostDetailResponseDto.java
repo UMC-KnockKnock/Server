@@ -1,8 +1,11 @@
 package com.example.knockknock.domain.post.dto.response;
+import com.example.knockknock.domain.post.entity.Hashtag;
 import com.example.knockknock.domain.post.entity.Post;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -18,10 +21,13 @@ public class PostDetailResponseDto {
     private String title;
 
     private String content;
+    private String hashtagName;
 
     private int likeCount;
 
     private int commentCount;
+
+    private List<String> hashtags;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
@@ -33,6 +39,10 @@ public class PostDetailResponseDto {
             nickName = post.getMember().getNickName();
         }
 
+        List<String> hashtagNames = post.getHashtags().stream()
+                .map(Hashtag::getTagName)
+                .collect(Collectors.toList());
+
         return PostDetailResponseDto.builder()
                 .postId(post.getId())
                 .nickName(nickName)
@@ -40,6 +50,7 @@ public class PostDetailResponseDto {
                 .content(post.getContent())
                 .likeCount(post.getLikeCount())
                 .commentCount(post.getComments().size())
+                .hashtags(hashtagNames)
                 .createdAt(post.getCreatedAt())
                 .modifiedAt(post.getModifiedAt())
                 .build();
