@@ -4,7 +4,7 @@ import com.example.knockknock.domain.comment.dto.CommentRegisterRequestDto;
 import com.example.knockknock.domain.comment.dto.CommentRegisterResponseDto;
 import com.example.knockknock.domain.comment.dto.CommentUpdateRequestDto;
 import com.example.knockknock.domain.comment.dto.GetCommentsResponseDto;
-import com.example.knockknock.domain.post.service.CommentService;
+import com.example.knockknock.domain.comment.service.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,7 @@ import java.util.List;
 @RequestMapping("/post/comment")
 @RequiredArgsConstructor
 @RestController
-public class ComentController {
+public class CommentController {
     private final CommentService commentService;
     @PostMapping("/{postId}")
     public ResponseEntity<CommentRegisterResponseDto> registerComment(

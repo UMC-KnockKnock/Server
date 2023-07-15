@@ -1,11 +1,10 @@
 package com.example.knockknock.domain.post.controller;
 
-import com.example.knockknock.domain.comment.dto.CommentRegisterRequestDto;
-import com.example.knockknock.domain.comment.dto.CommentRegisterResponseDto;
-import com.example.knockknock.domain.comment.dto.CommentUpdateRequestDto;
-import com.example.knockknock.domain.comment.dto.GetCommentsResponseDto;
-import com.example.knockknock.domain.post.dto.*;
-import com.example.knockknock.domain.post.service.CommentService;
+import com.example.knockknock.domain.post.dto.request.GetPostsByAgeRequestDto;
+import com.example.knockknock.domain.post.dto.request.PostCreateRequestDto;
+import com.example.knockknock.domain.post.dto.request.PostUpdateRequestDto;
+import com.example.knockknock.domain.post.dto.response.GetPostsByAgeResponseDto;
+import com.example.knockknock.domain.post.dto.response.GetPostsResponseDto;
 import com.example.knockknock.domain.post.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

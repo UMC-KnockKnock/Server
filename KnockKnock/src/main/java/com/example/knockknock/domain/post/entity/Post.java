@@ -3,7 +3,7 @@ package com.example.knockknock.domain.post.entity;
 import com.example.knockknock.domain.comment.entity.Comment;
 import com.example.knockknock.domain.board.entity.Board;
 import com.example.knockknock.domain.member.entity.Member;
-import com.example.knockknock.domain.post.dto.PostUpdateRequestDto;
+import com.example.knockknock.domain.post.dto.request.PostUpdateRequestDto;
 import com.example.knockknock.global.timestamp.TimeStamped;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

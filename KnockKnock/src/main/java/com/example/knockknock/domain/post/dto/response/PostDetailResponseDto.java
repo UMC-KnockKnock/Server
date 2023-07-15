@@ -1,6 +1,8 @@
-package com.example.knockknock.domain.post.dto;
+package com.example.knockknock.domain.post.dto.response;
 import com.example.knockknock.domain.post.entity.Post;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -20,6 +22,8 @@ public class PostDetailResponseDto {
     private int likeCount;
 
     private int commentCount;
+    private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
 
     public static PostDetailResponseDto of(Post post) {
         String nickName;
@@ -36,6 +40,8 @@ public class PostDetailResponseDto {
                 .content(post.getContent())
                 .likeCount(post.getLikeCount())
                 .commentCount(post.getComments().size())
+                .createdAt(post.getCreatedAt())
+                .modifiedAt(post.getModifiedAt())
                 .build();
     }
 }

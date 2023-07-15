@@ -1,4 +1,4 @@
-package com.example.knockknock.domain.post.dto;
+package com.example.knockknock.domain.post.dto.response;
 import lombok.*;
 
 @Getter
