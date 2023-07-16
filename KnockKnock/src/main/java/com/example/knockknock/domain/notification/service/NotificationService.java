@@ -29,7 +29,8 @@ public class NotificationService {
         List<Notification> notifications = null;
         List<NotificationResponseDto> notificationResponseDtos = new ArrayList<>();
         // convert 함수 만들어서 간편하게 변경할 수 있도록 코드 수정
-        notifications = notificationRepository.findAllByFriendId(friendId);
+        Friend friend = getFriendService.getFriend(friendId);
+        notifications = notificationRepository.findAllByFriend(friend);
         for (Notification notification : notifications) {
             notificationResponseDtos.add(new NotificationResponseDto(notification));
         }
