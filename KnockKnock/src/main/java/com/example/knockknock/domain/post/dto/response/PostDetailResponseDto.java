@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 public class PostDetailResponseDto {
     private Long postId;
 
+    private String boardType;
     private String nickName;
 
     private String title;
@@ -47,6 +48,7 @@ public class PostDetailResponseDto {
 
         return PostDetailResponseDto.builder()
                 .postId(post.getId())
+                .boardType(String.valueOf(post.getBoardType()))
                 .nickName(nickName)
                 .title(post.getTitle())
                 .content(post.getContent())

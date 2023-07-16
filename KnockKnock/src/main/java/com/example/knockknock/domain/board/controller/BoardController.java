@@ -1,8 +1,7 @@
 package com.example.knockknock.domain.board.controller;
 
-import com.example.knockknock.domain.board.dto.GetBoardsResponseDto;
 import com.example.knockknock.domain.board.dto.PostSearchResponseDto;
-import com.example.knockknock.domain.board.entity.Board;
+import com.example.knockknock.domain.board.entity.BoardType;
 import com.example.knockknock.domain.board.entity.SearchType;
 import com.example.knockknock.domain.board.service.BoardService;
 import com.example.knockknock.domain.post.dto.response.PostDetailResponseDto;
@@ -21,37 +20,26 @@ import java.util.List;
 public class BoardController {
     private final BoardService boardService;
 
-    @PostMapping("/create")
-    public ResponseEntity createBoard(
-            @RequestBody Board board
-    ) {
-        boardService.createBoard(board);
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
 
-    @GetMapping("/get")
-    public ResponseEntity<List<GetBoardsResponseDto>> getAllBoards(){
-        return new ResponseEntity<>(boardService.getAllBoards(), HttpStatus.OK);
-    }
-    @GetMapping("/{boardId}/allPosts")
+    @GetMapping("/allPosts")
     public ResponseEntity<List<PostDetailResponseDto>> getPostsByBoard(
-            @PathVariable Long boardId) {
-        return new ResponseEntity<>(boardService.getPostsByBoard(boardId), HttpStatus.OK);
+            @RequestParam("boardType") BoardType boardType) {
+        return new ResponseEntity<>(boardService.getPostsByBoard(boardType), HttpStatus.OK);
     }
 
-    @GetMapping("{boardId}/search")
+    @GetMapping("/search")
     public ResponseEntity<List<PostSearchResponseDto>> getPostsByKeyword(
-            @PathVariable Long boardId,
+            @RequestParam("boardType") BoardType boardType,
             @RequestParam("searchType") SearchType searchType,
             @RequestParam("keyword") String keyword) {
-        return new ResponseEntity<>(boardService.searchPost(boardId, searchType, keyword), HttpStatus.OK);
+        return new ResponseEntity<>(boardService.searchPost(boardType, searchType, keyword), HttpStatus.OK);
     }
-    @GetMapping("/{boardId}/search/hashtag")
+    @GetMapping("/search/hashtag")
     public ResponseEntity<List<PostDetailResponseDto>> getPostsByHashtag(
-            @PathVariable Long boardId,
+            @RequestParam("boardType") BoardType boardType,
             @RequestParam("hashtag") String hashtag
     ){
-        return new ResponseEntity<>(boardService.getPostsByHashtag(boardId, hashtag), HttpStatus.OK);
+        return new ResponseEntity<>(boardService.getPostsByHashtag(boardType, hashtag), HttpStatus.OK);
     }
 
     @GetMapping("/{memberId}/posts")
@@ -60,12 +48,12 @@ public class BoardController {
     ) {
         return new ResponseEntity<>(boardService.getPostsByMember(memberId), HttpStatus.OK);
     }
-    @GetMapping("/{boardId}/filter/ageGroup")
+    @GetMapping("/filter")
     public ResponseEntity<List<PostDetailResponseDto>> getPostsByAge(
-            @PathVariable Long boardId,
-            @RequestParam Integer ageGroup
+            @RequestParam ("boardType") BoardType boardType,
+            @RequestParam ("ageGroup") Integer ageGroup
     ) {
-        return new ResponseEntity<>(boardService.getPostsByAgeGroup(boardId, ageGroup), HttpStatus.OK);
+        return new ResponseEntity<>(boardService.getPostsByAgeGroup(boardType, ageGroup), HttpStatus.OK);
     }
 
 }

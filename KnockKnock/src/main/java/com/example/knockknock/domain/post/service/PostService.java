@@ -1,8 +1,5 @@
 package com.example.knockknock.domain.post.service;
 
-
-import com.example.knockknock.domain.board.entity.*;
-import com.example.knockknock.domain.board.repository.*;
 import com.example.knockknock.domain.post.dto.request.*;
 import com.example.knockknock.domain.post.dto.response.*;
 import com.example.knockknock.domain.post.entity.Hashtag;
@@ -17,21 +14,17 @@ import com.example.knockknock.global.exception.*;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class PostService {
     private PostRepository postRepository;
-    private BoardRepository boardRepository;
     private PostLikeRepository postLikeRepository;
     private HashtagRepository hashtagRepository;
     private MemberRepository memberRepository;
 
-    public PostService(PostRepository postRepository, BoardRepository boardRepository, PostLikeRepository postLikeRepository, HashtagRepository hashtagRepository, MemberRepository memberRepository) {
+    public PostService(PostRepository postRepository, PostLikeRepository postLikeRepository, HashtagRepository hashtagRepository, MemberRepository memberRepository) {
         this.postRepository = postRepository;
-        this.boardRepository = boardRepository;
         this.postLikeRepository = postLikeRepository;
         this.hashtagRepository = hashtagRepository;
         this.memberRepository = memberRepository;
@@ -41,12 +34,11 @@ public class PostService {
     public void createPost(PostCreateRequestDto request) {
         Member member =  memberRepository.findById(request.getMemberId())
                 .orElseThrow(() -> new NotFoundMemberException("사용자를 찾을 수 없습니다."));
-        Board board = boardRepository.findById(request.getBoardId())
-                .orElseThrow(() -> new NotFoundBoardException("게시판을 찾을 수 없습니다."));
+
 
         Post post = Post.builder()
                 .member(member)
-                .board(board)
+                .boardType(request.getBoardType())
                 .title(request.getTitle())
                 .content(request.getContent())
                 .likeCount(0)

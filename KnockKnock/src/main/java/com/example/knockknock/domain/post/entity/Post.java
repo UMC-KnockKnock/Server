@@ -1,7 +1,7 @@
 package com.example.knockknock.domain.post.entity;
 
 import com.example.knockknock.domain.comment.entity.Comment;
-import com.example.knockknock.domain.board.entity.Board;
+import com.example.knockknock.domain.board.entity.BoardType;
 import com.example.knockknock.domain.member.entity.Member;
 import com.example.knockknock.domain.post.dto.request.PostUpdateRequestDto;
 import com.example.knockknock.global.timestamp.TimeStamped;
@@ -29,9 +29,9 @@ public class Post extends TimeStamped {
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "BOARD_ID")
-    private Board board;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "BOARD_TYPE")
+    private BoardType boardType;
 
     @Builder.Default
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "post")
@@ -64,10 +64,5 @@ public class Post extends TimeStamped {
     public void updatePost(PostUpdateRequestDto request) {
         this.title = request.getTitle();
         this.content = request.getContent();
-    }
-
-    public void setBoard(Board board) {
-        this.board = board;
-        board.addPost(this);
     }
 }
