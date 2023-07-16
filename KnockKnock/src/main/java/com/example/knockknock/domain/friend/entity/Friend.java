@@ -1,5 +1,6 @@
 package com.example.knockknock.domain.friend.entity;
 
+import com.example.knockknock.domain.friend.dto.requestDto.FriendRequestDto;
 import com.example.knockknock.global.timestamp.TimeStamped;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -27,9 +28,20 @@ public class Friend extends TimeStamped {
     private String phoneNumber;
 
     @Column(nullable = false)
-    private boolean bestFriend;
+    private boolean isBestFriend;
 
 //    @ManyToOne
 //    @JoinColumn(name="MEMBER_ID", nullable = false)
 //    private Member member;
+
+    public boolean setBestFriend(){
+        this.isBestFriend = !this.isBestFriend;
+        return isBestFriend;
+    }
+
+    public void update(FriendRequestDto friendRequestDto, String profileImageURL){
+        if (profileImageURL != null) this.profileImageURL = profileImageURL;
+        this.friendName = friendRequestDto.getFriendName();
+        this.phoneNumber = friendRequestDto.getPhoneNumber();
+    }
 }
