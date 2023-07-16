@@ -1,9 +1,7 @@
 package com.example.knockknock.domain.post.controller;
 
 import com.example.knockknock.domain.post.dto.request.*;
-import com.example.knockknock.domain.post.dto.response.GetPostsByAgeResponseDto;
-import com.example.knockknock.domain.post.dto.response.GetPostsByHashtagResponseDto;
-import com.example.knockknock.domain.post.dto.response.GetPostsResponseDto;
+import com.example.knockknock.domain.post.dto.response.PostDetailResponseDto;
 import com.example.knockknock.domain.post.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,26 +27,6 @@ public class PostController {
             PostCreateRequestDto request) {
         postService.createPost(request);
         return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
-    @GetMapping("/getAll/{boardId}")
-    public ResponseEntity<List<GetPostsResponseDto>> getPostsByBoard(
-            @PathVariable Long boardId) {
-        return new ResponseEntity<>(postService.getPostsByBoard(boardId), HttpStatus.OK);
-    }
-
-    @GetMapping("/ageGroup")
-    public ResponseEntity<List<GetPostsByAgeResponseDto>> getPostsByAge(
-            @RequestBody GetPostsByAgeRequestDto request
-    ) {
-        return new ResponseEntity<>(postService.getPostsByAgeGroup(request), HttpStatus.OK);
-    }
-
-    @GetMapping("/hashtag")
-    public ResponseEntity<List<GetPostsByHashtagResponseDto>> getPostsByHashtag(
-            @RequestBody GetPostsByHashtagRequestDto request
-            ){
-        return new ResponseEntity<>(postService.getPostsByHashtag(request), HttpStatus.OK);
     }
 
     @GetMapping("/get/{postId}")

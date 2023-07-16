@@ -84,7 +84,7 @@ public class Member extends TimeStamped {
                 birthYear += 2000;
             }
 
-            int age = currentYear - birthYear;  // 현재 년도의 YY - 생년의 YY
+            int age = currentYear - birthYear;
 
             // 생일이 지났는지 체크
             if (birthMonth > currentMonth || (birthMonth == currentMonth && birthDate > currentDateOfMonth)) {

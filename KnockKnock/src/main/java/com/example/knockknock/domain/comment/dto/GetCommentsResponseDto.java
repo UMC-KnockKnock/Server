@@ -1,5 +1,6 @@
 package com.example.knockknock.domain.comment.dto;
 import com.example.knockknock.domain.comment.entity.Comment;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -15,7 +16,9 @@ public class GetCommentsResponseDto {
 
     private String nickName;
     private String content;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime modifiedAt;
 
     public static GetCommentsResponseDto from(Comment comment) {

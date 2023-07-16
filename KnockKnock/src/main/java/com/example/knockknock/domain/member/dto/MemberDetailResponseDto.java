@@ -1,6 +1,7 @@
 package com.example.knockknock.domain.member.dto;
 
 import com.example.knockknock.domain.member.entity.Member;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -23,8 +24,9 @@ public class MemberDetailResponseDto {
     private String email;
     private String birthDay;
     private Integer age;
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime modifiedAt;
 
     public static MemberDetailResponseDto of(Member member) {
@@ -44,8 +46,9 @@ public class MemberDetailResponseDto {
 
     }
     private static String formatDate(String birthDay) {
+        String year = birthDay.substring(0, 2);
         String month = birthDay.substring(2, 4);
         String day = birthDay.substring(4, 6);
-        return month + "월 " + day + "일";
+        return year + "년" + month + "월 " + day + "일";
     }
 }

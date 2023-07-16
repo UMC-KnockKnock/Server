@@ -1,6 +1,7 @@
 package com.example.knockknock.domain.post.dto.response;
 import com.example.knockknock.domain.post.entity.Hashtag;
 import com.example.knockknock.domain.post.entity.Post;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -21,14 +22,15 @@ public class PostDetailResponseDto {
     private String title;
 
     private String content;
-    private String hashtagName;
 
     private int likeCount;
 
     private int commentCount;
 
     private List<String> hashtags;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime modifiedAt;
 
     public static PostDetailResponseDto of(Post post) {

@@ -4,10 +4,7 @@ package com.example.knockknock.domain.post.service;
 import com.example.knockknock.domain.board.entity.*;
 import com.example.knockknock.domain.board.repository.*;
 import com.example.knockknock.domain.post.dto.request.*;
-import com.example.knockknock.domain.post.dto.response.GetPostsByAgeResponseDto;
-import com.example.knockknock.domain.post.dto.response.GetPostsByHashtagResponseDto;
-import com.example.knockknock.domain.post.dto.response.GetPostsResponseDto;
-import com.example.knockknock.domain.post.dto.response.PostDetailResponseDto;
+import com.example.knockknock.domain.post.dto.response.*;
 import com.example.knockknock.domain.post.entity.Hashtag;
 import com.example.knockknock.domain.post.repository.HashtagRepository;
 import com.example.knockknock.domain.member.entity.Member;
@@ -68,28 +65,6 @@ public class PostService {
     }
 
     @Transactional
-    public List<GetPostsResponseDto> getPostsByBoard(Long boardId) {
-        Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new NotFoundBoardException("게시판을 찾을 수 없습니다."));
-        List<Post> posts = postRepository.findByBoard(board);
-        return posts.stream()
-                .map(GetPostsResponseDto::from)
-                .collect(Collectors.toList());
-    }
-
-    @Transactional
-    public List<GetPostsByAgeResponseDto> getPostsByAgeGroup(GetPostsByAgeRequestDto request) {
-        Board board = boardRepository.findById(request.getBoardId())
-                .orElseThrow(() -> new NotFoundBoardException("게시판을 찾을 수 없습니다."));
-        int ageGroupStart = request.getAgeGroup();
-        int ageGroupEnd = ageGroupStart + 9;
-        List<Post> posts = postRepository.findByBoardAndMemberAgeBetween(board, ageGroupStart, ageGroupEnd);
-        return posts.stream()
-                .map(GetPostsByAgeResponseDto::from)
-                .collect(Collectors.toList());
-    }
-
-    @Transactional
     public void updatePost(Long id , PostUpdateRequestDto request) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new NotFoundPostException("게시글을 찾을 수 없습니다."));
@@ -136,12 +111,14 @@ public class PostService {
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundPostException("게시글을 찾을 수 없습니다."));
+
         PostLike postLike = postLikeRepository.findByMemberAndPost(member, post)
                 .orElseThrow(() -> new NotFoundLikeException("좋아요 정보를 찾을 수 없습니다."));
 
         if (!postLike.isLiked()) {
             throw new AlreadyDeleteLikeException("이미 좋아요가 취소된 게시글입니다.");
         }
+
         post.removeLike();
         postLike.deletePostLike();
     }
@@ -156,17 +133,6 @@ public class PostService {
                 .tagName(request.getTagName())
                 .build());
 
-    }
-
-    @Transactional
-    public List<GetPostsByHashtagResponseDto> getPostsByHashtag(GetPostsByHashtagRequestDto request) {
-        Board board = boardRepository.findById(request.getBoardId())
-                .orElseThrow(() -> new NotFoundBoardException("게시판을 찾을 수 없습니다."));
-
-        List<Post> posts = postRepository.findByHashtags_TagName(request.getTagName());
-        return posts.stream()
-                .map(GetPostsByHashtagResponseDto::from)
-                .collect(Collectors.toList());
     }
 
     @Transactional
