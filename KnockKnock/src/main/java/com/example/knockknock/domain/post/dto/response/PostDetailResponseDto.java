@@ -47,7 +47,7 @@ public class PostDetailResponseDto {
                 .collect(Collectors.toList());
 
         return PostDetailResponseDto.builder()
-                .postId(post.getId())
+                .postId(post.getPostId())
                 .boardType(String.valueOf(post.getBoardType()))
                 .nickName(nickName)
                 .title(post.getTitle())

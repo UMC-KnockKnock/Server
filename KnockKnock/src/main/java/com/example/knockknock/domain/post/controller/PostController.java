@@ -3,7 +3,9 @@ package com.example.knockknock.domain.post.controller;
 import com.example.knockknock.domain.post.dto.request.*;
 import com.example.knockknock.domain.post.dto.response.PostDetailResponseDto;
 import com.example.knockknock.domain.post.service.PostService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -29,7 +31,7 @@ public class PostController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("/get/{postId}")
+    @GetMapping("/{postId}")
     public ResponseEntity getPostDetail(
             @PathVariable Long postId
     ) {
@@ -83,8 +85,15 @@ public class PostController {
     @DeleteMapping("/hashtag/delete/{postId}")
     public ResponseEntity deleteHashtag(
             @PathVariable Long postId
-    ){
+    ) {
         postService.deleteHashtag(postId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/share/{postId}")
+    public ResponseEntity<String> sharePost(
+            @PathVariable Long postId, HttpServletRequest request
+    ) {
+        return new ResponseEntity<>(postService.sharePost(postId, request), HttpStatus.OK);
     }
 }

@@ -11,6 +11,8 @@ import com.example.knockknock.domain.post.repository.PostRepository;
 import com.example.knockknock.domain.post.entity.Post;
 import com.example.knockknock.domain.post.entity.PostLike;
 import com.example.knockknock.global.exception.*;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -128,11 +130,21 @@ public class PostService {
     }
 
     @Transactional
-    public void deleteHashtag(Long id) {
+    public void deleteHashtag(Long hashtagId) {
 
-        Hashtag hashtag = hashtagRepository.findById(id)
+        Hashtag hashtag = hashtagRepository.findById(hashtagId)
                 .orElseThrow(() -> new NotFoundHashtagException("해시태그를 찾을 수 없습니다."));
 
         hashtagRepository.delete(hashtag);
+    }
+
+    @Transactional
+    public String sharePost(Long postId, HttpServletRequest request){
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundPostException("게시글을 찾을 수 없습니다."));
+        String domain = request.getServerName();
+        int port = request.getServerPort();
+        String shareUrl = String.format("https://%s:%d/post/%d", domain, port, postId);
+        return shareUrl;
     }
 }

@@ -14,5 +14,6 @@ public class CommentRegisterRequestDto {
     @NotBlank
     private String content;
     @NotNull
+    @Builder.Default
     private Boolean isAnonymous = false;
 }

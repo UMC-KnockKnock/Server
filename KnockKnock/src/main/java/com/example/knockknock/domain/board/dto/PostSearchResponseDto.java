@@ -24,7 +24,7 @@ public class PostSearchResponseDto {
             nickName = post.getMember().getNickName();
         }
         return PostSearchResponseDto.builder()
-                .postId(post.getId())
+                .postId(post.getPostId())
                 .nickName(nickName)
                 .title(post.getTitle())
                 .content(post.getContent())

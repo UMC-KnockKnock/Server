@@ -30,7 +30,7 @@ public class GetCommentsResponseDto {
         }
         return GetCommentsResponseDto.builder()
                 .commentId(comment.getCommentId())
-                .postId(comment.getPost().getId())
+                .postId(comment.getPost().getPostId())
                 .nickName(nickName)
                 .content(comment.getContent())
                 .createdAt(comment.getCreatedAt())

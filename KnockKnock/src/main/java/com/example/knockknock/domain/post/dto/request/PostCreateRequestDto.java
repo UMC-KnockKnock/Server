@@ -16,6 +16,7 @@ public class PostCreateRequestDto {
     @NotNull
     private BoardType boardType;
     @NotNull
+    @Builder.Default
     private Boolean isAnonymous = false;
     @NotBlank
     private String title;
