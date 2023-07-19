@@ -144,4 +144,5 @@ public class PostService {
         String shareUrl = String.format("http://%s:%d/post/%d", domain, port, postId);
         return shareUrl;
     }
+
 }

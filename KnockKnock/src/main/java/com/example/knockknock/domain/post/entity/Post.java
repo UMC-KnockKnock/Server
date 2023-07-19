@@ -4,6 +4,7 @@ import com.example.knockknock.domain.comment.entity.Comment;
 import com.example.knockknock.domain.board.entity.BoardType;
 import com.example.knockknock.domain.member.entity.Member;
 import com.example.knockknock.domain.post.dto.request.PostUpdateRequestDto;
+import com.example.knockknock.domain.report.entity.Report;
 import com.example.knockknock.global.timestamp.TimeStamped;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

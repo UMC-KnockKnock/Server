@@ -36,7 +36,7 @@ public class CommentService {
     @Transactional
     public CommentRegisterResponseDto registerComment(Long postId, CommentRegisterRequestDto request) {
         Member member = memberRepository.findById(request.getMemberId())
-                .orElseThrow(() -> new NotFoundMemberException("사용자를 찾을 수 없습니다."));;
+                .orElseThrow(() -> new NotFoundMemberException("사용자를 찾을 수 없습니다."));
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundPostException("게시글을 찾을 수 없습니다."));
