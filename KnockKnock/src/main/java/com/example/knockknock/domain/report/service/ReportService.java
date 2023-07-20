@@ -7,12 +7,16 @@ import com.example.knockknock.domain.member.entity.Member;
 import com.example.knockknock.domain.member.repository.MemberRepository;
 import com.example.knockknock.domain.post.entity.Post;
 import com.example.knockknock.domain.post.repository.PostRepository;
+import com.example.knockknock.domain.report.dto.GetReportResponseDto;
 import com.example.knockknock.domain.report.dto.ReportRequestDto;
 import com.example.knockknock.domain.report.entity.Report;
 import com.example.knockknock.domain.report.repository.ReportRepository;
 import com.example.knockknock.global.exception.*;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ReportService {
@@ -34,13 +38,21 @@ public class ReportService {
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
-
         reportRepository.save(Report.builder()
                 .reporter(reporter)
-                .targetPost(post)
                 .reportType(request.getReportType())
+                .targetPost(post)
                 .reportContent(request.getReportContent())
                 .build());
+    }
+    @Transactional
+    public List<GetReportResponseDto> getPostReports(Long postId){
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
+        List<Report> reports = reportRepository.findByTargetPost(post);
+        return reports.stream()
+                .map(GetReportResponseDto::from)
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -56,5 +68,15 @@ public class ReportService {
                 .reportType(request.getReportType())
                 .reportContent(request.getReportContent())
                 .build());
+    }
+
+    @Transactional
+    public List<GetReportResponseDto> getCommentReports(Long commentId){
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new GlobalException(GlobalErrorCode.COMMENT_NOT_FOUND));
+        List<Report> reports = reportRepository.findByTargetComment(comment);
+        return reports.stream()
+                .map(GetReportResponseDto::from)
+                .collect(Collectors.toList());
     }
 }
