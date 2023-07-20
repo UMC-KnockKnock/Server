@@ -10,9 +10,7 @@ import com.example.knockknock.domain.post.repository.PostRepository;
 import com.example.knockknock.domain.report.dto.ReportRequestDto;
 import com.example.knockknock.domain.report.entity.Report;
 import com.example.knockknock.domain.report.repository.ReportRepository;
-import com.example.knockknock.global.exception.NotFoundCommentException;
-import com.example.knockknock.global.exception.NotFoundMemberException;
-import com.example.knockknock.global.exception.NotFoundPostException;
+import com.example.knockknock.global.exception.*;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -33,9 +31,9 @@ public class ReportService {
     @Transactional
     public void reportPost(Long postId, ReportRequestDto request) {
         Member reporter = memberRepository.findById(request.getReporterId())
-                .orElseThrow(() -> new NotFoundMemberException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new NotFoundPostException("게시글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
 
         reportRepository.save(Report.builder()
                 .reporter(reporter)
@@ -48,9 +46,9 @@ public class ReportService {
     @Transactional
     public void reportComment(Long commentId, ReportRequestDto request) {
         Member reporter = memberRepository.findById(request.getReporterId())
-                .orElseThrow(() -> new NotFoundMemberException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new NotFoundCommentException("댓글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new GlobalException(GlobalErrorCode.COMMENT_NOT_FOUND));
 
         reportRepository.save(Report.builder()
                 .reporter(reporter)

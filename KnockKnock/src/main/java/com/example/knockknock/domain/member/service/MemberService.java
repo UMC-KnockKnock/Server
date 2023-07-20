@@ -6,8 +6,8 @@ import com.example.knockknock.domain.member.repository.MemberRepository;
 import com.example.knockknock.domain.member.dto.MemberSignUpRequestDto;
 import com.example.knockknock.domain.member.dto.MemberUpdateRequestDto;
 import com.example.knockknock.domain.member.entity.Member;
-import com.example.knockknock.global.exception.NotFoundPostException;
-import com.example.knockknock.global.exception.NotFoundMemberException;
+import com.example.knockknock.global.exception.GlobalErrorCode;
+import com.example.knockknock.global.exception.GlobalException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +40,8 @@ public class MemberService {
     @Transactional
     public MemberDetailResponseDto getMemberDetail(Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NotFoundPostException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
+
         return MemberDetailResponseDto.of(member);
     }
 
@@ -55,14 +56,14 @@ public class MemberService {
     @Transactional
     public void updateMember(Long memberId, MemberUpdateRequestDto request) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NotFoundMemberException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
         member.updateMember(request);
     }
 
     @Transactional
     public void deleteMember(Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NotFoundMemberException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
         memberRepository.delete(member);
     }
 

@@ -34,8 +34,7 @@ public class PostService {
     @Transactional
     public void createPost(PostCreateRequestDto request) {
         Member member =  memberRepository.findById(request.getMemberId())
-                .orElseThrow(() -> new NotFoundMemberException("사용자를 찾을 수 없습니다."));
-
+                .orElseThrow(() -> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
 
         Post post = Post.builder()
                 .member(member)
@@ -53,36 +52,36 @@ public class PostService {
     @Transactional
     public PostDetailResponseDto getPostDetail(Long postId) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new NotFoundPostException("게시글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
         return PostDetailResponseDto.of(post);
     }
 
     @Transactional
-    public void updatePost(Long id , PostUpdateRequestDto request) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new NotFoundPostException("게시글을 찾을 수 없습니다."));
+    public void updatePost(Long postId , PostUpdateRequestDto request) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
         post.updatePost(request);
     }
 
     @Transactional
     public void deletePost(Long postId) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new NotFoundPostException("게시글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
         postRepository.delete(post);
     }
 
     @Transactional
     public void likePost(Long memberId, Long postId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NotFoundMemberException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
 
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new NotFoundPostException("게시글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
 
         Optional<PostLike> postLikeOptional = postLikeRepository.findByMemberAndPost(member, post);
 
         if (postLikeOptional.isPresent() && postLikeOptional.get().isLiked()) {
-            throw new AlreadyLikeException("이미 좋아요한 게시물입니다.");
+            throw new GlobalException(GlobalErrorCode.ALREADY_LIKE);
         }
 
         if (postLikeOptional.isEmpty()) {
@@ -100,16 +99,16 @@ public class PostService {
     @Transactional
     public void deletePostLike(Long memberId, Long postId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NotFoundMemberException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
 
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new NotFoundPostException("게시글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
 
         PostLike postLike = postLikeRepository.findByMemberAndPost(member, post)
-                .orElseThrow(() -> new NotFoundLikeException("좋아요 정보를 찾을 수 없습니다."));
+                .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_LIKE_NOT_FOUND));
 
         if (!postLike.isLiked()) {
-            throw new AlreadyDeleteLikeException("이미 좋아요가 취소된 게시글입니다.");
+            throw new GlobalException(GlobalErrorCode.ALREADY_DELETED_LIKE);
         }
 
         post.removeLike();
@@ -119,7 +118,7 @@ public class PostService {
     @Transactional
     public void addHashtag(Long postId, HashtagRegisterRequestDto request) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new NotFoundPostException("게시글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
 
         hashtagRepository.save(Hashtag.builder()
                 .post(post)
@@ -132,7 +131,7 @@ public class PostService {
     public void deleteHashtag(Long hashtagId) {
 
         Hashtag hashtag = hashtagRepository.findById(hashtagId)
-                .orElseThrow(() -> new NotFoundHashtagException("해시태그를 찾을 수 없습니다."));
+                .orElseThrow(() -> new GlobalException(GlobalErrorCode.HASHTAG_NOT_FOUND));
 
         hashtagRepository.delete(hashtag);
     }

@@ -38,8 +38,14 @@ public class Post extends TimeStamped {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "post")
     private List<Comment> comments = new ArrayList<>();
     @Builder.Default
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostLike> postLikes = new ArrayList<>();
+    @Builder.Default
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "post")
     private List<Hashtag> hashtags = new ArrayList<>();
+    @Builder.Default
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "targetPost")
+    private List<Report> reports = new ArrayList<>();
 
     @Column(name = "TITLE")
     private String title;
