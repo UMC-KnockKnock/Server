@@ -81,7 +81,7 @@ public class PostService {
         Optional<PostLike> postLikeOptional = postLikeRepository.findByMemberAndPost(member, post);
 
         if (postLikeOptional.isPresent() && postLikeOptional.get().isLiked()) {
-            throw new GlobalException(GlobalErrorCode.ALREADY_LIKE);
+            throw new GlobalException(GlobalErrorCode.DUPLICATE_LIKE);
         }
 
         if (postLikeOptional.isEmpty()) {
@@ -108,7 +108,7 @@ public class PostService {
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_LIKE_NOT_FOUND));
 
         if (!postLike.isLiked()) {
-            throw new GlobalException(GlobalErrorCode.ALREADY_DELETED_LIKE);
+            throw new GlobalException(GlobalErrorCode.DUPLICATE_DELETE_LIKE);
         }
 
         post.removeLike();

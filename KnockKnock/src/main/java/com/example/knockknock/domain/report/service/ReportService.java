@@ -16,6 +16,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,12 +39,22 @@ public class ReportService {
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
-        reportRepository.save(Report.builder()
+
+        Optional<Report> reportOptional = reportRepository.findByReporterAndTargetPost(reporter, post);
+        if (reportOptional.isPresent() && reportOptional.get().isReported()) {
+            throw new GlobalException(GlobalErrorCode.DUPLICATE_REPORT);
+        }
+        if(reportOptional.isEmpty()){
+            reportRepository.save(Report.builder()
                 .reporter(reporter)
                 .reportType(request.getReportType())
                 .targetPost(post)
                 .reportContent(request.getReportContent())
+                .isReported(true)
                 .build());
+        } else {
+            reportOptional.get().report();
+        }
     }
     @Transactional
     public List<GetReportResponseDto> getPostReports(Long postId){
@@ -61,13 +72,21 @@ public class ReportService {
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.COMMENT_NOT_FOUND));
-
-        reportRepository.save(Report.builder()
-                .reporter(reporter)
-                .targetComment(comment)
-                .reportType(request.getReportType())
-                .reportContent(request.getReportContent())
-                .build());
+        Optional<Report> reportOptional = reportRepository.findByReporterAndTargetComment(reporter, comment);
+        if (reportOptional.isPresent() && reportOptional.get().isReported()) {
+            throw new GlobalException(GlobalErrorCode.DUPLICATE_REPORT);
+        }
+        if(reportOptional.isEmpty()) {
+            reportRepository.save(Report.builder()
+                    .reporter(reporter)
+                    .targetComment(comment)
+                    .reportType(request.getReportType())
+                    .reportContent(request.getReportContent())
+                    .isReported(true)
+                    .build());
+        } else {
+                reportOptional.get().report();
+            }
     }
 
     @Transactional

@@ -38,8 +38,9 @@ public enum GlobalErrorCode {
 
     //Board
     // 400 BAD_REQUEST - 잘못된 요청
-    ALREADY_LIKE(BAD_REQUEST, "이미 좋아요 한 게시물입니다."),
-    ALREADY_DELETED_LIKE(BAD_REQUEST, "이미 좋아요가 취소된 게시글입니다."),
+    DUPLICATE_LIKE(BAD_REQUEST, "이미 좋아요 한 게시물입니다."),
+    DUPLICATE_DELETE_LIKE(BAD_REQUEST, "이미 좋아요가 취소된 게시글입니다."),
+    DUPLICATE_REPORT(BAD_REQUEST, "이미 신고한 게시물입니다."),
     // 404 Not Found - 찾을 수 없음
     MEMBER_NOT_FOUND(NOT_FOUND, "사용자를 찾을 수 없습니다."),
     POST_NOT_FOUND(NOT_FOUND, "게시글이 존재하지 않습니다"),

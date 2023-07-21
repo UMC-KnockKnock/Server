@@ -43,7 +43,7 @@ public class Report extends TimeStamped {
     @Column(name = "IS_REPORTED")
     private boolean isReported;
 
-    public void reportPost() {
+    public void report() {
         this.isReported = true;    }
 
 }
