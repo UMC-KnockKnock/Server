@@ -2,12 +2,16 @@ package com.example.knockknock.domain.comment.entity;
 
 import com.example.knockknock.domain.post.entity.Post;
 import com.example.knockknock.domain.member.entity.Member;
+import com.example.knockknock.domain.report.entity.Report;
 import com.example.knockknock.global.timestamp.TimeStamped;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -28,6 +32,10 @@ public class Comment extends TimeStamped {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "POST_ID")
     private Post post;
+
+    @Builder.Default
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "targetComment")
+    private List<Report> reports = new ArrayList<>();
 
     @Column(name = "CONTENT")
     private String content;

@@ -16,6 +16,7 @@ public class GetCommentsResponseDto {
 
     private String nickName;
     private String content;
+    private int reportCount;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -33,6 +34,7 @@ public class GetCommentsResponseDto {
                 .postId(comment.getPost().getPostId())
                 .nickName(nickName)
                 .content(comment.getContent())
+                .reportCount(comment.getReports().size())
                 .createdAt(comment.getCreatedAt())
                 .modifiedAt(comment.getModifiedAt())
                 .build();
