@@ -1,4 +1,4 @@
-package com.example.knockknock.domain.report.dto;
+package com.example.knockknock.domain.report.dto.response;
 
 import com.example.knockknock.domain.report.entity.Report;
 import com.example.knockknock.domain.report.entity.ReportType;

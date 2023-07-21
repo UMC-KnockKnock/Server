@@ -1,9 +1,8 @@
 package com.example.knockknock.domain.report.controller;
 
-import com.example.knockknock.domain.report.dto.GetReportResponseDto;
-import com.example.knockknock.domain.report.dto.ReportRequestDto;
+import com.example.knockknock.domain.report.dto.response.GetReportResponseDto;
+import com.example.knockknock.domain.report.dto.request.ReportRequestDto;
 import com.example.knockknock.domain.report.service.ReportService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

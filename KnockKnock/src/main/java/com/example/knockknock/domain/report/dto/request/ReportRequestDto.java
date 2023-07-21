@@ -1,4 +1,4 @@
-package com.example.knockknock.domain.report.dto;
+package com.example.knockknock.domain.report.dto.request;
 
 import com.example.knockknock.domain.report.entity.ReportType;
 import jakarta.validation.constraints.NotBlank;
