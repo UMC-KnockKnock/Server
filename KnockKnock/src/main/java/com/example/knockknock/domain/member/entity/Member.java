@@ -43,7 +43,7 @@ public class Member extends TimeStamped {
     private String email;
 
     @Column(name = "BIRTHDAY")
-    private String birthDay;
+    private String birthday;
 
     @Column(name = "AGE")
     private Integer age;
@@ -61,17 +61,17 @@ public class Member extends TimeStamped {
         if (request.getEmail() != null) {
             this.email = request.getEmail();
         }
-        if (request.getBirthDay() != null) {
-            this.birthDay = request.getBirthDay();
+        if (request.getBirthday() != null) {
+            this.birthday = request.getBirthday();
         }
     }
 
     public void calculateAge() {
-        if (birthDay != null) {
+        if (birthday != null) {
             LocalDate currentDate = LocalDate.now();
-            int birthYear = Integer.parseInt(birthDay.substring(0, 2));// YYMMDD에서 YY 추출
-            int birthMonth = Integer.parseInt(birthDay.substring(2, 4));  // YYMMDD에서 MM 추출
-            int birthDate = Integer.parseInt(birthDay.substring(4, 6));  // YYMMDD에서 DD 추출
+            int birthYear = Integer.parseInt(birthday.substring(0, 2));// YYMMDD에서 YY 추출
+            int birthMonth = Integer.parseInt(birthday.substring(2, 4));  // YYMMDD에서 MM 추출
+            int birthDate = Integer.parseInt(birthday.substring(4, 6));  // YYMMDD에서 DD 추출
 
             int currentYear = currentDate.getYear();  // 현재 년도의 YY 추출
             int currentMonth = currentDate.getMonthValue();  // 현재 월 추출

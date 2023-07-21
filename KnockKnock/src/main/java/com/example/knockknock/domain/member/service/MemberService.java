@@ -31,7 +31,7 @@ public class MemberService {
                 .nickName(request.getNickName())
                 .phoneNumber(request.getPhoneNumber())
                 .email(request.getEmail())
-                .birthDay(request.getBirthDay())
+                .birthday(request.getBirthday())
                 .build();
         member.calculateAge();
         memberRepository.save(member);
