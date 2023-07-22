@@ -1,4 +1,4 @@
-package com.example.knockknock.domain.post.dto.request;
+package com.example.knockknock.domain.hashtag.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;

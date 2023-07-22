@@ -1,5 +1,5 @@
 package com.example.knockknock.domain.post.dto.response;
-import com.example.knockknock.domain.post.entity.Hashtag;
+import com.example.knockknock.domain.hashtag.entity.Hashtag;
 import com.example.knockknock.domain.post.entity.Post;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
