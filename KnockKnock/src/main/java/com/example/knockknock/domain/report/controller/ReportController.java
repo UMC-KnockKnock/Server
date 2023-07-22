@@ -37,14 +37,14 @@ public class ReportController {
         return ResponseMessage.SuccessResponse("신고가 접수되었습니다.", "");
     }
 
-    @GetMapping("/post/reports/{postId}")
+    @GetMapping("/post/{postId}/reports")
     public ResponseEntity<List<GetReportResponseDto>> getPostReports(
             @PathVariable Long postId
     ) {
         return new ResponseEntity<>(reportService.getPostReports(postId), HttpStatus.OK);
     }
 
-    @GetMapping("/comment/reports/{commentId}")
+    @GetMapping("/comment/{commentId}/reports")
     public ResponseEntity<List<GetReportResponseDto>> getCommentReports(
             @PathVariable Long commentId
     ) {
