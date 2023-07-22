@@ -37,8 +37,6 @@ public class Report extends TimeStamped {
     @JoinColumn(name = "COMMENT_ID")
     private Comment targetComment;
 
-    @Column(name = "REPORT_CONTENT")
-    private String reportContent;
 
     @Column(name = "IS_REPORTED")
     private boolean isReported;

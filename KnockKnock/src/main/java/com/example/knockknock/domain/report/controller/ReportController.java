@@ -3,6 +3,7 @@ package com.example.knockknock.domain.report.controller;
 import com.example.knockknock.domain.report.dto.response.GetReportResponseDto;
 import com.example.knockknock.domain.report.dto.request.ReportRequestDto;
 import com.example.knockknock.domain.report.service.ReportService;
+import com.example.knockknock.global.message.ResponseMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,7 +25,7 @@ public class ReportController {
             @RequestBody ReportRequestDto request
     ) {
         reportService.reportPost(postId, request);
-        return ResponseEntity.ok().build();
+        return ResponseMessage.SuccessResponse("신고가 접수되었습니다.", "");
     }
 
     @PostMapping("/comment/{commentId}")
@@ -33,7 +34,7 @@ public class ReportController {
             @RequestBody ReportRequestDto request
     ) {
         reportService.reportComment(commentId, request);
-        return ResponseEntity.ok().build();
+        return ResponseMessage.SuccessResponse("신고가 접수되었습니다.", "");
     }
 
     @GetMapping("/post/reports/{postId}")

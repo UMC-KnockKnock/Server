@@ -21,10 +21,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class ReportService {
-    private ReportRepository reportRepository;
-    private CommentRepository commentRepository;
-    private MemberRepository memberRepository;
-    private PostRepository postRepository;
+    private final ReportRepository reportRepository;
+    private final CommentRepository commentRepository;
+    private final MemberRepository memberRepository;
+    private final PostRepository postRepository;
 
     public ReportService(ReportRepository reportRepository, CommentRepository commentRepository, MemberRepository memberRepository, PostRepository postRepository) {
         this.reportRepository = reportRepository;
@@ -49,7 +49,6 @@ public class ReportService {
                 .reporter(reporter)
                 .reportType(request.getReportType())
                 .targetPost(post)
-                .reportContent(request.getReportContent())
                 .isReported(true)
                 .build());
         } else {
@@ -81,7 +80,6 @@ public class ReportService {
                     .reporter(reporter)
                     .targetComment(comment)
                     .reportType(request.getReportType())
-                    .reportContent(request.getReportContent())
                     .isReported(true)
                     .build());
         } else {

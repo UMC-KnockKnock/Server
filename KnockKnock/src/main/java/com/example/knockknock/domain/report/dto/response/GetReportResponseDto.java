@@ -17,7 +17,6 @@ public class GetReportResponseDto {
     private Long reportId;
     private Long reporterId;
     private ReportType reportType;
-    private String reportContent;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
 
@@ -26,7 +25,6 @@ public class GetReportResponseDto {
                 .reportId(report.getReportId())
                 .reporterId(report.getReporter().getMemberId())
                 .reportType(report.getReportType())
-                .reportContent(report.getReportContent())
                 .createdAt(report.getCreatedAt())
                 .build();
     }

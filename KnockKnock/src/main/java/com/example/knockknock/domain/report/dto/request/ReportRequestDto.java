@@ -16,6 +16,4 @@ public class ReportRequestDto {
     @NotBlank
     private ReportType reportType;
 
-    private String reportContent;
-
 }
