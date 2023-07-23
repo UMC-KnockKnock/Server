@@ -1,6 +1,8 @@
 package com.example.knockknock.domain.postlike.controller;
 
+import com.example.knockknock.domain.postlike.dto.LikeRequestDto;
 import com.example.knockknock.domain.postlike.service.PostLikeService;
+import com.example.knockknock.global.message.ResponseMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -12,21 +14,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class PostLikeController {
     private final PostLikeService postLikeService;
-    @PostMapping("/{userId}/like/{postId}")
+    @PostMapping("/like")
     public ResponseEntity likePost(
-            @PathVariable Long userId,
-            @PathVariable Long postId
-    ) {
-        postLikeService.likePost(userId, postId);
-        return ResponseEntity.ok().build();
+            @RequestBody LikeRequestDto request
+            ) {
+        String message = postLikeService.likePost(request);
+        return ResponseMessage.SuccessResponse(message, "");
     }
 
-    @DeleteMapping("/{userId}/dislike/{postId}")
-    public ResponseEntity deletePostLike(
-            @PathVariable Long userId,
-            @PathVariable Long postId
-    ) {
-        postLikeService.deletePostLike(userId, postId);
-        return ResponseEntity.ok().build();
-    }
 }

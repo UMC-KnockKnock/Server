@@ -4,6 +4,7 @@ import com.example.knockknock.domain.member.entity.Member;
 import com.example.knockknock.domain.member.repository.MemberRepository;
 import com.example.knockknock.domain.post.entity.Post;
 import com.example.knockknock.domain.post.repository.PostRepository;
+import com.example.knockknock.domain.postlike.dto.LikeRequestDto;
 import com.example.knockknock.domain.postlike.entity.PostLike;
 import com.example.knockknock.domain.postlike.repository.PostLikeRepository;
 import com.example.knockknock.global.exception.GlobalErrorCode;
@@ -24,47 +25,28 @@ public class PostLikeService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public void likePost(Long memberId, Long postId) {
-        Member member = memberRepository.findById(memberId)
+    public String likePost(LikeRequestDto request) {
+        Member member = memberRepository.findById(request.getMemberId())
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
 
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
-
-        Optional<PostLike> postLikeOptional = postLikeRepository.findByMemberAndPost(member, post);
-
-        if (postLikeOptional.isPresent() && postLikeOptional.get().isLiked()) {
-            throw new GlobalException(GlobalErrorCode.DUPLICATE_LIKE);
-        }
-
-        if (postLikeOptional.isEmpty()) {
-            postLikeRepository.save(PostLike.builder()
-                    .member(member)
-                    .post(post)
-                    .isLiked(true)
-                    .build());
-        } else {
-            postLikeOptional.get().likePost();
-        }
-        post.addLike();
-    }
-
-    @Transactional
-    public void deletePostLike(Long memberId, Long postId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
-
-        Post post = postRepository.findById(postId)
+        Post post = postRepository.findById(request.getPostId())
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
 
         PostLike postLike = postLikeRepository.findByMemberAndPost(member, post)
-                .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_LIKE_NOT_FOUND));
-
-        if (!postLike.isLiked()) {
-            throw new GlobalException(GlobalErrorCode.DUPLICATE_DELETE_LIKE);
+                .orElse(PostLike.builder()
+                        .member(member)
+                        .post(post)
+                        .isLiked(false)
+                        .build());
+        postLikeRepository.save(postLike);
+        if (postLike.isLiked()) {
+            postLike.deletePostLike();
+            post.removeLike();
+            return "좋아요가 취소되었습니다.";
+        } else {
+            postLike.likePost();
+            post.addLike();
+            return "좋아요를 눌렀습니다.";
         }
-
-        post.removeLike();
-        postLike.deletePostLike();
     }
 }
