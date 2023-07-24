@@ -1,6 +1,6 @@
 package com.example.knockknock.domain.postlike.controller;
 
-import com.example.knockknock.domain.postlike.dto.LikeRequestDto;
+import com.example.knockknock.domain.postlike.dto.PostLikeRequestDto;
 import com.example.knockknock.domain.postlike.service.PostLikeService;
 import com.example.knockknock.global.message.ResponseMessage;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ public class PostLikeController {
     private final PostLikeService postLikeService;
     @PostMapping("/like")
     public ResponseEntity likePost(
-            @RequestBody LikeRequestDto request
+            @RequestBody PostLikeRequestDto request
             ) {
         String message = postLikeService.likePost(request);
         return ResponseMessage.SuccessResponse(message, "");

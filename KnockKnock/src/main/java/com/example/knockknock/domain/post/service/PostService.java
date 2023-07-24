@@ -71,7 +71,6 @@ public class PostService {
         postRepository.delete(post);
     }
 
-
     @Transactional
     public String sharePost(Long postId, HttpServletRequest request){
         String domain = request.getServerName();

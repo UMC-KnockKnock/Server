@@ -4,7 +4,7 @@ import com.example.knockknock.domain.member.entity.Member;
 import com.example.knockknock.domain.member.repository.MemberRepository;
 import com.example.knockknock.domain.post.entity.Post;
 import com.example.knockknock.domain.post.repository.PostRepository;
-import com.example.knockknock.domain.postlike.dto.LikeRequestDto;
+import com.example.knockknock.domain.postlike.dto.PostLikeRequestDto;
 import com.example.knockknock.domain.postlike.entity.PostLike;
 import com.example.knockknock.domain.postlike.repository.PostLikeRepository;
 import com.example.knockknock.global.exception.GlobalErrorCode;
@@ -12,8 +12,6 @@ import com.example.knockknock.global.exception.GlobalException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +23,7 @@ public class PostLikeService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public String likePost(LikeRequestDto request) {
+    public String likePost(PostLikeRequestDto request) {
         Member member = memberRepository.findById(request.getMemberId())
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
 

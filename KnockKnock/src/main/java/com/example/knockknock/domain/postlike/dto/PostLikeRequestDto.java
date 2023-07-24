@@ -8,7 +8,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LikeRequestDto {
+public class PostLikeRequestDto {
     @NotNull
     private Long memberId;
     @NotNull
