@@ -35,10 +35,20 @@ jobs:
         java-version: '17'
         
     # .gitignore에 등록된 application.properties 파일 생성
-    - uses: actions/checkout@v3
-    - run: touch ./src/main/resources/application.properties
-    - run: echo "${{ secrets.APPLICATION_PROPERTIES }}" > ./src/main/resources/application.properties
-    - run: cat ./src/main/resources/application.properties
+#     - uses: actions/checkout@v3
+#     - run: touch ./src/main/resources/application.properties
+#     - run: echo "${{ secrets.APPLICATION_PROPERTIES }}" > ./src/main/resources/application.properties
+#     - run: cat ./src/main/resources/application.properties
+    
+    ## application.properties 파일 생성
+    - name: make application.properties
+      run: |
+        echo ">> mkdir & touch"
+        mkdir -p ./src/main/resources
+        cd ./src/main/resources
+        touch ./application.properties
+        echo ">> copy application.properties"
+        echo "${{ secrets.APPLICATION_PROPERTIES }}" >> ./application.properties
 
     # (3) Gradle build (Test 제외)
     - name: Build with Gradle
