@@ -1,32 +1,34 @@
 package com.example.knockknock.domain.postlike.controller;
 
+import com.example.knockknock.domain.postlike.dto.PostLikeRequestDto;
 import com.example.knockknock.domain.postlike.service.PostLikeService;
+import com.example.knockknock.global.message.ResponseMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
-@RequestMapping("/postLike")
+@RequestMapping("/post/like")
 @RequiredArgsConstructor
 @RestController
 public class PostLikeController {
     private final PostLikeService postLikeService;
-    @PostMapping("/{userId}/like/{postId}")
+    @PostMapping
     public ResponseEntity likePost(
-            @PathVariable Long userId,
-            @PathVariable Long postId
-    ) {
-        postLikeService.likePost(userId, postId);
-        return ResponseEntity.ok().build();
+            @RequestBody PostLikeRequestDto request
+            ) {
+        String message = postLikeService.likePost(request);
+        return ResponseMessage.SuccessResponse(message, "");
     }
 
-    @DeleteMapping("/{userId}/dislike/{postId}")
-    public ResponseEntity deletePostLike(
-            @PathVariable Long userId,
+    @GetMapping("/{postId}/likes")
+    public ResponseEntity getPostLikes(
             @PathVariable Long postId
     ) {
-        postLikeService.deletePostLike(userId, postId);
-        return ResponseEntity.ok().build();
+        return new ResponseEntity<>(postLikeService.getPostLikes(postId), HttpStatus.OK);
     }
+
 }
