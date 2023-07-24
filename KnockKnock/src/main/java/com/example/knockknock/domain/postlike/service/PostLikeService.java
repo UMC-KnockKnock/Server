@@ -4,6 +4,7 @@ import com.example.knockknock.domain.member.entity.Member;
 import com.example.knockknock.domain.member.repository.MemberRepository;
 import com.example.knockknock.domain.post.entity.Post;
 import com.example.knockknock.domain.post.repository.PostRepository;
+import com.example.knockknock.domain.postlike.dto.PostLikeDetailResponseDto;
 import com.example.knockknock.domain.postlike.dto.PostLikeRequestDto;
 import com.example.knockknock.domain.postlike.entity.PostLike;
 import com.example.knockknock.domain.postlike.repository.PostLikeRepository;
@@ -12,6 +13,10 @@ import com.example.knockknock.global.exception.GlobalException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -46,5 +51,17 @@ public class PostLikeService {
             post.addLike();
             return "좋아요를 눌렀습니다.";
         }
+    }
+
+    @Transactional
+    public List<PostLikeDetailResponseDto> getPostLikes(Long postId){
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
+
+        List<PostLike> postLikes = postLikeRepository.findByPost(post);
+        return postLikes.stream()
+                .map(PostLikeDetailResponseDto::from)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 }
