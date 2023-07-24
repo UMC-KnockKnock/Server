@@ -2,8 +2,6 @@ package com.example.knockknock.domain.notification.entity;
 
 import com.example.knockknock.domain.friend.entity.Friend;
 import com.example.knockknock.domain.notification.dto.requestDto.NotificationRequestDto;
-import com.example.knockknock.domain.notification.dto.responseDto.NotificationResponseDto;
-import com.example.knockknock.global.timestamp.TimeStamped;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
