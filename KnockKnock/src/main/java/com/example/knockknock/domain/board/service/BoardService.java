@@ -8,7 +8,8 @@ import com.example.knockknock.domain.member.repository.MemberRepository;
 import com.example.knockknock.domain.post.dto.response.PostDetailResponseDto;
 import com.example.knockknock.domain.post.entity.Post;
 import com.example.knockknock.domain.post.repository.PostRepository;
-import com.example.knockknock.global.exception.NotFoundMemberException;
+import com.example.knockknock.global.exception.GlobalErrorCode;
+import com.example.knockknock.global.exception.GlobalException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -45,7 +46,7 @@ public class BoardService {
     @Transactional
     public List<PostDetailResponseDto> getPostsByMember(Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NotFoundMemberException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
         List<Post> posts = postRepository.findByMember(member);
         return posts.stream()
                 .map(PostDetailResponseDto::of)
@@ -62,13 +63,11 @@ public class BoardService {
 
     @Transactional
     public List<PostSearchResponseDto> searchPost(BoardType boardType, SearchType searchType, String keyword) {
-
         List<Post> posts = switch (searchType) {
             case TITLE -> postRepository.findByBoardTypeAndTitleContainingIgnoreCase(boardType, keyword);
             case CONTENT -> postRepository.findByBoardTypeAndContentContainingIgnoreCase(boardType, keyword);
             case TITLE_AND_CONTENT -> postRepository.findByBoardTypeAndTitleContainingIgnoreCaseOrContentContainingIgnoreCase(boardType, keyword, keyword);
         };
-
         return posts.stream()
                 .map(PostSearchResponseDto::from)
                 .collect(Collectors.toList());

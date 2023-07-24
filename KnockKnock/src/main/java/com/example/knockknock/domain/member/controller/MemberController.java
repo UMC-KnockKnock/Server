@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Slf4j
-@RequestMapping("/user")
+@RequestMapping("/member")
 @RequiredArgsConstructor
 @RestController
 public class MemberController {

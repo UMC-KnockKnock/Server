@@ -1,5 +1,5 @@
 package com.example.knockknock.domain.post.dto.response;
-import com.example.knockknock.domain.post.entity.Hashtag;
+import com.example.knockknock.domain.hashtag.entity.Hashtag;
 import com.example.knockknock.domain.post.entity.Post;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
@@ -27,6 +27,7 @@ public class PostDetailResponseDto {
     private int likeCount;
 
     private int commentCount;
+    private int reportCount;
 
     private List<String> hashtags;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -54,6 +55,7 @@ public class PostDetailResponseDto {
                 .content(post.getContent())
                 .likeCount(post.getLikeCount())
                 .commentCount(post.getComments().size())
+                .reportCount(post.getReports().size())
                 .hashtags(hashtagNames)
                 .createdAt(post.getCreatedAt())
                 .modifiedAt(post.getModifiedAt())

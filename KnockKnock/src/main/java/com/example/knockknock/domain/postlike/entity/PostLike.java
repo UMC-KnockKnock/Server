@@ -1,4 +1,4 @@
-package com.example.knockknock.domain.post.entity;
+package com.example.knockknock.domain.postlike.entity;
 
 import com.example.knockknock.domain.member.entity.Member;
 import com.example.knockknock.domain.post.entity.Post;

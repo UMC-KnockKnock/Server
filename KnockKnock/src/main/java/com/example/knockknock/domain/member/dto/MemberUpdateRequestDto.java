@@ -14,7 +14,7 @@ public class MemberUpdateRequestDto {
     @Pattern(regexp = "^\\d{3}-\\d{3,4}-\\d{4}$", message = "010-xxxx-xxxx 형식으로 입력해주세요.")
     private String phoneNumber;
     private String email;
-    private String birthDay;
+    private String birthday;
 
 
 }

@@ -2,8 +2,11 @@ package com.example.knockknock.domain.post.entity;
 
 import com.example.knockknock.domain.comment.entity.Comment;
 import com.example.knockknock.domain.board.entity.BoardType;
+import com.example.knockknock.domain.hashtag.entity.Hashtag;
 import com.example.knockknock.domain.member.entity.Member;
 import com.example.knockknock.domain.post.dto.request.PostUpdateRequestDto;
+import com.example.knockknock.domain.postlike.entity.PostLike;
+import com.example.knockknock.domain.report.entity.Report;
 import com.example.knockknock.global.timestamp.TimeStamped;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -37,8 +40,14 @@ public class Post extends TimeStamped {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "post")
     private List<Comment> comments = new ArrayList<>();
     @Builder.Default
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostLike> postLikes = new ArrayList<>();
+    @Builder.Default
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "post")
     private List<Hashtag> hashtags = new ArrayList<>();
+    @Builder.Default
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "targetPost")
+    private List<Report> reports = new ArrayList<>();
 
     @Column(name = "TITLE")
     private String title;
