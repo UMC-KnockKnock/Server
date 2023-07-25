@@ -1,10 +1,10 @@
 package com.example.knockknock.domain.member.controller;
 
-import com.example.knockknock.domain.member.dto.GetMembersResponseDto;
-import com.example.knockknock.domain.member.dto.MemberDetailResponseDto;
+import com.example.knockknock.domain.member.dto.*;
 import com.example.knockknock.domain.member.service.MemberService;
-import com.example.knockknock.domain.member.dto.MemberSignUpRequestDto;
-import com.example.knockknock.domain.member.dto.MemberUpdateRequestDto;
+import com.example.knockknock.global.message.ResponseMessage;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -14,18 +14,28 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Slf4j
-@RequestMapping("/member")
+//@RequestMapping("/member")
 @RequiredArgsConstructor
 @RestController
 public class MemberController {
     private final MemberService memberService;
 
-    @PostMapping("/register")
-    public ResponseEntity<Void> createUser(
-            @RequestBody MemberSignUpRequestDto request
-    ) {
-        memberService.createMember(request);
-        return ResponseEntity.created(null).build();
+    @GetMapping("/")
+    public ResponseEntity test(){
+        memberService.test();
+        return ResponseMessage.SuccessResponse("성공", "");
+    }
+
+    @PostMapping("/signup")
+    public ResponseEntity<Void> signup(@RequestBody MemberSignUpRequestDto request){
+        memberService.signup(request);
+        return ResponseMessage.SuccessResponse("회원가입 성공", "");
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
+        memberService.login(loginRequestDto, response);
+        return ResponseMessage.SuccessResponse("로그인 성공", "");
     }
 
     @GetMapping("/get/{memberId}")

@@ -48,6 +48,9 @@ public class Member extends TimeStamped {
     @Column(name = "AGE")
     private Integer age;
 
+    @Column(nullable = true)
+    private String password;
+
     public void updateMember(MemberUpdateRequestDto request) {
         if (request.getMemberName() != null) {
             this.memberName = request.getMemberName();
