@@ -12,31 +12,28 @@ import com.example.knockknock.domain.post.repository.PostRepository;
 import com.example.knockknock.domain.post.entity.Post;
 import com.example.knockknock.domain.postlike.entity.PostLike;
 import com.example.knockknock.global.exception.*;
+import com.example.knockknock.global.image.service.S3Service;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class PostService {
-    private PostRepository postRepository;
-    private PostLikeRepository postLikeRepository;
-    private HashtagRepository hashtagRepository;
-    private MemberRepository memberRepository;
+    private final PostRepository postRepository;
+    private final MemberRepository memberRepository;
 
-    public PostService(PostRepository postRepository, PostLikeRepository postLikeRepository, HashtagRepository hashtagRepository, MemberRepository memberRepository) {
-        this.postRepository = postRepository;
-        this.postLikeRepository = postLikeRepository;
-        this.hashtagRepository = hashtagRepository;
-        this.memberRepository = memberRepository;
-    }
+    private final S3Service s3Service;
 
     @Transactional
-    public void createPost(PostCreateRequestDto request) {
+    public void createPost(PostCreateRequestDto request, MultipartFile image) {
         Member member =  memberRepository.findById(request.getMemberId())
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
-
         Post post = Post.builder()
                 .member(member)
                 .boardType(request.getBoardType())
@@ -46,8 +43,17 @@ public class PostService {
                 .isAnonymous(request.getIsAnonymous())
                 .build();
 
-        postRepository.save(post);
+        if (image != null && !image.isEmpty()) {
+            String imageUrl = null;
+            try {
+                imageUrl = s3Service.uploadImage(image);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            post.setPostImageUrl(imageUrl);
+        }
 
+        postRepository.save(post);
     }
 
     @Transactional

@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RequestMapping("/post")
@@ -21,10 +22,12 @@ public class PostController {
 
     @PostMapping("/create")
     public ResponseEntity createPost(
-            @RequestBody
+            @RequestPart("data")
             @Valid
-            PostCreateRequestDto request) {
-        postService.createPost(request);
+            PostCreateRequestDto request,
+            @RequestPart(required = false) MultipartFile image)
+    {
+        postService.createPost(request, image);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

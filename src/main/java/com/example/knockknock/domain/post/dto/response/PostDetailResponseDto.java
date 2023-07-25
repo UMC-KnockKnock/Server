@@ -24,6 +24,8 @@ public class PostDetailResponseDto {
 
     private String content;
 
+    private String imageUrl;
+
     private int likeCount;
 
     private int commentCount;
@@ -53,6 +55,7 @@ public class PostDetailResponseDto {
                 .nickName(nickName)
                 .title(post.getTitle())
                 .content(post.getContent())
+                .imageUrl(post.getPostImageUrl())
                 .likeCount(post.getLikeCount())
                 .commentCount(post.getComments().size())
                 .reportCount(post.getReports().size())

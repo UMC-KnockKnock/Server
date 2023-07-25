@@ -55,6 +55,9 @@ public class Post extends TimeStamped {
     @Column(name = "CONTENT")
     private String content;
 
+    @Column
+    private String postImageUrl;
+
     @Column(name = "LIKE_COUNT")
     private int likeCount;
 
@@ -73,5 +76,9 @@ public class Post extends TimeStamped {
     public void updatePost(PostUpdateRequestDto request) {
         this.title = request.getTitle();
         this.content = request.getContent();
+    }
+
+    public void setPostImageUrl(String postImageUrl) {
+        this.postImageUrl = postImageUrl;
     }
 }
