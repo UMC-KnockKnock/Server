@@ -1,14 +1,15 @@
 package com.example.knockknock.domain.friend.entity;
 
 import com.example.knockknock.domain.friend.dto.requestDto.FriendRequestDto;
+import com.example.knockknock.domain.member.entity.Member;
 import com.example.knockknock.global.timestamp.TimeStamped;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.Objects;
 
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -18,30 +19,41 @@ public class Friend extends TimeStamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long friendId;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String friendName;
+
+    @Column(nullable = true)
+    private String nickname;
 
     @Column(nullable = false)
     private String profileImageURL;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String phoneNumber;
 
     @Column(nullable = false)
-    private boolean isBestFriend;
+    private boolean bestFriend;
 
 //    @ManyToOne
 //    @JoinColumn(name="MEMBER_ID", nullable = false)
 //    private Member member;
 
-    public boolean setBestFriend(){
-        this.isBestFriend = !this.isBestFriend;
-        return isBestFriend;
+    public void setBestFriend(){
+        this.bestFriend = !this.bestFriend;
+    }
+
+    public Friend(FriendRequestDto friendRequestDto, String profileImageURL){
+        this.profileImageURL = Objects.requireNonNullElse(profileImageURL, "https://e7.pngegg.com/pngimages/195/830/png-clipart-emoji-silhouette-service-company-person-emoji-cdr-head.png");
+        this.friendName = friendRequestDto.getFriendName();
+        this.nickname = friendRequestDto.getFriendName();
+        this.phoneNumber = friendRequestDto.getPhoneNumber();
+        this.bestFriend = false;
     }
 
     public void update(FriendRequestDto friendRequestDto, String profileImageURL){
         if (profileImageURL != null) this.profileImageURL = profileImageURL;
         this.friendName = friendRequestDto.getFriendName();
+        this.nickname = friendRequestDto.getNickName();
         this.phoneNumber = friendRequestDto.getPhoneNumber();
     }
 }

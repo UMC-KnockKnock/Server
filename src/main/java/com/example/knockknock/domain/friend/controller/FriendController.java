@@ -2,12 +2,14 @@ package com.example.knockknock.domain.friend.controller;
 
 import com.example.knockknock.domain.friend.dto.requestDto.FriendRequestDto;
 import com.example.knockknock.domain.friend.service.FriendService;
+import com.example.knockknock.domain.member.security.UserDetailsImpl;
 import com.example.knockknock.global.message.ResponseMessage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -17,6 +19,16 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/friends")
 public class FriendController {
     private final FriendService friendService;
+
+    // 친구 연락처 추가
+    @Operation(summary = "친구 연락처 추가", description = "친구 연락처 추가")
+    @PostMapping()
+    public ResponseEntity addFriends(@RequestBody FriendRequestDto friendRequestDto){
+        log.info("FriendName@ @ ", friendRequestDto.getFriendName());
+        friendService.addFriends(friendRequestDto);
+        return ResponseMessage.SuccessResponse("친구 추가 성공", "");
+    }
+
 
     // 유저의 전체 친구 조회 /friends
     @Operation(summary = "친구 전체 조회", description = "친구 전체 조회")
@@ -34,21 +46,21 @@ public class FriendController {
         return ResponseMessage.SuccessResponse("조회 성공", friendService.getDetailFriend(friendId));
     }
 
-    //- [ ]  친구 번호, 사진 편집 /friends/{friendId}/edit
+    // 친구 번호, 사진 편집 /friends/{friendId}/edit
     @Operation(summary = "친구 정보 편집", description = "친구 정보 편집")
     @PatchMapping("/{friendId}/edit")
     public ResponseEntity updateFriendInfo(@PathVariable Long friendId, FriendRequestDto friendRequestDto/*, @AuthenticationPrincipal MemberDetailsImpl memberDetails*/){
         friendService.updateFriendInfo(friendId, friendRequestDto/*, memberDetails*/);
-        return ResponseMessage.SuccessResponse("수정 성공", "");
+        return ResponseMessage.SuccessResponse("친구 정보 수정 성공", "");
     }
 
-    //- [ ]  문자하기 /friends/{friendId}/send-message
+    // 문자하기 /friends/{friendId}/send-message
 
-    //- [ ]  찐친 등록하기 /friends/{friendId}/bestfriend
+    // 찐친 등록하기 /friends/{friendId}/bestfriend
     @Operation(summary = "찐친 등록하기", description = "찐친 등록하기")
-    @PostMapping("/{friendId}/bestfriend")
-    public ResponseEntity updateBestfriendStatus(@PathVariable Long friendId){
-        friendService.updateBestfriendStatus(friendId);
+    @PostMapping("/{friendId}/bestFriend")
+    public ResponseEntity updateBestFriendStatus(@PathVariable Long friendId){
+        friendService.updateBestFriendStatus(friendId);
         return ResponseMessage.SuccessResponse("수정 성공", "");
     }
 }
