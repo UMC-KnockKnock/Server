@@ -26,11 +26,11 @@ public class FriendDetailResponseDto {
     // 반복주기
     private NotificationRepeatEnum notificationRepeat;
 
-    public FriendDetailResponseDto(Friend friend, boolean isBestFriend, Notification notification) {
+    public FriendDetailResponseDto(Friend friend, Notification notification) {
         this.friendName = friend.getFriendName();
         this.profileImageURL = friend.getProfileImageURL();
         this.phoneNumber = friend.getPhoneNumber();
-        this.isBestFriend = isBestFriend;
+        this.isBestFriend = friend.isBestFriend();
         this.notificationDate = notification.getNotificationDate();
         this.notificationRepeat = notification.getNotificationRepeat();
     }

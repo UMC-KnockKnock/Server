@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class NotificationController {
     private final NotificationService notificationService;
     //- [ ]  연락주기 및 예정 알림 불러오기 GET : /friends/{friendId}/schedule
-    @Operation(summary = "연락주기 및 예정알림", description = "연락주기 및 예정 알림 저장")
+    @Operation(summary = "연락주기 및 예정알림", description = "연락주기 및 예정 알림 보기")
     @GetMapping("/friends/{friendId}/schedules")
     public ResponseEntity getSchedule(@PathVariable Long friendId/*, @AuthenticationPrincipal MemberDetailsImpl memberDetails*/){
         return ResponseMessage.SuccessResponse("조회 성공", notificationService.getSchedule(friendId));
@@ -41,7 +41,7 @@ public class NotificationController {
 
     //- [ ]  연락주기 및 예정 알림 삭제하기 DELETE : /friends/{friendId}/schedule
     // xxx : softdelete로 구현 할 것
-    @Operation(summary = "연락주기 및 예정알림", description = "연락주기 및 예정 알림 수정")
+    @Operation(summary = "연락주기 및 예정알림", description = "연락주기 및 예정 알림 삭제")
     @DeleteMapping("schedules/{notificationId}")
     public ResponseEntity deleteSchedule(@PathVariable Long notificationId/*, @AuthenticationPrincipal MemberDetailsImpl memberDetails*/){
         notificationService.deleteSchedule(notificationId);
