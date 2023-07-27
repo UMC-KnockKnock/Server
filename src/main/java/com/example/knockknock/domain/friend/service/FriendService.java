@@ -30,7 +30,7 @@ public class FriendService {
 
     public List<FriendResponseDto> getFriends() {
         List<FriendResponseDto> friendResponseDtos = new ArrayList<>();
-        // memberId로 friend 찾아오기
+        // todo : memberId로 friend 찾아오기
         return friendResponseDtos;
     }
 
@@ -62,6 +62,13 @@ public class FriendService {
 
     }
 
+    @Transactional
+    public void deleteFriend(Long friendId) {
+        // isLogin
+        // 연관관계 정리
+        friendRepository.deleteById(friendId);
+    }
+
     // 찐친 등록
     public void updateBestFriendStatus(Long friendId) {
         Friend friend = getFriendService.getFriend(friendId);
@@ -73,9 +80,7 @@ public class FriendService {
         // isLogin
         // 이름(필수), 별명(선택), 전화번호(선택)
         String profileImageURL = null;
-        log.info("FriendName22222", friendRequestDto.getFriendName());
         Friend friend = new Friend(friendRequestDto, profileImageURL);
-        log.info("friend의 name", friend.getFriendName());
         friendRepository.save(friend);
     }
 }

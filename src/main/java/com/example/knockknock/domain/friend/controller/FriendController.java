@@ -24,11 +24,9 @@ public class FriendController {
     @Operation(summary = "친구 연락처 추가", description = "친구 연락처 추가")
     @PostMapping()
     public ResponseEntity addFriends(@RequestBody FriendRequestDto friendRequestDto){
-        log.info("FriendName@ @ ", friendRequestDto.getFriendName());
         friendService.addFriends(friendRequestDto);
         return ResponseMessage.SuccessResponse("친구 추가 성공", "");
     }
-
 
     // 유저의 전체 친구 조회 /friends
     @Operation(summary = "친구 전체 조회", description = "친구 전체 조회")
@@ -37,26 +35,32 @@ public class FriendController {
         return ResponseMessage.SuccessResponse("조회 성공", friendService.getFriends());
     }
 
-    //- [ ]  친구 검색 /friends/search
+    // 친구 검색 /friends/search
 
-    //- [ ]  친구 페이지 내용 불러오기 (첫 화면) GET: /friends/{friendId}
+    // 친구 페이지 내용 불러오기 (첫 화면) GET: /friends/{friendId}
     @Operation(summary = "친구 상세 조회", description = "친구 상세 조회")
     @GetMapping("/{friendId}")
     public ResponseEntity getDetailFriend(@PathVariable Long friendId/*, @AuthenticationPrincipal MemberDetailsImpl memberDetails*/){
         return ResponseMessage.SuccessResponse("조회 성공", friendService.getDetailFriend(friendId));
     }
 
-    // 친구 번호, 사진 편집 /friends/{friendId}/edit
+    // 친구 번호, 사진 편집
     @Operation(summary = "친구 정보 편집", description = "친구 정보 편집")
     @PatchMapping("/{friendId}/edit")
-    public ResponseEntity updateFriendInfo(@PathVariable Long friendId, FriendRequestDto friendRequestDto/*, @AuthenticationPrincipal MemberDetailsImpl memberDetails*/){
+    public ResponseEntity updateFriendInfo(@PathVariable Long friendId, @RequestBody FriendRequestDto friendRequestDto/*, @AuthenticationPrincipal MemberDetailsImpl memberDetails*/){
         friendService.updateFriendInfo(friendId, friendRequestDto/*, memberDetails*/);
         return ResponseMessage.SuccessResponse("친구 정보 수정 성공", "");
     }
 
-    // 문자하기 /friends/{friendId}/send-message
+    // 친구 삭제
+    @Operation(summary = "친구 삭제", description = "친구 삭제")
+    @PatchMapping("/{friendId}/edit")
+    public ResponseEntity deleteFriend(@PathVariable Long friendId/*, @AuthenticationPrincipal MemberDetailsImpl memberDetails*/){
+        friendService.deleteFriend(friendId/*, memberDetails*/);
+        return ResponseMessage.SuccessResponse("친구 삭제 성공", "");
+    }
 
-    // 찐친 등록하기 /friends/{friendId}/bestfriend
+    // 찐친 등록하기
     @Operation(summary = "찐친 등록하기", description = "찐친 등록하기")
     @PostMapping("/{friendId}/bestFriend")
     public ResponseEntity updateBestFriendStatus(@PathVariable Long friendId){
