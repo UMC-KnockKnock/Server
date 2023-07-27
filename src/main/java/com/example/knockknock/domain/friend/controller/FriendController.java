@@ -2,14 +2,12 @@ package com.example.knockknock.domain.friend.controller;
 
 import com.example.knockknock.domain.friend.dto.requestDto.FriendRequestDto;
 import com.example.knockknock.domain.friend.service.FriendService;
-import com.example.knockknock.domain.member.security.UserDetailsImpl;
 import com.example.knockknock.global.message.ResponseMessage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -54,7 +52,7 @@ public class FriendController {
 
     // 친구 삭제
     @Operation(summary = "친구 삭제", description = "친구 삭제")
-    @PatchMapping("/{friendId}/edit")
+    @DeleteMapping("/{friendId}")
     public ResponseEntity deleteFriend(@PathVariable Long friendId/*, @AuthenticationPrincipal MemberDetailsImpl memberDetails*/){
         friendService.deleteFriend(friendId/*, memberDetails*/);
         return ResponseMessage.SuccessResponse("친구 삭제 성공", "");
