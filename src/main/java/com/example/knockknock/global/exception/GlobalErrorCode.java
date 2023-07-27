@@ -21,6 +21,7 @@ public enum GlobalErrorCode {
     NOT_VALID_PHONENUMBER(BAD_REQUEST, "11자리 이내의 번호를 '-'를 제외한 숫자만 입력해 주세요."),
     // 401 Unauthorized - 권한 없음
     INVALID_TOKEN(UNAUTHORIZED, "토큰이 유효하지 않습니다"),
+    LOGIN_REQUIRED(UNAUTHORIZED, "로그인이 필요한 서비스입니다."),
     // 404 Not Found - 찾을 수 없음
     EMAIL_NOT_FOUND(NOT_FOUND, "존재하지 않는 이메일 입니다."),
     NEED_AGREE_REQUIRE_TERMS(NOT_FOUND, "필수 약관에 동의해 주세요"),

@@ -2,13 +2,17 @@ package com.example.knockknock.domain.friend.controller;
 
 import com.example.knockknock.domain.friend.dto.requestDto.FriendRequestDto;
 import com.example.knockknock.domain.friend.service.FriendService;
+import com.example.knockknock.domain.member.security.UserDetailsImpl;
 import com.example.knockknock.global.message.ResponseMessage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @Tag(name = "friend", description = "friend API")
@@ -18,12 +22,20 @@ import org.springframework.web.bind.annotation.*;
 public class FriendController {
     private final FriendService friendService;
 
-    // 친구 연락처 추가
+    // 친구 연락처 추가 (수기로)
     @Operation(summary = "친구 연락처 추가", description = "친구 연락처 추가")
-    @PostMapping()
-    public ResponseEntity addFriends(@RequestBody FriendRequestDto friendRequestDto){
-        friendService.addFriends(friendRequestDto);
+    @PostMapping("/create")
+    public ResponseEntity createFriends(@RequestBody FriendRequestDto friendRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        friendService.createFriends(friendRequestDto, userDetails);
         return ResponseMessage.SuccessResponse("친구 추가 성공", "");
+    }
+
+    // 주소록 연동 친구 추가 및 삭제
+    @Operation(summary = "연락처 연동", description = "연락처 연동 - 친구 연락처 추가 및 삭제")
+    @PostMapping()
+    public ResponseEntity contactFriend(@RequestBody List<FriendRequestDto> friendRequestDtos, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        friendService.contactFriend(friendRequestDtos, userDetails);
+        return ResponseMessage.SuccessResponse("주소록 친구 추가 성공", "");
     }
 
     // 유저의 전체 친구 조회 /friends

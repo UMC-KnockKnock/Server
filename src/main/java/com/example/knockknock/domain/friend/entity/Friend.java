@@ -34,20 +34,21 @@ public class Friend extends TimeStamped {
     @Column(nullable = false)
     private boolean bestFriend;
 
-//    @ManyToOne
-//    @JoinColumn(name="MEMBER_ID", nullable = false)
-//    private Member member;
+    @ManyToOne
+    @JoinColumn(name="MEMBER_ID", nullable = false)
+    private Member member;
 
     public void setBestFriend(){
         this.bestFriend = !this.bestFriend;
     }
 
-    public Friend(FriendRequestDto friendRequestDto, String profileImageURL){
+    public Friend(FriendRequestDto friendRequestDto, String profileImageURL, Member member){
         this.profileImageURL = Objects.requireNonNullElse(profileImageURL, "https://e7.pngegg.com/pngimages/195/830/png-clipart-emoji-silhouette-service-company-person-emoji-cdr-head.png");
         this.friendName = friendRequestDto.getFriendName();
         this.nickname = friendRequestDto.getFriendName();
         this.phoneNumber = friendRequestDto.getPhoneNumber();
         this.bestFriend = false;
+        this.member = member;
     }
 
     public void update(FriendRequestDto friendRequestDto, String profileImageURL){
