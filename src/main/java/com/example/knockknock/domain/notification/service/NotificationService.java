@@ -24,18 +24,20 @@ public class NotificationService {
 
     // 연락 일정 불러오기
     @Transactional(readOnly = true)
-    public List<NotificationResponseDto> getSchedule(Long friendId) {
+    public NotificationResponseDto getSchedule(Long friendId) {
         // isLogin
-        List<Notification> notifications = null;
-        List<NotificationResponseDto> notificationResponseDtos = new ArrayList<>();
         // convert 함수 만들어서 간편하게 변경할 수 있도록 코드 수정
         Friend friend = getFriendService.getFriend(friendId);
-        notifications = notificationRepository.findAllByFriend(friend);
-        for (Notification notification : notifications) {
-            notificationResponseDtos.add(new NotificationResponseDto(notification));
-        }
+        Notification notification = notificationRepository.findAllByFriend(friend);
+        return new NotificationResponseDto(notification);
+    }
 
-        return notificationResponseDtos;
+    // 연락 일정 불러오기
+    @Transactional(readOnly = true)
+    public Notification getNotificationSchedule(Long friendId) {
+        // isLogin
+        Friend friend = getFriendService.getFriend(friendId);
+        return notificationRepository.findAllByFriend(friend);
     }
 
     // 연락 일정 생성
@@ -63,4 +65,6 @@ public class NotificationService {
         // isLogin
         notificationRepository.deleteById(notificationId);
     }
+
+    // todo: 알림 보내기 스케쥴링
 }
