@@ -35,39 +35,6 @@ public class WebSecurityConfig {
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        // csrf 공격 방지
-//        http.csrf().disable();
-//
-//        // 기본 설정인 Session 방식은 사용하지 않고 JWT 방식을 사용하기 위한 설정
-//        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-//
-//        http.authorizeRequests().antMatchers("**").permitAll();
-//                .anyRequest().authenticated()
-//                // JWT 인증/인가를 사용하기 위한 설정
-//                .and().addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
-//
-//        http.exceptionHandling().accessDeniedPage("/api/user/forbidden");
-//
-//        return http.build();
-//    }
-
-//    @Bean
-//    protected SecurityFilterChain webSecurityFilterChain(HttpSecurity http) throws Exception {
-//        //CSRF 토큰
-//        http.csrf().disable();
-//
-//        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-//
-//        http.authorizeRequests()
-//                .requestMatchers("**").permitAll()
-//                .anyRequest().authenticated()
-//                .and().addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
-//
-//        return http.build();
-//    }
-
     @Bean
     protected SecurityFilterChain config(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable());
@@ -79,10 +46,9 @@ public class WebSecurityConfig {
 
         return http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("**")
-                        .permitAll()
-                        .anyRequest()
-                        .authenticated())
+                        .requestMatchers("**").permitAll()
+                        .anyRequest().authenticated()
+                ).addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 }
