@@ -5,6 +5,7 @@ import com.example.knockknock.domain.member.entity.Member;
 import com.example.knockknock.global.timestamp.TimeStamped;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Objects;
 
@@ -14,6 +15,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Builder
 @Entity
+@Slf4j
 public class Friend extends TimeStamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,7 +41,7 @@ public class Friend extends TimeStamped {
     private Member member;
 
     public void setBestFriend(){
-        this.bestFriend = !this.bestFriend;
+        this.bestFriend = !bestFriend;
     }
 
     public Friend(FriendRequestDto friendRequestDto, String profileImageURL, Member member){

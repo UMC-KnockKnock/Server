@@ -31,7 +31,12 @@ public class FriendDetailResponseDto {
         this.profileImageURL = friend.getProfileImageURL();
         this.phoneNumber = friend.getPhoneNumber();
         this.isBestFriend = friend.isBestFriend();
-        this.notificationDate = notification.getNotificationDate();
-        this.notificationRepeat = notification.getNotificationRepeat();
+        if (notification != null) {
+            this.notificationDate = notification.getNotificationDate();
+            this.notificationRepeat = notification.getNotificationRepeat();
+        } else {
+            this.notificationDate = null;
+            this.notificationRepeat = null;
+        }
     }
 }

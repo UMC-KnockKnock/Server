@@ -7,11 +7,9 @@ import com.example.knockknock.domain.friend.entity.Friend;
 import com.example.knockknock.domain.friend.repository.FriendRepository;
 import com.example.knockknock.domain.member.entity.Member;
 import com.example.knockknock.domain.member.security.UserDetailsImpl;
-import com.example.knockknock.domain.notification.dto.responseDto.NotificationResponseDto;
+import com.example.knockknock.domain.member.service.MemberIsLoginService;
 import com.example.knockknock.domain.notification.entity.Notification;
 import com.example.knockknock.domain.notification.service.NotificationService;
-import com.example.knockknock.global.exception.GlobalErrorCode;
-import com.example.knockknock.global.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,11 +28,12 @@ public class FriendService {
     private final FriendRepository friendRepository;
     private final GetFriendService getFriendService;
     private final NotificationService notificationService;
+    private final MemberIsLoginService memberIsLoginService;
 
     @Transactional
     public void createFriends(FriendRequestDto friendRequestDto, UserDetailsImpl userDetails) {
         // isLogin
-        Member member = isLogin(userDetails);
+        Member member = memberIsLoginService.isLogin(userDetails);
         // 해당 member 정보도 friend에 저장
         String profileImageURL = null;
         Friend friend = new Friend(friendRequestDto, profileImageURL, member);
@@ -43,7 +42,7 @@ public class FriendService {
 
     public void contactFriend(List<FriendRequestDto> friendRequestDtos, UserDetailsImpl userDetails) {
         // isLogin
-        Member member = isLogin(userDetails);
+        Member member = memberIsLoginService.isLogin(userDetails);
 
         // 해당 member 친구 목록 가져오기 (Map 형태로 변경)
         Map<String, Friend> friendsMap = friendRepository.findAllByMember(member)
@@ -70,27 +69,35 @@ public class FriendService {
         }
     }
 
-    public List<FriendResponseDto> getFriends() {
+    public List<FriendResponseDto> getFriends(UserDetailsImpl userDetails) {
+        Member member = memberIsLoginService.isLogin(userDetails);
         List<FriendResponseDto> friendResponseDtos = new ArrayList<>();
         // todo : memberId로 friend 찾아오기
+        List<Friend> friends = friendRepository.findAllByMember(member);
+        for (Friend friend : friends) {
+            FriendResponseDto friendResponseDto = new FriendResponseDto(friend);
+            friendResponseDtos.add(friendResponseDto);
+        }
         return friendResponseDtos;
     }
 
     @Transactional(readOnly = true)
-    public FriendDetailResponseDto getDetailFriend(Long friendId/*, MemberDetailsImpl memberDetails*/) {
+    public FriendDetailResponseDto getDetailFriend(Long friendId, UserDetailsImpl userDetails) {
         // islogin
-        Friend friend = getFriendService.getFriend(friendId);
+        Member member = memberIsLoginService.isLogin(userDetails);
+        // Friend friend = getFriendService.getFriend(friendId);
+        Friend friend = getFriendService.checkRole(friendId, member);
         // 연락 일정 정보
-        Notification notification = notificationService.getNotificationSchedule(friendId);
+        Notification notification = notificationService.getNotificationSchedule(friendId, member);
         return new FriendDetailResponseDto(friend, notification);
     }
 
-    public void updateFriendInfo(Long friendId, FriendRequestDto friendRequestDto/*, MemberDetailsImpl memberDetails*/) {
+    @Transactional
+    public void updateFriendInfo(Long friendId, FriendRequestDto friendRequestDto, UserDetailsImpl userDetails) {
         // isLogin
-
-        Friend friend = getFriendService.getFriend(friendId);
+        Member member = memberIsLoginService.isLogin(userDetails);
         // checkRole
-
+        Friend friend = getFriendService.checkRole(friendId, member);
         // setter 안쓰는 방법 생각해보기
         if (friendRequestDto.getFriendName() != null) friend.setFriendName(friendRequestDto.getFriendName());
         if (friendRequestDto.getNickName() != null) friend.setNickname(friendRequestDto.getNickName());
@@ -104,31 +111,22 @@ public class FriendService {
     }
 
     @Transactional
-    public void deleteFriend(Long friendId) {
+    public void deleteFriend(Long friendId, UserDetailsImpl userDetails) {
         // isLogin
+        Member member = memberIsLoginService.isLogin(userDetails);
+        // checkRole
+        getFriendService.checkRole(friendId, member);
         // 연관관계 정리
         friendRepository.deleteById(friendId);
     }
 
     // 찐친 등록
-    public void updateBestFriendStatus(Long friendId) {
-        Friend friend = getFriendService.getFriend(friendId);
+    @Transactional
+    public void updateBestFriendStatus(Long friendId, UserDetailsImpl userDetails) {
+        // isLogin
+        Member member = memberIsLoginService.isLogin(userDetails);
+        // checkRole
+        Friend friend = getFriendService.checkRole(friendId, member);
         friend.setBestFriend();
-    }
-
-    @Transactional
-    public Member isLogin(UserDetailsImpl userDetails){
-        if(userDetails != null){
-            return userDetails.getUser();
-        } else{
-            throw new GlobalException(GlobalErrorCode.LOGIN_REQUIRED);
-        }
-    }
-
-    @Transactional
-    public void checkRole(Long friendId, Member member){
-        friendRepository.findByFriendIdAndMember(friendId, member).orElseThrow(
-                () -> new GlobalException(GlobalErrorCode.FRIEND_NOT_FOUND)
-        );
     }
 }
