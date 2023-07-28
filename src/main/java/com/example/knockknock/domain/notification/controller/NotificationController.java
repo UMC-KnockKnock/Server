@@ -28,7 +28,7 @@ public class NotificationController {
     //  연락주기 및 예정 알림 저장하기 POST : /friends/{friendId}/schedule
     @Operation(summary = "연락주기 및 예정알림", description = "연락주기 및 예정 알림 저장")
     @PostMapping("/friends/{friendId}/schedules")
-    public ResponseEntity createSchedule(@PathVariable Long friendId, NotificationRequestDto notificationRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseEntity createSchedule(@PathVariable Long friendId, @RequestBody NotificationRequestDto notificationRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
         notificationService.createSchedule(friendId, notificationRequestDto, userDetails);
         return ResponseMessage.SuccessResponse("게시 성공", "");
     }
@@ -36,9 +36,9 @@ public class NotificationController {
     // 연락주기 및 예정 알림 수정하기 PATCH : /friends/{friendId}/schedule
     @Operation(summary = "연락주기 및 예정알림", description = "연락주기 및 예정 알림 수정")
     @PatchMapping("/schedules/{notificationId}")
-    public ResponseEntity updateSchedule(@PathVariable Long notificationId, NotificationRequestDto notificationRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseEntity updateSchedule(@PathVariable Long notificationId, @RequestBody NotificationRequestDto notificationRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
         notificationService.updateSchedule(notificationId, notificationRequestDto, userDetails);
-        return ResponseMessage.SuccessResponse("게시 성공", "");
+        return ResponseMessage.SuccessResponse("수정 성공", "");
     }
 
     // 연락주기 및 예정 알림 삭제하기 DELETE : /friends/{friendId}/schedule
@@ -47,7 +47,7 @@ public class NotificationController {
     @DeleteMapping("schedules/{notificationId}")
     public ResponseEntity deleteSchedule(@PathVariable Long notificationId, @AuthenticationPrincipal UserDetailsImpl userDetails){
         notificationService.deleteSchedule(notificationId, userDetails);
-        return ResponseMessage.SuccessResponse("게시 성공", "");
+        return ResponseMessage.SuccessResponse("삭제 성공", "");
     }
 
 }

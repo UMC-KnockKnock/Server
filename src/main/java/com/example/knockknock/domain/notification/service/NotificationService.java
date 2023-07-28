@@ -16,9 +16,6 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class NotificationService {
@@ -64,7 +61,10 @@ public class NotificationService {
         Notification notification = notificationRepository.findById(notificationId).orElseThrow(
                 () -> new GlobalException(GlobalErrorCode.NOTIFICATION_NOT_FOUND)
         );
-        notification.update(notificationRequestDto);
+
+        if (notificationRequestDto.getNotificationMemo() != null) notification.setNotificationMemo(notificationRequestDto.getNotificationMemo());
+        if (notificationRequestDto.getNotificationDate() != null) notification.setNotificationDate(notificationRequestDto.getNotificationDate());
+        if (notificationRequestDto.getNotificationRepeat() != null) notification.setNotificationRepeat(notificationRequestDto.getNotificationRepeat());
     }
 
     // 연락 일정 삭제

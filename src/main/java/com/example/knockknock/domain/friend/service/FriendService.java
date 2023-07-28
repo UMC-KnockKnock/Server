@@ -92,6 +92,7 @@ public class FriendService {
         return new FriendDetailResponseDto(friend, notification);
     }
 
+    @Transactional
     public void updateFriendInfo(Long friendId, FriendRequestDto friendRequestDto, UserDetailsImpl userDetails) {
         // isLogin
         Member member = memberIsLoginService.isLogin(userDetails);
@@ -120,6 +121,7 @@ public class FriendService {
     }
 
     // 찐친 등록
+    @Transactional
     public void updateBestFriendStatus(Long friendId, UserDetailsImpl userDetails) {
         // isLogin
         Member member = memberIsLoginService.isLogin(userDetails);

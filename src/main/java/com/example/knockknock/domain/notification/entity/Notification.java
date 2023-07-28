@@ -3,14 +3,12 @@ package com.example.knockknock.domain.notification.entity;
 import com.example.knockknock.domain.friend.entity.Friend;
 import com.example.knockknock.domain.notification.dto.requestDto.NotificationRequestDto;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -27,21 +25,15 @@ public class Notification{
     @Column(nullable = true)
     private String notificationMemo;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalDateTime notificationDate;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
+    @Enumerated(value = EnumType.STRING)
     private NotificationRepeatEnum notificationRepeat;
 
     public Notification(Friend friend, NotificationRequestDto notificationRequestDto) {
         this.friend = friend;
-        this.notificationMemo = notificationRequestDto.getNotificationMemo();
-        this.notificationDate = notificationRequestDto.getNotificationDate();
-        this.notificationRepeat = notificationRequestDto.getNotificationRepeat();
-    }
-
-    public void update(NotificationRequestDto notificationRequestDto){
-        // todo : patch니까 dto에 null값일 경우 처리 해주기
         this.notificationMemo = notificationRequestDto.getNotificationMemo();
         this.notificationDate = notificationRequestDto.getNotificationDate();
         this.notificationRepeat = notificationRequestDto.getNotificationRepeat();
