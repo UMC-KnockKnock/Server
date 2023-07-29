@@ -43,7 +43,7 @@ public class WebSecurityConfig {
         return (web) -> web.ignoring()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
-
+  
     @Bean
     protected SecurityFilterChain config(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable());
