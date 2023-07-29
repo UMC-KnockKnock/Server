@@ -1,0 +1,9 @@
+cloud:
+  aws:
+    s3:
+      bucket: knockknockimage
+    stack.auto: false
+    region.static: ap-northeast-2
+    credentials:
+      accessKey: AKIA4V7UYZEIAZ6EXZGV
+      secretKey: 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
