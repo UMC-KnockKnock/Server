@@ -16,7 +16,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Builder
@@ -64,6 +66,9 @@ public class Post extends TimeStamped {
 
     @Column(name = "IS_ANONYMOUS")
     private Boolean isAnonymous;
+    @ElementCollection
+    @CollectionTable(name = "anonymous_comment_writers", joinColumns = @JoinColumn(name = "post_id"))
+    private Set<Long> anonymousCommentWriters = new HashSet<>();
 
     public void addLike() {
         this.likeCount += 1;
@@ -94,6 +99,22 @@ public class Post extends TimeStamped {
                 postImage.setPost(null);
                 break;
             }
+        }
+    }
+
+    public void addComment(Comment comment) {
+        comments.add(comment);
+        comment.setPost(this);
+        if (comment.getIsAnonymous()) {
+            anonymousCommentWriters.add(comment.getMember().getMemberId());
+        }
+    }
+
+    public void removeComment(Comment comment) {
+        comments.remove(comment);
+        comment.setPost(null);
+        if (comment.getIsAnonymous()) {
+            anonymousCommentWriters.remove(comment.getMember().getMemberId());
         }
     }
 }
