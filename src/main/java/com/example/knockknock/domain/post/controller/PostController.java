@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Slf4j
 @RequestMapping("/post")
 @RequiredArgsConstructor
@@ -22,12 +24,12 @@ public class PostController {
 
     @PostMapping("/create")
     public ResponseEntity createPost(
-            @RequestPart("data")
+            @RequestPart("request")
             @Valid
             PostCreateRequestDto request,
-            @RequestPart(required = false) MultipartFile image)
+            @RequestPart(required = false) List<MultipartFile> images)
     {
-        postService.createPost(request, image);
+        postService.createPost(request, images);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

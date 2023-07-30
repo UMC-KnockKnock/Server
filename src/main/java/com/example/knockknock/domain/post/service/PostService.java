@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,7 +32,7 @@ public class PostService {
     private final S3Service s3Service;
 
     @Transactional
-    public void createPost(PostCreateRequestDto request, MultipartFile image) {
+    public void createPost(PostCreateRequestDto request, List<MultipartFile> images) {
         Member member =  memberRepository.findById(request.getMemberId())
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
         Post post = Post.builder()
@@ -42,15 +43,16 @@ public class PostService {
                 .likeCount(0)
                 .isAnonymous(request.getIsAnonymous())
                 .build();
-
-        if (image != null && !image.isEmpty()) {
-            String imageUrl = null;
-            try {
-                imageUrl = s3Service.uploadImage(image);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+        for (MultipartFile image : images) {
+            if (image != null && !image.isEmpty()) {
+                String imageUrl = null;
+                try {
+                    imageUrl = s3Service.uploadImage(image);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                post.addPostImage(imageUrl);
             }
-            post.setPostImageUrl(imageUrl);
         }
 
         postRepository.save(post);
