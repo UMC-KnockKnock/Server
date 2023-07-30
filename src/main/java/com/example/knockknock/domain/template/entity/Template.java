@@ -17,11 +17,13 @@ public class Template {
     private Long templateId;
 
     @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
     private TemplateCategory category;
 
     @Column(nullable = false)
     private String content;
 
     @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
     private TemplateTag tag;
 }
