@@ -87,8 +87,13 @@ public class Post extends TimeStamped {
         postImages.add(postImage);
     }
 
-    public void removePostImage(PostImage postImage) {
-        postImages.remove(postImage);
-        postImage.setPost(null);
+    public void removePostImage(String imageUrl) {
+        for (PostImage postImage : postImages) {
+            if (postImage.getPostImageUrl().equals(imageUrl)) {
+                postImages.remove(postImage);
+                postImage.setPost(null);
+                break;
+            }
+        }
     }
 }

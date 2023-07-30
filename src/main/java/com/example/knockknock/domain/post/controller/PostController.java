@@ -43,9 +43,10 @@ public class PostController {
     @PutMapping("/edit/{postId}")
     public ResponseEntity updatePost(
             @PathVariable Long postId,
-            @RequestBody @Valid PostUpdateRequestDto request
+            @RequestBody @Valid PostUpdateRequestDto request,
+            @RequestPart(required = false) List<MultipartFile> images
     ) {
-        postService.updatePost(postId, request);
+        postService.updatePost(postId, request, images);
         return ResponseEntity.ok().build();
     }
 

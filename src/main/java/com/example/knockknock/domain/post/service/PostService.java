@@ -43,8 +43,8 @@ public class PostService {
                 .likeCount(0)
                 .isAnonymous(request.getIsAnonymous())
                 .build();
-        for (MultipartFile image : images) {
-            if (image != null && !image.isEmpty()) {
+        if (images != null && !images.isEmpty()) {
+            for (MultipartFile image : images) {
                 String imageUrl = null;
                 try {
                     imageUrl = s3Service.uploadImage(image);
@@ -66,10 +66,30 @@ public class PostService {
     }
 
     @Transactional
-    public void updatePost(Long postId , PostUpdateRequestDto request) {
+    public void updatePost(Long postId , PostUpdateRequestDto request, List<MultipartFile> images) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
         post.updatePost(request);
+
+        //이미지 추가
+        if (images != null && !images.isEmpty()) {
+            for (MultipartFile image : images) {
+                String imageUrl = null;
+                try {
+                    imageUrl = s3Service.uploadImage(image);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                post.addPostImage(imageUrl);
+            }
+        }
+        //이미지 삭제
+        List<String> imagesToDelete = request.getImagesToDelete();
+        if (imagesToDelete != null && !imagesToDelete.isEmpty()) {
+            for (String imageUrl : imagesToDelete) {
+                post.removePostImage(imageUrl);
+            }
+        }
     }
 
     @Transactional
