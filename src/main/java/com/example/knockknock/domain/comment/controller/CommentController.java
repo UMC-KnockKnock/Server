@@ -1,10 +1,12 @@
 package com.example.knockknock.domain.comment.controller;
 
-import com.example.knockknock.domain.comment.dto.CommentRegisterRequestDto;
-import com.example.knockknock.domain.comment.dto.CommentRegisterResponseDto;
-import com.example.knockknock.domain.comment.dto.CommentUpdateRequestDto;
-import com.example.knockknock.domain.comment.dto.GetCommentsResponseDto;
+import com.example.knockknock.domain.comment.dto.request.CommentRegisterRequestDto;
+import com.example.knockknock.domain.comment.dto.request.CommentUpdateRequestDto;
+import com.example.knockknock.domain.comment.dto.request.ReplyRegisterRequestDto;
+import com.example.knockknock.domain.comment.dto.response.CommentRegisterResponseDto;
+import com.example.knockknock.domain.comment.dto.response.GetCommentsResponseDto;
 import com.example.knockknock.domain.comment.service.CommentService;
+import com.example.knockknock.domain.comment.service.ReplyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +22,7 @@ import java.util.List;
 @RestController
 public class CommentController {
     private final CommentService commentService;
+
     @PostMapping("/{postId}")
     public ResponseEntity<CommentRegisterResponseDto> registerComment(
             @RequestBody @Valid CommentRegisterRequestDto request,
@@ -51,4 +54,6 @@ public class CommentController {
         commentService.deleteComment(commentId);
         return ResponseEntity.ok().build();
     }
+
+
 }

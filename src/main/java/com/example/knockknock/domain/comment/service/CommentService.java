@@ -1,9 +1,9 @@
 package com.example.knockknock.domain.comment.service;
 
-import com.example.knockknock.domain.comment.dto.CommentRegisterRequestDto;
-import com.example.knockknock.domain.comment.dto.CommentRegisterResponseDto;
-import com.example.knockknock.domain.comment.dto.CommentUpdateRequestDto;
-import com.example.knockknock.domain.comment.dto.GetCommentsResponseDto;
+import com.example.knockknock.domain.comment.dto.request.CommentRegisterRequestDto;
+import com.example.knockknock.domain.comment.dto.request.CommentUpdateRequestDto;
+import com.example.knockknock.domain.comment.dto.response.CommentRegisterResponseDto;
+import com.example.knockknock.domain.comment.dto.response.GetCommentsResponseDto;
 import com.example.knockknock.domain.comment.entity.Comment;
 import com.example.knockknock.domain.comment.repository.CommentRepository;
 import com.example.knockknock.domain.member.entity.Member;
@@ -52,6 +52,8 @@ public class CommentService {
         commentRepository.save(comment);
         return new CommentRegisterResponseDto(request.getContent());
     }
+
+
 
     @Transactional
     public List<GetCommentsResponseDto> getComments(Long postId) {

@@ -11,7 +11,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @NoArgsConstructor
@@ -43,11 +45,36 @@ public class Comment extends TimeStamped {
     @Column(name = "IS_ANONYMOUS")
     private Boolean isAnonymous;
 
+    @Builder.Default
+    @OneToMany(mappedBy = "parentComment")
+    private List<Reply> replies = new ArrayList<>();
+
+
     public void updateComment(String content) {
         this.content = content;
     }
 
     public void setPost(Post post) {
         this.post = post;
+    }
+
+
+    public void addReply(Reply reply) {
+        replies.add(reply);
+        reply.setParentComment(this);
+        if (reply.getIsAnonymous()) {
+            Long memberId = reply.getMember().getMemberId();
+            Integer anonymousNumber = this.getPost().getAnonymousWriters().size() + 1;
+            this.getPost().getAnonymousWriters().put(memberId, anonymousNumber);
+        }
+    }
+
+    public void removeReply(Reply reply) {
+        replies.remove(reply);
+        reply.setParentComment(null);
+        if (reply.getIsAnonymous()) {
+            Long memberId = reply.getMember().getMemberId();
+            this.getPost().getAnonymousWriters().remove(memberId);
+        }
     }
 }
