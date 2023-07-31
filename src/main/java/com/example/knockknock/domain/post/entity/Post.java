@@ -5,6 +5,7 @@ import com.example.knockknock.domain.board.entity.BoardType;
 import com.example.knockknock.domain.hashtag.entity.Hashtag;
 import com.example.knockknock.domain.member.entity.Member;
 import com.example.knockknock.domain.post.dto.request.PostUpdateRequestDto;
+import com.example.knockknock.domain.postimage.entity.PostImage;
 import com.example.knockknock.domain.postlike.entity.PostLike;
 import com.example.knockknock.domain.report.entity.Report;
 import com.example.knockknock.global.timestamp.TimeStamped;
@@ -54,9 +55,9 @@ public class Post extends TimeStamped {
 
     @Column(name = "CONTENT")
     private String content;
-
-    @Column
-    private String postImageUrl;
+    @Builder.Default
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "post", orphanRemoval = true)
+    private List<PostImage> postImages = new ArrayList<>();
 
     @Column(name = "LIKE_COUNT")
     private int likeCount;
@@ -78,7 +79,21 @@ public class Post extends TimeStamped {
         this.content = request.getContent();
     }
 
-    public void setPostImageUrl(String postImageUrl) {
-        this.postImageUrl = postImageUrl;
+    public void addPostImage(String imageUrl) {
+        PostImage postImage = PostImage.builder()
+                .post(this)
+                .postImageUrl(imageUrl)
+                .build();
+        postImages.add(postImage);
+    }
+
+    public void removePostImage(String imageUrl) {
+        for (PostImage postImage : postImages) {
+            if (postImage.getPostImageUrl().equals(imageUrl)) {
+                postImages.remove(postImage);
+                postImage.setPost(null);
+                break;
+            }
+        }
     }
 }
