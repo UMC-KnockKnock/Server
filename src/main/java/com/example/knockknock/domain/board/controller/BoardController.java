@@ -1,5 +1,6 @@
 package com.example.knockknock.domain.board.controller;
 
+import com.example.knockknock.domain.board.dto.PostPageDto;
 import com.example.knockknock.domain.board.dto.PostSearchResponseDto;
 import com.example.knockknock.domain.board.entity.BoardType;
 import com.example.knockknock.domain.board.entity.SearchType;
@@ -23,7 +24,7 @@ public class BoardController {
 
 
     @GetMapping("/allPosts")
-    public ResponseEntity<Page<PostDetailResponseDto>> getPostsByBoard(
+    public ResponseEntity<PostPageDto> getPostsByBoard(
             @RequestParam("boardType") BoardType boardType,
             @RequestParam("page") int page,
             @RequestParam("size") int size) {
@@ -31,7 +32,7 @@ public class BoardController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Page<PostSearchResponseDto>> getPostsByKeyword(
+    public ResponseEntity<PostPageDto> getPostsByKeyword(
             @RequestParam("boardType") BoardType boardType,
             @RequestParam("searchType") SearchType searchType,
             @RequestParam("keyword") String keyword,
@@ -41,7 +42,7 @@ public class BoardController {
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<Page<PostDetailResponseDto>> getPostsByAge(
+    public ResponseEntity<PostPageDto> getPostsByAge(
             @RequestParam ("boardType") BoardType boardType,
             @RequestParam ("ageGroup") Integer ageGroup,
             @RequestParam("page") int page,

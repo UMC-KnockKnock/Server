@@ -1,6 +1,6 @@
 package com.example.knockknock.domain.board.service;
 
-import com.example.knockknock.domain.board.dto.PostSearchResponseDto;
+import com.example.knockknock.domain.board.dto.PostPageDto;
 import com.example.knockknock.domain.board.entity.BoardType;
 import com.example.knockknock.domain.board.entity.SearchType;
 import com.example.knockknock.domain.member.entity.Member;
@@ -28,30 +28,52 @@ public class BoardService {
 
 
     @Transactional
-    public Page<PostDetailResponseDto> getPostsByBoard(BoardType boardType, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "modifiedAt"));
+    public PostPageDto getPostsByBoard(BoardType boardType, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Post> postPage = postRepository.findByBoardType(boardType, pageable);
-        return postPage.map(PostDetailResponseDto::of);
+        boolean hasNext = postPage.hasNext();
+        List<PostDetailResponseDto> postDetailResponseDtos = postPage.getContent().stream()
+                .map(PostDetailResponseDto::of)
+                .collect(Collectors.toList());
+
+        return PostPageDto.builder()
+                .posts(postDetailResponseDtos)
+                .hasNext(hasNext)
+                .build();
     }
 
     @Transactional
-    public Page<PostDetailResponseDto> getPostsByAgeGroup(BoardType boardType, Integer ageGroup, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "modifiedAt"));
+    public PostPageDto getPostsByAgeGroup(BoardType boardType, Integer ageGroup, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         int ageGroupStart = ageGroup;
         int ageGroupEnd = ageGroupStart + 9;
         Page<Post> postPage = postRepository.findByBoardTypeAndMemberAgeBetween(boardType, ageGroupStart, ageGroupEnd, pageable);
-        return postPage.map(PostDetailResponseDto::of);
+        boolean hasNext = postPage.hasNext();
+        List<PostDetailResponseDto> postDetailResponseDtos = postPage.getContent().stream()
+                .map(PostDetailResponseDto::of)
+                .collect(Collectors.toList());
+        return PostPageDto.builder()
+                .posts(postDetailResponseDtos)
+                .hasNext(hasNext)
+                .build();
     }
 
     @Transactional
-    public Page<PostSearchResponseDto> searchPost(BoardType boardType, SearchType searchType, String keyword, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "modifiedAt"));
+    public PostPageDto searchPost(BoardType boardType, SearchType searchType, String keyword, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Post> postPage = switch (searchType) {
             case TITLE -> postRepository.findByBoardTypeAndTitleContainingIgnoreCase(boardType, keyword, pageable);
             case CONTENT -> postRepository.findByBoardTypeAndContentContainingIgnoreCase(boardType, keyword, pageable);
             case TITLE_AND_CONTENT -> postRepository.findByBoardTypeAndTitleContainingIgnoreCaseOrContentContainingIgnoreCase(boardType, keyword, keyword, pageable);
         };
-        return postPage.map(PostSearchResponseDto::from);
+        boolean hasNext = postPage.hasNext();
+        List<PostDetailResponseDto> postDetailResponseDtos = postPage.getContent().stream()
+                .map(PostDetailResponseDto::of)
+                .collect(Collectors.toList());
+        return PostPageDto.builder()
+                .posts(postDetailResponseDtos)
+                .hasNext(hasNext)
+                .build();
     }
 
     @Transactional

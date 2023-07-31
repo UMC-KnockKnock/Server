@@ -59,7 +59,6 @@ public class PostController {
     }
 
 
-
     @GetMapping("/share/{postId}")
     public ResponseEntity<String> sharePost(
             @PathVariable Long postId, HttpServletRequest request
