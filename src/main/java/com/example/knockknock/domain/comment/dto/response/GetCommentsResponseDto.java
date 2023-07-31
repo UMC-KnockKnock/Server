@@ -1,4 +1,4 @@
-package com.example.knockknock.domain.comment.dto;
+package com.example.knockknock.domain.comment.dto.response;
 import com.example.knockknock.domain.comment.entity.Comment;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;

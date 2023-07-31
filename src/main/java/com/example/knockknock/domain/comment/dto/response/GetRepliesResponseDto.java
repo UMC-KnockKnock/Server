@@ -1,4 +1,4 @@
-package com.example.knockknock.domain.comment.dto;
+package com.example.knockknock.domain.comment.dto.response;
 
 import com.example.knockknock.domain.comment.entity.Reply;
 import com.fasterxml.jackson.annotation.JsonFormat;

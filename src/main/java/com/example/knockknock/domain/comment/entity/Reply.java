@@ -42,6 +42,10 @@ public class Reply extends TimeStamped {
     @Column(name = "IS_ANONYMOUS")
     private Boolean isAnonymous;
 
+    public void updateReply(String content) {
+        this.content = content;
+    }
+
     public void setPost(Post post) {
         this.post = post;
     }

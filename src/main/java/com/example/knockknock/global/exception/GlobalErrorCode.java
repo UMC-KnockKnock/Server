@@ -45,6 +45,7 @@ public enum GlobalErrorCode {
     MEMBER_NOT_FOUND(NOT_FOUND, "사용자를 찾을 수 없습니다."),
     POST_NOT_FOUND(NOT_FOUND, "게시글이 존재하지 않습니다"),
     COMMENT_NOT_FOUND(NOT_FOUND, "존재하지 않는 댓글입니다."),
+    REPLY_NOT_FOUND(NOT_FOUND, "존재하지 않는 답글입니다."),
     HASHTAG_NOT_FOUND(NOT_FOUND, "존재하지 않는 해시태그입니다."),
 
     ;

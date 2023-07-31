@@ -1,8 +1,10 @@
 package com.example.knockknock.domain.comment.service;
 
-import com.example.knockknock.domain.comment.dto.*;
+import com.example.knockknock.domain.comment.dto.request.CommentRegisterRequestDto;
+import com.example.knockknock.domain.comment.dto.request.CommentUpdateRequestDto;
+import com.example.knockknock.domain.comment.dto.response.CommentRegisterResponseDto;
+import com.example.knockknock.domain.comment.dto.response.GetCommentsResponseDto;
 import com.example.knockknock.domain.comment.entity.Comment;
-import com.example.knockknock.domain.comment.entity.Reply;
 import com.example.knockknock.domain.comment.repository.CommentRepository;
 import com.example.knockknock.domain.member.entity.Member;
 import com.example.knockknock.domain.member.repository.MemberRepository;
