@@ -7,6 +7,7 @@ import com.example.knockknock.domain.board.service.BoardService;
 import com.example.knockknock.domain.post.dto.response.PostDetailResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,18 +23,33 @@ public class BoardController {
 
 
     @GetMapping("/allPosts")
-    public ResponseEntity<List<PostDetailResponseDto>> getPostsByBoard(
-            @RequestParam("boardType") BoardType boardType) {
-        return new ResponseEntity<>(boardService.getPostsByBoard(boardType), HttpStatus.OK);
+    public ResponseEntity<Page<PostDetailResponseDto>> getPostsByBoard(
+            @RequestParam("boardType") BoardType boardType,
+            @RequestParam("page") int page,
+            @RequestParam("size") int size) {
+        return new ResponseEntity<>(boardService.getPostsByBoard(boardType, page - 1, size),HttpStatus.OK);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<PostSearchResponseDto>> getPostsByKeyword(
+    public ResponseEntity<Page<PostSearchResponseDto>> getPostsByKeyword(
             @RequestParam("boardType") BoardType boardType,
             @RequestParam("searchType") SearchType searchType,
-            @RequestParam("keyword") String keyword) {
-        return new ResponseEntity<>(boardService.searchPost(boardType, searchType, keyword), HttpStatus.OK);
+            @RequestParam("keyword") String keyword,
+            @RequestParam("page") int page,
+            @RequestParam("size") int size) {
+        return new ResponseEntity<>(boardService.searchPost(boardType, searchType, keyword, page - 1, size), HttpStatus.OK);
     }
+
+    @GetMapping("/filter")
+    public ResponseEntity<Page<PostDetailResponseDto>> getPostsByAge(
+            @RequestParam ("boardType") BoardType boardType,
+            @RequestParam ("ageGroup") Integer ageGroup,
+            @RequestParam("page") int page,
+            @RequestParam("size") int size
+    ) {
+        return new ResponseEntity<>(boardService.getPostsByAgeGroup(boardType, ageGroup, page - 1, size), HttpStatus.OK);
+    }
+
     @GetMapping("/search/hashtag")
     public ResponseEntity<List<PostDetailResponseDto>> getPostsByHashtag(
             @RequestParam("boardType") BoardType boardType,
@@ -48,12 +64,6 @@ public class BoardController {
     ) {
         return new ResponseEntity<>(boardService.getPostsByMember(memberId), HttpStatus.OK);
     }
-    @GetMapping("/filter")
-    public ResponseEntity<List<PostDetailResponseDto>> getPostsByAge(
-            @RequestParam ("boardType") BoardType boardType,
-            @RequestParam ("ageGroup") Integer ageGroup
-    ) {
-        return new ResponseEntity<>(boardService.getPostsByAgeGroup(boardType, ageGroup), HttpStatus.OK);
-    }
+
 
 }
