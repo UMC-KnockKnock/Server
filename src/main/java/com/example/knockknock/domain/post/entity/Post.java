@@ -15,10 +15,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @Builder
@@ -67,8 +64,8 @@ public class Post extends TimeStamped {
     @Column(name = "IS_ANONYMOUS")
     private Boolean isAnonymous;
     @ElementCollection
-    @CollectionTable(name = "anonymous_comment_writers", joinColumns = @JoinColumn(name = "post_id"))
-    private Set<Long> anonymousCommentWriters = new HashSet<>();
+    @CollectionTable(name = "anonymous_writers", joinColumns = @JoinColumn(name = "post_id"))
+    private Map<Long, Integer> anonymousWriters = new LinkedHashMap<>();
 
     public void addLike() {
         this.likeCount += 1;
@@ -105,8 +102,10 @@ public class Post extends TimeStamped {
     public void addComment(Comment comment) {
         comments.add(comment);
         comment.setPost(this);
+        Integer anonymousNumber = anonymousWriters.size() + 1;
         if (comment.getIsAnonymous()) {
-            anonymousCommentWriters.add(comment.getMember().getMemberId());
+            Long memberId = comment.getMember().getMemberId();
+            anonymousWriters.put(memberId, anonymousNumber);
         }
     }
 
@@ -114,7 +113,12 @@ public class Post extends TimeStamped {
         comments.remove(comment);
         comment.setPost(null);
         if (comment.getIsAnonymous()) {
-            anonymousCommentWriters.remove(comment.getMember().getMemberId());
+            Long memberId = comment.getMember().getMemberId();
+            anonymousWriters.remove(memberId);
         }
+    }
+
+    public Integer getAnonymousNumberByMemberId(Long memberId) {
+        return anonymousWriters.get(memberId);
     }
 }

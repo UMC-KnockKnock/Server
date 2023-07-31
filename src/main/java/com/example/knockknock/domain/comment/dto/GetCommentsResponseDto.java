@@ -1,14 +1,11 @@
 package com.example.knockknock.domain.comment.dto;
 import com.example.knockknock.domain.comment.entity.Comment;
-import com.example.knockknock.domain.member.entity.Member;
-import com.example.knockknock.domain.post.entity.Post;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 @Builder
@@ -27,16 +24,23 @@ public class GetCommentsResponseDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime modifiedAt;
 
+    private List<GetRepliesResponseDto> replies;
+
 
     public static GetCommentsResponseDto from(Comment comment) {
         String nickName;
 
-        int anonymousCount = comment.getPost().getAnonymousCommentWriters().size();
+        Integer anonymousNumber = comment.getPost().getAnonymousNumberByMemberId(comment.getMember().getMemberId());
         if (comment.getIsAnonymous()) {
-            nickName = "익명" + anonymousCount;
+            nickName = "익명" + anonymousNumber;
         } else {
             nickName = comment.getMember().getNickName();
         }
+
+        List<GetRepliesResponseDto> replies = comment.getReplies().stream()
+                .map(GetRepliesResponseDto::from)
+                .collect(Collectors.toList());
+
         return GetCommentsResponseDto.builder()
                 .commentId(comment.getCommentId())
                 .postId(comment.getPost().getPostId())
@@ -45,6 +49,7 @@ public class GetCommentsResponseDto {
                 .reportCount(comment.getReports().size())
                 .createdAt(comment.getCreatedAt())
                 .modifiedAt(comment.getModifiedAt())
+                .replies(replies)
                 .build();
     }
 
