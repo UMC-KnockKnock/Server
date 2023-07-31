@@ -1,9 +1,14 @@
 package com.example.knockknock.domain.comment.dto;
 import com.example.knockknock.domain.comment.entity.Comment;
+import com.example.knockknock.domain.member.entity.Member;
+import com.example.knockknock.domain.post.entity.Post;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Builder
@@ -22,10 +27,13 @@ public class GetCommentsResponseDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime modifiedAt;
 
+
     public static GetCommentsResponseDto from(Comment comment) {
         String nickName;
-        if(comment.getIsAnonymous()){
-            nickName = "익명";
+
+        int anonymousCount = comment.getPost().getAnonymousCommentWriters().size();
+        if (comment.getIsAnonymous()) {
+            nickName = "익명" + anonymousCount;
         } else {
             nickName = comment.getMember().getNickName();
         }
@@ -39,4 +47,5 @@ public class GetCommentsResponseDto {
                 .modifiedAt(comment.getModifiedAt())
                 .build();
     }
+
 }
