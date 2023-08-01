@@ -8,41 +8,37 @@ import com.example.knockknock.domain.comment.repository.CommentRepository;
 import com.example.knockknock.domain.comment.repository.ReplyRepository;
 import com.example.knockknock.domain.member.entity.Member;
 import com.example.knockknock.domain.member.repository.MemberRepository;
+import com.example.knockknock.domain.member.security.UserDetailsImpl;
+import com.example.knockknock.domain.member.service.MemberIsLoginService;
 import com.example.knockknock.domain.post.dto.request.PostUpdateRequestDto;
 import com.example.knockknock.domain.post.entity.Post;
 import com.example.knockknock.domain.post.repository.PostRepository;
 import com.example.knockknock.global.exception.GlobalErrorCode;
 import com.example.knockknock.global.exception.GlobalException;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ReplyService {
 
-    private CommentRepository commentRepository;
-    private MemberRepository memberRepository;
-    private PostRepository postRepository;
+    private final CommentRepository commentRepository;
+    private final MemberRepository memberRepository;
+    private final PostRepository postRepository;
+    private final MemberIsLoginService memberIsLoginService;
 
-    private ReplyRepository replyRepository;
-
-    public ReplyService(CommentRepository commentRepository, MemberRepository memberRepository, PostRepository postRepository, ReplyRepository replyRepository) {
-        this.commentRepository = commentRepository;
-        this.memberRepository = memberRepository;
-        this.postRepository = postRepository;
-        this.replyRepository = replyRepository;
-    }
+    private final ReplyRepository replyRepository;
 
     @Transactional
-    public void addReply(Long commentId, ReplyRegisterRequestDto request){
-        Member member = memberRepository.findById(request.getMemberId())
-                .orElseThrow(() -> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
+    public void addReply(Long commentId, ReplyRegisterRequestDto request, UserDetailsImpl userDetails){
+        Member member = memberIsLoginService.isLogin(userDetails);
 
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.COMMENT_NOT_FOUND));
-
 
         Post post = postRepository.findById(comment.getPost().getPostId())
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
@@ -60,21 +56,40 @@ public class ReplyService {
     }
 
     @Transactional
-    public void updateReply(Long replyId , ReplyUpdateRequestDto request) {
+    public void updateReply(Long replyId , ReplyUpdateRequestDto request, UserDetailsImpl userDetails) {
         Reply reply = replyRepository.findById(replyId)
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.REPLY_NOT_FOUND));
+        // 현재 로그인한 멤버 정보 가져오기
+        Long currentMemberId = userDetails.getUser().getMemberId();
+
+        // 작성자 정보 가져오기
+        Long replyAuthorId = reply.getMember().getMemberId();
+
+        if (!currentMemberId.equals(replyAuthorId)) {
+            throw new GlobalException(GlobalErrorCode.PERMISSION_DENIED);
+        }
         reply.updateReply(request.getContent());
     }
 
     @Transactional
-    public void deleteReply(Long replyId) {
+    public void deleteReply(Long replyId, UserDetailsImpl userDetails) {
 
         Reply reply = replyRepository.findById(replyId)
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.REPLY_NOT_FOUND));
+        // 현재 로그인한 멤버 정보 가져오기
+        Long currentMemberId = userDetails.getUser().getMemberId();
+
+        // 게시글 작성자 정보 가져오기
+        Long replyAuthorId = reply.getMember().getMemberId();
+
+        if (!currentMemberId.equals(replyAuthorId)) {
+            throw new GlobalException(GlobalErrorCode.PERMISSION_DENIED);
+        } else{
         if (reply.getIsAnonymous()){
             reply.getParentComment().removeReply(reply);
         }
 
         replyRepository.delete(reply);
+        }
     }
 }

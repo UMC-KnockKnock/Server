@@ -64,7 +64,7 @@ public class Comment extends TimeStamped {
         reply.setParentComment(this);
         if (reply.getIsAnonymous()) {
             Long memberId = reply.getMember().getMemberId();
-            Integer anonymousNumber = this.getPost().getAnonymousWriters().size() + 1;
+            Integer anonymousNumber = this.getPost().getAnonymousWriters().getOrDefault(memberId, 1);
             this.getPost().getAnonymousWriters().put(memberId, anonymousNumber);
         }
     }

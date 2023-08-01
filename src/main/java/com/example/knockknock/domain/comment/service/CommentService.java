@@ -8,32 +8,30 @@ import com.example.knockknock.domain.comment.entity.Comment;
 import com.example.knockknock.domain.comment.repository.CommentRepository;
 import com.example.knockknock.domain.member.entity.Member;
 import com.example.knockknock.domain.member.repository.MemberRepository;
+import com.example.knockknock.domain.member.security.UserDetailsImpl;
+import com.example.knockknock.domain.member.service.MemberIsLoginService;
 import com.example.knockknock.domain.post.entity.Post;
 import com.example.knockknock.domain.post.repository.PostRepository;
 import com.example.knockknock.global.exception.*;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class CommentService {
 
-    private CommentRepository commentRepository;
-    private MemberRepository memberRepository;
-    private PostRepository postRepository;
+    private final CommentRepository commentRepository;
+    private final MemberIsLoginService memberIsLoginService;
+    private final PostRepository postRepository;
 
-    public CommentService(CommentRepository commentRepository, MemberRepository memberRepository, PostRepository postRepository) {
-        this.commentRepository = commentRepository;
-        this.memberRepository = memberRepository;
-        this.postRepository = postRepository;
-    }
 
     @Transactional
-    public CommentRegisterResponseDto registerComment(Long postId, CommentRegisterRequestDto request) {
-        Member member = memberRepository.findById(request.getMemberId())
-                .orElseThrow(() -> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
+    public CommentRegisterResponseDto registerComment(Long postId, CommentRegisterRequestDto request, UserDetailsImpl userDetails) {
+        Member member = memberIsLoginService.isLogin(userDetails);
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
@@ -65,23 +63,43 @@ public class CommentService {
                 .collect(Collectors.toList());
     }
     @Transactional
-    public void updateComment(Long commentId, CommentUpdateRequestDto request) {
-
+    public void updateComment(Long commentId, CommentUpdateRequestDto request, UserDetailsImpl userDetails) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.COMMENT_NOT_FOUND));
+
+        // 현재 로그인한 멤버 정보 가져오기
+        Long currentMemberId = userDetails.getUser().getMemberId();
+
+        // 작성자 정보 가져오기
+        Long commentAuthorId = comment.getMember().getMemberId();
+
+        if (!currentMemberId.equals(commentAuthorId)) {
+            throw new GlobalException(GlobalErrorCode.PERMISSION_DENIED);
+        }
 
         comment.updateComment(request.getContent());
     }
 
     @Transactional
-    public void deleteComment(Long commentId) {
+    public void deleteComment(Long commentId, UserDetailsImpl userDetails) {
 
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.COMMENT_NOT_FOUND));
+        // 현재 로그인한 멤버 정보 가져오기
+        Long currentMemberId = userDetails.getUser().getMemberId();
+
+        // 게시글 작성자 정보 가져오기
+        Long commentAuthorId = comment.getMember().getMemberId();
+
+        if (!currentMemberId.equals(commentAuthorId)) {
+            throw new GlobalException(GlobalErrorCode.PERMISSION_DENIED);
+        } else{
+
         if (comment.getIsAnonymous()){
             comment.getPost().removeComment(comment);
         }
 
         commentRepository.delete(comment);
+        }
     }
 }

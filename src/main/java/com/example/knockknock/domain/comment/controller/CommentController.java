@@ -7,11 +7,13 @@ import com.example.knockknock.domain.comment.dto.response.CommentRegisterRespons
 import com.example.knockknock.domain.comment.dto.response.GetCommentsResponseDto;
 import com.example.knockknock.domain.comment.service.CommentService;
 import com.example.knockknock.domain.comment.service.ReplyService;
+import com.example.knockknock.domain.member.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,9 +28,10 @@ public class CommentController {
     @PostMapping("/{postId}")
     public ResponseEntity<CommentRegisterResponseDto> registerComment(
             @RequestBody @Valid CommentRegisterRequestDto request,
-            @PathVariable Long postId
+            @PathVariable Long postId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        return new ResponseEntity<>(commentService.registerComment(postId, request), HttpStatus.OK);
+        return new ResponseEntity<>(commentService.registerComment(postId, request, userDetails), HttpStatus.OK);
     }
 
     @GetMapping("/{postId}/all")
@@ -41,17 +44,19 @@ public class CommentController {
     @PutMapping("/edit/{commentId}")
     public ResponseEntity updateComment(
             @RequestBody @Valid CommentUpdateRequestDto request,
-            @PathVariable Long commentId
+            @PathVariable Long commentId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        commentService.updateComment(commentId, request);
+        commentService.updateComment(commentId, request, userDetails);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/delete/{commentId}")
     public ResponseEntity deleteComment(
-            @PathVariable Long commentId
+            @PathVariable Long commentId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        commentService.deleteComment(commentId);
+        commentService.deleteComment(commentId, userDetails);
         return ResponseEntity.ok().build();
     }
 
