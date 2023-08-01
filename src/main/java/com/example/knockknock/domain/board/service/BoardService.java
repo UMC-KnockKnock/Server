@@ -1,6 +1,6 @@
 package com.example.knockknock.domain.board.service;
 
-import com.example.knockknock.domain.board.dto.PostSearchResponseDto;
+import com.example.knockknock.domain.board.dto.PostPageDto;
 import com.example.knockknock.domain.board.entity.BoardType;
 import com.example.knockknock.domain.board.entity.SearchType;
 import com.example.knockknock.domain.member.entity.Member;
@@ -12,8 +12,10 @@ import com.example.knockknock.global.exception.GlobalErrorCode;
 import com.example.knockknock.global.exception.GlobalException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
+import org.springframework.data.domain.PageRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,21 +28,52 @@ public class BoardService {
 
 
     @Transactional
-    public List<PostDetailResponseDto> getPostsByBoard(BoardType boardType) {
-        List<Post> posts = postRepository.findByBoardType(boardType);
-        return posts.stream()
+    public PostPageDto getPostsByBoard(BoardType boardType, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<Post> postPage = postRepository.findByBoardType(boardType, pageable);
+        boolean hasNext = postPage.hasNext();
+        List<PostDetailResponseDto> postDetailResponseDtos = postPage.getContent().stream()
                 .map(PostDetailResponseDto::of)
                 .collect(Collectors.toList());
+
+        return PostPageDto.builder()
+                .posts(postDetailResponseDtos)
+                .hasNext(hasNext)
+                .build();
     }
 
     @Transactional
-    public List<PostDetailResponseDto> getPostsByAgeGroup(BoardType boardType, Integer ageGroup) {
+    public PostPageDto getPostsByAgeGroup(BoardType boardType, Integer ageGroup, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         int ageGroupStart = ageGroup;
         int ageGroupEnd = ageGroupStart + 9;
-        List<Post> posts = postRepository.findByBoardTypeAndMemberAgeBetween(boardType, ageGroupStart, ageGroupEnd);
-        return posts.stream()
+        Page<Post> postPage = postRepository.findByBoardTypeAndMemberAgeBetween(boardType, ageGroupStart, ageGroupEnd, pageable);
+        boolean hasNext = postPage.hasNext();
+        List<PostDetailResponseDto> postDetailResponseDtos = postPage.getContent().stream()
                 .map(PostDetailResponseDto::of)
                 .collect(Collectors.toList());
+        return PostPageDto.builder()
+                .posts(postDetailResponseDtos)
+                .hasNext(hasNext)
+                .build();
+    }
+
+    @Transactional
+    public PostPageDto searchPost(BoardType boardType, SearchType searchType, String keyword, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<Post> postPage = switch (searchType) {
+            case TITLE -> postRepository.findByBoardTypeAndTitleContainingIgnoreCase(boardType, keyword, pageable);
+            case CONTENT -> postRepository.findByBoardTypeAndContentContainingIgnoreCase(boardType, keyword, pageable);
+            case TITLE_AND_CONTENT -> postRepository.findByBoardTypeAndTitleContainingIgnoreCaseOrContentContainingIgnoreCase(boardType, keyword, keyword, pageable);
+        };
+        boolean hasNext = postPage.hasNext();
+        List<PostDetailResponseDto> postDetailResponseDtos = postPage.getContent().stream()
+                .map(PostDetailResponseDto::of)
+                .collect(Collectors.toList());
+        return PostPageDto.builder()
+                .posts(postDetailResponseDtos)
+                .hasNext(hasNext)
+                .build();
     }
 
     @Transactional
@@ -61,15 +94,5 @@ public class BoardService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
-    public List<PostSearchResponseDto> searchPost(BoardType boardType, SearchType searchType, String keyword) {
-        List<Post> posts = switch (searchType) {
-            case TITLE -> postRepository.findByBoardTypeAndTitleContainingIgnoreCase(boardType, keyword);
-            case CONTENT -> postRepository.findByBoardTypeAndContentContainingIgnoreCase(boardType, keyword);
-            case TITLE_AND_CONTENT -> postRepository.findByBoardTypeAndTitleContainingIgnoreCaseOrContentContainingIgnoreCase(boardType, keyword, keyword);
-        };
-        return posts.stream()
-                .map(PostSearchResponseDto::from)
-                .collect(Collectors.toList());
-    }
+
 }

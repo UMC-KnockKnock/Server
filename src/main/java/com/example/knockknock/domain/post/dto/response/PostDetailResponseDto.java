@@ -1,6 +1,7 @@
 package com.example.knockknock.domain.post.dto.response;
 import com.example.knockknock.domain.hashtag.entity.Hashtag;
 import com.example.knockknock.domain.post.entity.Post;
+import com.example.knockknock.domain.postimage.entity.PostImage;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
@@ -24,7 +25,7 @@ public class PostDetailResponseDto {
 
     private String content;
 
-    private String imageUrl;
+    private List<String> imageUrl;
 
     private int likeCount;
 
@@ -45,6 +46,10 @@ public class PostDetailResponseDto {
             nickName = post.getMember().getNickName();
         }
 
+        List<String> imageUrls = post.getPostImages().stream()
+                .map(PostImage::getPostImageUrl)
+                .collect(Collectors.toList());
+
         List<String> hashtagNames = post.getHashtags().stream()
                 .map(Hashtag::getTagName)
                 .collect(Collectors.toList());
@@ -55,7 +60,7 @@ public class PostDetailResponseDto {
                 .nickName(nickName)
                 .title(post.getTitle())
                 .content(post.getContent())
-                .imageUrl(post.getPostImageUrl())
+                .imageUrl(imageUrls)
                 .likeCount(post.getLikeCount())
                 .commentCount(post.getComments().size())
                 .reportCount(post.getReports().size())

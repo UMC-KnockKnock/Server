@@ -40,10 +40,12 @@ public enum GlobalErrorCode {
     //Board
     // 400 BAD_REQUEST - 잘못된 요청
     DUPLICATE_REPORT(BAD_REQUEST, "이미 신고한 게시물/댓글입니다."),
+    // 401 Unauthorized = 권한 없음
     // 404 Not Found - 찾을 수 없음
     MEMBER_NOT_FOUND(NOT_FOUND, "사용자를 찾을 수 없습니다."),
     POST_NOT_FOUND(NOT_FOUND, "게시글이 존재하지 않습니다"),
     COMMENT_NOT_FOUND(NOT_FOUND, "존재하지 않는 댓글입니다."),
+    REPLY_NOT_FOUND(NOT_FOUND, "존재하지 않는 답글입니다."),
     HASHTAG_NOT_FOUND(NOT_FOUND, "존재하지 않는 해시태그입니다."),
 
     ;
