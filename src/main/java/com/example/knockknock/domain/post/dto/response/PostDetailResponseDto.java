@@ -1,4 +1,5 @@
 package com.example.knockknock.domain.post.dto.response;
+import com.example.knockknock.domain.board.entity.BoardType;
 import com.example.knockknock.domain.hashtag.entity.Hashtag;
 import com.example.knockknock.domain.post.entity.Post;
 import com.example.knockknock.domain.postimage.entity.PostImage;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 public class PostDetailResponseDto {
     private Long postId;
 
-    private String boardType;
+    private int boardType;
     private String nickName;
 
     private String title;
@@ -56,7 +57,7 @@ public class PostDetailResponseDto {
 
         return PostDetailResponseDto.builder()
                 .postId(post.getPostId())
-                .boardType(String.valueOf(post.getBoardType()))
+                .boardType(post.getBoardType().ordinal())
                 .nickName(nickName)
                 .title(post.getTitle())
                 .content(post.getContent())
