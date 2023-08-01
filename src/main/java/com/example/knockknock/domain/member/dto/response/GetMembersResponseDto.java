@@ -1,4 +1,4 @@
-package com.example.knockknock.domain.member.dto;
+package com.example.knockknock.domain.member.dto.response;
 import com.example.knockknock.domain.member.entity.Member;
 import lombok.*;
 

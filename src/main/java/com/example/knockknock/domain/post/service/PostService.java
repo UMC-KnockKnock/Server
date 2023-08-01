@@ -1,6 +1,8 @@
 package com.example.knockknock.domain.post.service;
 
 import com.example.knockknock.domain.hashtag.dto.HashtagRegisterRequestDto;
+import com.example.knockknock.domain.member.security.UserDetailsImpl;
+import com.example.knockknock.domain.member.service.MemberIsLoginService;
 import com.example.knockknock.domain.post.dto.request.*;
 import com.example.knockknock.domain.post.dto.response.*;
 import com.example.knockknock.domain.hashtag.entity.Hashtag;
@@ -27,14 +29,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
-    private final MemberRepository memberRepository;
+    private final MemberIsLoginService memberIsLoginService;
 
     private final S3Service s3Service;
 
     @Transactional
-    public void createPost(PostCreateRequestDto request, List<MultipartFile> images) {
-        Member member =  memberRepository.findById(request.getMemberId())
-                .orElseThrow(() -> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
+    public void createPost(PostCreateRequestDto request, List<MultipartFile> images, UserDetailsImpl userDetails) {
+        Member member = memberIsLoginService.isLogin(userDetails);
         Post post = Post.builder()
                 .member(member)
                 .boardType(request.getBoardType())
@@ -66,9 +67,18 @@ public class PostService {
     }
 
     @Transactional
-    public void updatePost(Long postId , PostUpdateRequestDto request, List<MultipartFile> images) {
+    public void updatePost(Long postId, PostUpdateRequestDto request, List<MultipartFile> images, UserDetailsImpl userDetails) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
+        // 현재 로그인한 멤버 정보 가져오기
+        Long currentMemberId = userDetails.getUser().getMemberId();
+
+        // 게시글 작성자 정보 가져오기
+        Long postAuthorId = post.getMember().getMemberId();
+
+        if (!currentMemberId.equals(postAuthorId)) {
+            throw new GlobalException(GlobalErrorCode.PERMISSION_DENIED);
+        }
         post.updatePost(request);
 
         //이미지 추가
@@ -93,9 +103,19 @@ public class PostService {
     }
 
     @Transactional
-    public void deletePost(Long postId) {
+    public void deletePost(Long postId, UserDetailsImpl userDetails) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
+
+        // 현재 로그인한 멤버 정보 가져오기
+        Long currentMemberId = userDetails.getUser().getMemberId();
+
+        // 게시글 작성자 정보 가져오기
+        Long postAuthorId = post.getMember().getMemberId();
+
+        if (!currentMemberId.equals(postAuthorId)) {
+            throw new GlobalException(GlobalErrorCode.PERMISSION_DENIED);
+        }
         postRepository.delete(post);
     }
 
