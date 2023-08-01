@@ -1,30 +1,25 @@
 package com.example.knockknock.domain.member.entity;
 
-import com.example.knockknock.domain.post.entity.Post;
-import com.example.knockknock.domain.member.dto.MemberUpdateRequestDto;
-import com.example.knockknock.global.timestamp.TimeStamped;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDate;
-import java.util.List;
 
-@Getter
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@AllArgsConstructor
 @Entity
-public class Member extends TimeStamped {
+@Getter
+@Builder
+public class Member {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MEMBER_ID")
     private Long memberId;
 
-    @OneToMany(mappedBy = "member")
-    private List<Post> posts;
+    /*@OneToMany(mappedBy = "member")
+    private List<Post> posts; */
 
     @Column(name = "MEMBER_NAME")
     private String memberName;
@@ -51,22 +46,36 @@ public class Member extends TimeStamped {
     @Column(nullable = true)
     private String password;
 
-    public void updateMember(MemberUpdateRequestDto request) {
-        if (request.getMemberName() != null) {
-            this.memberName = request.getMemberName();
-        }
-        if (request.getNickName() != null) {
-            this.nickName = request.getNickName();
-        }
-        if (request.getPhoneNumber() != null) {
-            this.phoneNumber = request.getPhoneNumber();
-        }
-        if (request.getEmail() != null) {
-            this.email = request.getEmail();
-        }
-        if (request.getBirthday() != null) {
-            this.birthday = request.getBirthday();
-        }
+    @Enumerated(EnumType.STRING)
+    private SocialType socialType;
+
+    //  정보 수정 //
+    public void upPassword(BCryptPasswordEncoder bCryptPasswordEncoder, String toBePassword){
+        this.password =bCryptPasswordEncoder.encode(password);
+    }
+
+    public void upMyPhoneNumber(String phoneNumber){
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void upUsername(String email){
+        this.email = email;
+    }
+
+    public void updateNickName(String nickName){
+        this.nickName =  nickName;
+    }
+
+
+    // 페스워드 암호화//
+    public void encodePassword(BCryptPasswordEncoder bCryptPasswordEncoder){
+        this.password = bCryptPasswordEncoder.encode(password);
+    }
+
+    //비밀번호 변경 및 수정 확인
+
+    public boolean matchPassword(BCryptPasswordEncoder bCryptPasswordEncoder, String checkPassword){
+        return bCryptPasswordEncoder.matches(checkPassword, getPassword());
     }
 
     public void calculateAge() {
@@ -80,7 +89,7 @@ public class Member extends TimeStamped {
             int currentMonth = currentDate.getMonthValue();  // 현재 월 추출
             int currentDateOfMonth = currentDate.getDayOfMonth();  // 현재 날짜 추출
 
-            if ((currentYear % 100 < birthYear) && (birthYear < 100)){
+            if ((currentYear % 100 < birthYear) && (birthYear < 100)) {
                 birthYear += 1900; // 2자리 연도를 4자리로 확장
             }
             if ((currentYear % 100 >= birthYear) && (birthYear < 100)) {
@@ -95,7 +104,9 @@ public class Member extends TimeStamped {
             }
 
             this.age = age;
+
         }
     }
-
 }
+
+

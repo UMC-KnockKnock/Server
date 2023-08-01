@@ -1,70 +1,73 @@
 package com.example.knockknock.domain.member.controller;
 
-import com.example.knockknock.domain.member.dto.*;
+import com.example.knockknock.domain.member.dto.MemberSignupDto;
+import com.example.knockknock.domain.member.dto.MemberUpdateDto;
+import com.example.knockknock.domain.member.dto.MemberWithdraw;
+import com.example.knockknock.domain.member.dto.UpdatePasswordDto;
+import com.example.knockknock.domain.member.entity.Member;
 import com.example.knockknock.domain.member.service.MemberService;
-import com.example.knockknock.global.message.ResponseMessage;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.net.http.HttpResponse;
 
-@Slf4j
-//@RequestMapping("/member")
+@RestController()
 @RequiredArgsConstructor
-@RestController
 public class MemberController {
+
     private final MemberService memberService;
 
-    @GetMapping("/")
-    public ResponseEntity test(){
-        memberService.test();
-        return ResponseMessage.SuccessResponse("성공", "");
-    }
-
     @PostMapping("/signup")
-    public ResponseEntity<Void> signup(@RequestBody MemberSignUpRequestDto request){
-        memberService.signup(request);
-        return ResponseMessage.SuccessResponse("회원가입 성공", "");
+    public ResponseEntity signup(@Valid @RequestBody MemberSignupDto signUpDto) throws Exception{
+        memberService.signup(signUpDto);
+    return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
-        memberService.login(loginRequestDto, response);
-        return ResponseMessage.SuccessResponse("로그인 성공", "");
-    }
 
-    @GetMapping("/get/{memberId}")
-    public ResponseEntity<MemberDetailResponseDto> getMemberDetail(
-            @PathVariable Long memberId
-    ) {
-        MemberDetailResponseDto memberDetail = memberService.getMemberDetail(memberId);
-        return ResponseEntity.ok(memberDetail);
-    }
 
-    @GetMapping("/getAll")
-    public ResponseEntity<List<GetMembersResponseDto>> getAllMembers() {
-        return new ResponseEntity<>(memberService.getAllMembers(), HttpStatus.OK);
-    }
+    @PutMapping("/update")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity updateInfo(@Valid @RequestBody MemberUpdateDto memberUpdateDto) throws Exception{
+        memberService.update(memberUpdateDto);
 
-    @PutMapping("/update/{memberId}")
-    public ResponseEntity updateUser(
-            @PathVariable Long memberId,
-            @RequestBody MemberUpdateRequestDto request
-    ) {
-        memberService.updateMember(memberId, request);
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/delete/{memberId}")
-    public ResponseEntity deleteUser(
-            @PathVariable Long memberId
-    ) {
-        memberService.deleteMember(memberId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+    @PutMapping("/updatepassword")
+    public ResponseEntity updatePassword(@Valid  @RequestBody UpdatePasswordDto updatePasswordDto) throws Exception {
+        memberService.updatePassword(updatePasswordDto.getCheckPassword(), updatePasswordDto.getToBePassword());
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("member/{id}")
+    public ResponseEntity getInfo(@Valid @PathVariable("id") Long id) throws Exception {
+        Member info = memberService.getInfo(id);
+
+        return new ResponseEntity<>(info, HttpStatus.OK);
+    }
+
+    @GetMapping("member")
+    public ResponseEntity getMyInfo(HttpResponse httpResponse) throws Exception{
+        Member myInfo = memberService.getMyInfo();
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/member")
+    public ResponseEntity withdraw(@Valid @RequestBody MemberWithdraw memberWithdraw) throws Exception {
+
+        memberService.withdraw(memberWithdraw.getCheckPassword());
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+
+
+
+
+
 }
