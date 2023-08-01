@@ -12,5 +12,6 @@ import java.util.List;
 @Builder
 public class PostPageDto {
     private List<PostDetailResponseDto> posts;
+    private boolean hasNext;
 
 }

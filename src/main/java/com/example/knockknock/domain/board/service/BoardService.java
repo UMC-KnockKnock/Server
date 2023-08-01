@@ -31,12 +31,14 @@ public class BoardService {
     public PostPageDto getPostsByBoard(BoardType boardType, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Post> postPage = postRepository.findByBoardType(boardType, pageable);
+        boolean hasNext = postPage.hasNext();
         List<PostDetailResponseDto> postDetailResponseDtos = postPage.getContent().stream()
                 .map(PostDetailResponseDto::of)
                 .collect(Collectors.toList());
 
         return PostPageDto.builder()
                 .posts(postDetailResponseDtos)
+                .hasNext(hasNext)
                 .build();
     }
 
@@ -46,11 +48,13 @@ public class BoardService {
         int ageGroupStart = ageGroup;
         int ageGroupEnd = ageGroupStart + 9;
         Page<Post> postPage = postRepository.findByBoardTypeAndMemberAgeBetween(boardType, ageGroupStart, ageGroupEnd, pageable);
+        boolean hasNext = postPage.hasNext();
         List<PostDetailResponseDto> postDetailResponseDtos = postPage.getContent().stream()
                 .map(PostDetailResponseDto::of)
                 .collect(Collectors.toList());
         return PostPageDto.builder()
                 .posts(postDetailResponseDtos)
+                .hasNext(hasNext)
                 .build();
     }
 
@@ -62,11 +66,13 @@ public class BoardService {
             case CONTENT -> postRepository.findByBoardTypeAndContentContainingIgnoreCase(boardType, keyword, pageable);
             case TITLE_AND_CONTENT -> postRepository.findByBoardTypeAndTitleContainingIgnoreCaseOrContentContainingIgnoreCase(boardType, keyword, keyword, pageable);
         };
+        boolean hasNext = postPage.hasNext();
         List<PostDetailResponseDto> postDetailResponseDtos = postPage.getContent().stream()
                 .map(PostDetailResponseDto::of)
                 .collect(Collectors.toList());
         return PostPageDto.builder()
                 .posts(postDetailResponseDtos)
+                .hasNext(hasNext)
                 .build();
     }
 
