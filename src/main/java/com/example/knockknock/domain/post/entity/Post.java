@@ -32,7 +32,7 @@ public class Post extends TimeStamped {
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated
     @Column(name = "BOARD_TYPE")
     private BoardType boardType;
 
