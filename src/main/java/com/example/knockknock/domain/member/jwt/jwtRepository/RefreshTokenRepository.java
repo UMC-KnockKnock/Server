@@ -7,8 +7,8 @@ import java.util.Optional;
 
 public interface RefreshTokenRepository extends JpaRepository<RefreshToke, Long> {
 
-    @Override
-    Optional<RefreshToke> findById(Long memberId);
+
+    Optional<RefreshToke> findByMemberId(Long memberId);
 
     Optional<RefreshToke> findByRefreshToken(String refreshToken);
 }

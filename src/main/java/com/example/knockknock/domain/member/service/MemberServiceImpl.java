@@ -7,6 +7,7 @@ import com.example.knockknock.domain.member.dto.MemberUpdateDto;
 import com.example.knockknock.domain.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +18,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberServiceImpl implements MemberService{
 
     private final MemberRepository memberRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
 
 
     @Transactional
@@ -37,10 +42,6 @@ public class MemberServiceImpl implements MemberService{
 
     }
 
-    @Override
-    public Member findByMemberId(Long memberId) {
-        return memberRepository.findById(memberId).orElseThrow(() ->new IllegalArgumentException("없는 아이디 입니다"));
-    }
 
     @Transactional
     @Override
@@ -57,18 +58,17 @@ public class MemberServiceImpl implements MemberService{
 
 
 
-
     @Transactional
     @Override
     public void updatePassword(String checkPassword, String toBePassword) throws Exception {
         Member member = memberRepository.findByEmail(SecurityUtil.LoginUsername())
                 .orElseThrow(()-> new IllegalArgumentException("회원 정보가 없습니다"));
 
-        if(!member.matchPassword(bCryptPasswordEncoder, checkPassword)){
+        if(!member.matchPassword(bCryptPasswordEncoder(), checkPassword)){
             throw new IllegalArgumentException("비밀번호가 틀립니다" + checkPassword);
         }
 
-        member.upPassword(bCryptPasswordEncoder, toBePassword);
+        member.upPassword(bCryptPasswordEncoder(), toBePassword);
 
 
     }
@@ -80,7 +80,7 @@ public class MemberServiceImpl implements MemberService{
         Member member = memberRepository.findByEmail(SecurityUtil.LoginUsername())
                 .orElseThrow(()-> new IllegalArgumentException("회원 정보가 없습니다"));
 
-        if(!member.matchPassword(bCryptPasswordEncoder, checkPassword)){
+        if(!member.matchPassword(bCryptPasswordEncoder(), checkPassword)){
             throw new IllegalArgumentException("비밀번호가 틀립니다" + checkPassword);
         }
 
@@ -98,5 +98,16 @@ public class MemberServiceImpl implements MemberService{
     @Override
     public Member getMyInfo() throws Exception {
         return memberRepository.findByEmail(SecurityUtil.LoginUsername()).orElseThrow(()-> new IllegalArgumentException("회원을 찾을 수 없습니다") );
+    }
+
+
+    @Override
+    public Member findByMemberId(Long memberId) {
+        return memberRepository.findById(memberId).orElseThrow(() ->new IllegalArgumentException("없는 계정 입니다"));
+    }
+
+    @Override
+    public Member findByEmail(String email) {
+        return memberRepository.findByEmail(email).orElseThrow(()-> new IllegalArgumentException("아이디가 없습니다"));
     }
 }

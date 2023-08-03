@@ -15,7 +15,9 @@ public interface MemberService {
     void withdraw(String checkPassword) throws Exception;
 
     Member findByMemberId(Long memberId);
+    Member findByEmail(String email);
 
     Member getInfo(Long id) throws Exception;
     Member getMyInfo() throws Exception;
+
 }

@@ -49,6 +49,8 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private SocialType socialType;
 
+    private String socialId;
+
     //  정보 수정 //
     public void upPassword(BCryptPasswordEncoder bCryptPasswordEncoder, String toBePassword){
         this.password =bCryptPasswordEncoder.encode(password);
