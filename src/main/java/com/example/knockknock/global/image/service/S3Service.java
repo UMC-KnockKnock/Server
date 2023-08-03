@@ -26,6 +26,8 @@ public class S3Service {
         metadata.setContentType(file.getContentType());
         metadata.setContentLength(file.getSize());
 
+        metadata.setContentDisposition("inline");
+
         PutObjectRequest putObjectRequest = new PutObjectRequest(bucket, fileName, file.getInputStream(), metadata);
 
         AccessControlList acl = new AccessControlList();
