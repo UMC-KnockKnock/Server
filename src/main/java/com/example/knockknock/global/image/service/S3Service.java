@@ -1,5 +1,6 @@
 package com.example.knockknock.global.image.service;
 
+import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.*;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class S3Service {
     private  final AmazonS3Client amazonS3Client;
+    private final AmazonS3 amazonS3;
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
@@ -31,6 +33,6 @@ public class S3Service {
         putObjectRequest.setAccessControlList(acl);
 
         amazonS3Client.putObject(putObjectRequest);
-        return "http://" + bucket + "/" + fileName;
+        return amazonS3.getUrl(bucket, fileName).toString();
     }
 }
