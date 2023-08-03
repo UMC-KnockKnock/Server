@@ -1,6 +1,7 @@
 package com.example.knockknock.domain.post.controller;
 
 import com.example.knockknock.domain.hashtag.dto.HashtagRegisterRequestDto;
+import com.example.knockknock.domain.member.security.UserDetailsImpl;
 import com.example.knockknock.domain.post.dto.request.*;
 import com.example.knockknock.domain.post.service.PostService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,9 +29,10 @@ public class PostController {
             @RequestPart("request")
             @Valid
             PostCreateRequestDto request,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestPart(required = false) List<MultipartFile> images)
     {
-        postService.createPost(request, images);
+        postService.createPost(request, images, userDetails);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -44,17 +47,19 @@ public class PostController {
     public ResponseEntity updatePost(
             @PathVariable Long postId,
             @RequestBody @Valid PostUpdateRequestDto request,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestPart(required = false) List<MultipartFile> images
     ) {
-        postService.updatePost(postId, request, images);
+        postService.updatePost(postId, request, images, userDetails);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/delete/{postId}")
     public ResponseEntity deletePost(
-            @PathVariable Long postId
+            @PathVariable Long postId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        postService.deletePost(postId);
+        postService.deletePost(postId, userDetails);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

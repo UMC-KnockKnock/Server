@@ -1,11 +1,8 @@
-package com.example.knockknock.domain.member.dto;
+package com.example.knockknock.domain.member.dto.response;
 
 import com.example.knockknock.domain.member.entity.Member;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.constraints.Pattern;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

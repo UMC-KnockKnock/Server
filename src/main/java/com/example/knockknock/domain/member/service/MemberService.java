@@ -1,17 +1,18 @@
 package com.example.knockknock.domain.member.service;
 
-import com.example.knockknock.domain.member.dto.*;
+import com.example.knockknock.domain.member.dto.request.LoginRequestDto;
+import com.example.knockknock.domain.member.dto.request.MemberSignUpRequestDto;
+import com.example.knockknock.domain.member.dto.request.MemberUpdateRequestDto;
+import com.example.knockknock.domain.member.dto.response.GetMembersResponseDto;
+import com.example.knockknock.domain.member.dto.response.MemberDetailResponseDto;
 import com.example.knockknock.domain.member.repository.MemberRepository;
 import com.example.knockknock.domain.member.entity.Member;
 import com.example.knockknock.global.exception.GlobalErrorCode;
 import com.example.knockknock.global.exception.GlobalException;
 import com.example.knockknock.global.jwt.JwtUtil;
-import com.fasterxml.jackson.annotation.JacksonInject;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.service.spi.InjectService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
