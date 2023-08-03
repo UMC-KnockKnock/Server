@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class GatheringUpdateRequestDto {
     private String title;
-    private List<Friend> gatheringMembers;
+    private List<Long> gatheringMemberIds;
 
     private String location;
 
