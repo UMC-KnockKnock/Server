@@ -49,6 +49,10 @@ public enum GlobalErrorCode {
     REPLY_NOT_FOUND(NOT_FOUND, "존재하지 않는 답글입니다."),
     HASHTAG_NOT_FOUND(NOT_FOUND, "존재하지 않는 해시태그입니다."),
 
+    //Gathering
+    //404 Not Found - 찾을 수 없음
+    GATHERING_NOT_FOUND(NOT_FOUND, "존재하지 않는 모임입니다."),
+
     ;
 
 
