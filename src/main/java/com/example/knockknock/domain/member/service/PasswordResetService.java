@@ -1,6 +1,7 @@
 package com.example.knockknock.domain.member.service;
 
 import com.example.knockknock.domain.member.dto.request.EmailAuthenticationRequestDto;
+import com.example.knockknock.domain.member.dto.request.PasswordUpdateRequestDto;
 import com.example.knockknock.domain.member.entity.Member;
 import com.example.knockknock.domain.member.entity.PasswordResetCode;
 import com.example.knockknock.domain.member.repository.MemberRepository;
@@ -10,6 +11,7 @@ import com.example.knockknock.global.exception.GlobalErrorCode;
 import com.example.knockknock.global.exception.GlobalException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
@@ -22,7 +24,7 @@ public class PasswordResetService {
 
     private final EmailService emailService;
     private final EmailAuthenticationService emailAuthenticationService;
-
+    private final PasswordEncoder passwordEncoder;
     @Transactional
     public void sendResetCode(EmailAuthenticationRequestDto request) {
         String email = request.getEmail();
@@ -42,6 +44,15 @@ public class PasswordResetService {
         // 이메일로 비밀번호 재설정 링크를 발송
         String emailBody = "비밀번호를 재설정하려면 아래 코드를 입력하세요:\n" + code;
         emailService.sendEmail(email, "메일 테스트", emailBody);
+    }
+
+    public void resetPassword(PasswordUpdateRequestDto request){
+        PasswordResetCode resetCode = resetCodeRepository.findByCode(request.getCode())
+                .orElseThrow(() -> new GlobalException(GlobalErrorCode.INVALID_CODE));
+        Member member = resetCode.getMember();
+        String encryptedPassword = passwordEncoder.encode(request.getNewPassword());
+        member.setPassword(encryptedPassword);
+        memberRepository.save(member);
     }
 
 }
