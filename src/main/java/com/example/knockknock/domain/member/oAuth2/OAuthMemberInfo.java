@@ -16,4 +16,7 @@ public abstract class OAuthMemberInfo {
 
     public abstract String name();
 
+
+   // public  abstract String
+
 }

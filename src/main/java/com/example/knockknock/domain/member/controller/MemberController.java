@@ -8,12 +8,15 @@ import com.example.knockknock.domain.member.entity.Member;
 import com.example.knockknock.domain.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.http.HttpResponse;
 
+@Slf4j
 @RestController()
 @RequiredArgsConstructor
 public class MemberController {
@@ -22,6 +25,7 @@ public class MemberController {
 
     @PostMapping("/signup")
     public ResponseEntity signup(@Valid @RequestBody MemberSignupDto signUpDto) throws Exception{
+        log.info("회원 가입 확인 중 : " + signUpDto.getEmail());
         memberService.signup(signUpDto);
     return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -31,6 +35,7 @@ public class MemberController {
     @PutMapping("/update")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity updateInfo(@Valid @RequestBody MemberUpdateDto memberUpdateDto) throws Exception{
+        log.info(" 정보 변경 중 입니다 : " + memberUpdateDto.email());
         memberService.update(memberUpdateDto);
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -64,6 +69,14 @@ public class MemberController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    /*
+    이메일 로 임시비밀번호 전달
+
+    @Transactional
+    @PostMapping("/sendEmail")
+    public String sendEmail(@RequestParam("memberEmail") String memberEmail){
+        ms.
+    } */
 
 
 

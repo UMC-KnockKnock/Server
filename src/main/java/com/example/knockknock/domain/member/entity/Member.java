@@ -3,6 +3,7 @@ package com.example.knockknock.domain.member.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 
@@ -52,8 +53,8 @@ public class Member {
     private String socialId;
 
     //  정보 수정 //
-    public void upPassword(BCryptPasswordEncoder bCryptPasswordEncoder, String toBePassword){
-        this.password =bCryptPasswordEncoder.encode(password);
+    public void upPassword(PasswordEncoder passwordEncoder, String toBePassword){
+        this.password = passwordEncoder.encode(password);
     }
 
     public void upMyPhoneNumber(String phoneNumber){
@@ -70,14 +71,20 @@ public class Member {
 
 
     // 페스워드 암호화//
-    public void encodePassword(BCryptPasswordEncoder bCryptPasswordEncoder){
-        this.password = bCryptPasswordEncoder.encode(password);
+    public void encodePassword(PasswordEncoder passwordEncoder){
+        this.password = passwordEncoder.encode(password);
     }
 
     //비밀번호 변경 및 수정 확인
 
-    public boolean matchPassword(BCryptPasswordEncoder bCryptPasswordEncoder, String checkPassword){
-        return bCryptPasswordEncoder.matches(checkPassword, getPassword());
+    public boolean matchPassword(PasswordEncoder passwordEncoder, String checkPassword){
+        return passwordEncoder.matches(checkPassword, getPassword());
+    }
+
+    // 비밀번호 인증 이메일 변경
+    public void passwrodcode (String code){
+        this.password = password;
+
     }
 
     public void calculateAge() {

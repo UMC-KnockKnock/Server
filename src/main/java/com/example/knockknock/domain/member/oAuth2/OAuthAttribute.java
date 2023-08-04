@@ -38,9 +38,6 @@ public class OAuthAttribute {
     }
 
 
-
-
-
     private static OAuthAttribute ofKakko(String memberAttributeName, Map<String, Object> attributes) {
     return OAuthAttribute.builder()
             .nameAttributeKey(memberAttributeName)
