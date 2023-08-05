@@ -42,7 +42,7 @@ public class PasswordResetService {
 
         resetCodeRepository.save(resetCode);
 
-        // 이메일로 비밀번호 재설정 링크를 발송
+        // 이메일로 비밀번호 재설정 코드를 발송
         String emailBody = "비밀번호를 재설정하려면 아래 코드를 입력하세요:\n" + code;
         emailService.sendEmail(email, "메일 테스트", emailBody);
     }

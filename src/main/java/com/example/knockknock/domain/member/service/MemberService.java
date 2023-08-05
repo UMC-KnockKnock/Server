@@ -10,6 +10,7 @@ import com.example.knockknock.domain.member.repository.MemberRepository;
 import com.example.knockknock.domain.member.entity.Member;
 import com.example.knockknock.domain.member.repository.RefreshTokenRepository;
 import com.example.knockknock.domain.member.security.RefreshToken;
+import com.example.knockknock.domain.member.security.UserDetailsImpl;
 import com.example.knockknock.global.email.EmailService;
 import com.example.knockknock.global.exception.GlobalErrorCode;
 import com.example.knockknock.global.exception.GlobalException;
@@ -20,6 +21,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +41,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final S3Service s3Service;
     private final EmailService emailService;
+    private final MemberIsLoginService memberIsLoginService;
     private final EmailAuthenticationService emailAuthenticationService;
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -142,9 +145,8 @@ public class MemberService {
 
 
     @Transactional
-    public MemberDetailResponseDto getMemberDetail(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
+    public MemberDetailResponseDto getMemberDetail(UserDetailsImpl userDetails) {
+        Member member = memberIsLoginService.isLogin(userDetails);
 
         return MemberDetailResponseDto.of(member);
     }
@@ -158,10 +160,8 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateMember(Long memberId, MemberUpdateRequestDto request, MultipartFile profileImage) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
-        if(profileImage != null) {
+    public void updateMember(UserDetailsImpl userDetails, MemberUpdateRequestDto request, MultipartFile profileImage) {
+        Member member = memberIsLoginService.isLogin(userDetails);        if(profileImage != null) {
             String imageUrl = null;
             try {
                 imageUrl = s3Service.uploadImage(profileImage);
@@ -173,9 +173,8 @@ public class MemberService {
     }
 
     @Transactional
-    public void deleteMember(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
+    public void deleteMember(UserDetailsImpl userDetails) {
+        Member member = memberIsLoginService.isLogin(userDetails);
         memberRepository.delete(member);
     }
 
