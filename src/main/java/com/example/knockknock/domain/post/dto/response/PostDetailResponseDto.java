@@ -1,5 +1,7 @@
 package com.example.knockknock.domain.post.dto.response;
 import com.example.knockknock.domain.board.entity.BoardType;
+import com.example.knockknock.domain.comment.dto.response.GetCommentsResponseDto;
+import com.example.knockknock.domain.comment.entity.Comment;
 import com.example.knockknock.domain.hashtag.entity.Hashtag;
 import com.example.knockknock.domain.post.entity.Post;
 import com.example.knockknock.domain.postimage.entity.PostImage;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 public class PostDetailResponseDto {
     private Long postId;
     private int boardType;
+    private String profileImageUrl;
     private String nickName;
     private String title;
     private String content;
@@ -26,6 +29,8 @@ public class PostDetailResponseDto {
     private int likeCount;
     private int commentCount;
     private int reportCount;
+
+    private List<GetCommentsResponseDto> comments;
 
     private List<String> hashtags;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -49,9 +54,14 @@ public class PostDetailResponseDto {
                 .map(Hashtag::getTagName)
                 .collect(Collectors.toList());
 
+        List<GetCommentsResponseDto> comments = post.getComments().stream()
+                .map(GetCommentsResponseDto::from)
+                .collect(Collectors.toList());
+
         return PostDetailResponseDto.builder()
                 .postId(post.getPostId())
                 .boardType(post.getBoardType().ordinal())
+                .profileImageUrl(post.getMember().getProfileImageURL())
                 .nickName(nickName)
                 .title(post.getTitle())
                 .content(post.getContent())
@@ -59,6 +69,7 @@ public class PostDetailResponseDto {
                 .likeCount(post.getLikeCount())
                 .commentCount(post.getComments().size())
                 .reportCount(post.getReports().size())
+                .comments(comments)
                 .hashtags(hashtagNames)
                 .createdAt(post.getCreatedAt())
                 .modifiedAt(post.getModifiedAt())

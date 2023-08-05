@@ -17,6 +17,7 @@ public class GetRepliesResponseDto {
     private Long parentCommentId;
 
     private String nickName;
+    private String profileImageUrl;
     private String content;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
@@ -37,6 +38,7 @@ public class GetRepliesResponseDto {
                 .replyId(reply.getReplyId())
                 .parentCommentId(reply.getReplyId())
                 .nickName(nickName)
+                .profileImageUrl(reply.getMember().getProfileImageURL())
                 .content(reply.getContent())
                 .createdAt(reply.getCreatedAt())
                 .modifiedAt(reply.getModifiedAt())

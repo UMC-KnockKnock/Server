@@ -52,16 +52,6 @@ public class CommentService {
     }
 
 
-
-    @Transactional
-    public List<GetCommentsResponseDto> getComments(Long postId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
-        List<Comment> comments = commentRepository.findByPost(post);
-        return comments.stream()
-                .map(GetCommentsResponseDto::from)
-                .collect(Collectors.toList());
-    }
     @Transactional
     public void updateComment(Long commentId, CommentUpdateRequestDto request, UserDetailsImpl userDetails) {
         Comment comment = commentRepository.findById(commentId)

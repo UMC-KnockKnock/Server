@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -31,8 +32,10 @@ public class MemberController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<Void> signup(@RequestBody MemberSignUpRequestDto request){
-        memberService.signup(request);
+    public ResponseEntity<Void> signup(
+            @RequestBody MemberSignUpRequestDto request,
+            @RequestPart(required = false) MultipartFile profileImage){
+        memberService.signup(request,profileImage);
         return ResponseMessage.SuccessResponse("회원가입 성공", "");
     }
 
@@ -64,9 +67,10 @@ public class MemberController {
     @PutMapping("/update/{memberId}")
     public ResponseEntity updateUser(
             @PathVariable Long memberId,
-            @RequestBody MemberUpdateRequestDto request
+            @RequestBody MemberUpdateRequestDto request,
+            @RequestPart(required = false) MultipartFile profileImage
     ) {
-        memberService.updateMember(memberId, request);
+        memberService.updateMember(memberId, request, profileImage);
         return ResponseEntity.ok().build();
     }
 

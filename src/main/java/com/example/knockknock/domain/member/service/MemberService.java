@@ -11,6 +11,7 @@ import com.example.knockknock.domain.member.entity.Member;
 import com.example.knockknock.global.email.EmailService;
 import com.example.knockknock.global.exception.GlobalErrorCode;
 import com.example.knockknock.global.exception.GlobalException;
+import com.example.knockknock.global.image.service.S3Service;
 import com.example.knockknock.global.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,12 +33,14 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
+    private final S3Service s3Service;
     private final EmailService emailService;
     private final EmailAuthenticationService emailAuthenticationService;
 
+
     // 회원가입
     @Transactional
-    public void signup(final MemberSignUpRequestDto signupRequestDto) {
+    public void signup(final MemberSignUpRequestDto signupRequestDto, MultipartFile profileImage) {
         String email = signupRequestDto.getEmail();
         String password = passwordEncoder.encode(signupRequestDto.getPassword());
 
@@ -45,12 +50,12 @@ public class MemberService {
             throw new GlobalException(GlobalErrorCode.DUPLICATE_EMAIL);
         }
 
-        createMember(signupRequestDto, password);
+        createMember(signupRequestDto, profileImage, password);
     }
 
 
     @Transactional
-    public void createMember(MemberSignUpRequestDto request, String password) {
+    public void createMember(MemberSignUpRequestDto request, MultipartFile profileImage, String password) {
         Member member = Member.builder()
                 .memberName(request.getMemberName())
                 .memberGender(request.getMemberGender())
@@ -60,6 +65,15 @@ public class MemberService {
                 .birthday(request.getBirthday())
                 .password(password)
                 .build();
+        if(profileImage != null) {
+            String imageUrl = null;
+            try {
+                imageUrl = s3Service.uploadImage(profileImage);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } member.setProfileImageURL(imageUrl);
+
+        } else member.setProfileImageURL("https://e7.pngegg.com/pngimages/195/830/png-clipart-emoji-silhouette-service-company-person-emoji-cdr-head.png");
         member.calculateAge();
         memberRepository.save(member);
     }
@@ -113,9 +127,17 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateMember(Long memberId, MemberUpdateRequestDto request) {
+    public void updateMember(Long memberId, MemberUpdateRequestDto request, MultipartFile profileImage) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
+        if(profileImage != null) {
+            String imageUrl = null;
+            try {
+                imageUrl = s3Service.uploadImage(profileImage);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } member.setProfileImageURL(imageUrl);
+        }
         member.updateMember(request);
     }
 

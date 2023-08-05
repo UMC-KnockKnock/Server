@@ -33,6 +33,9 @@ public class Member extends TimeStamped {
     @Column(name = "MEMBER_GENDER")
     private Gender memberGender;
 
+    @Column(name ="PROFILE_IMAGE")
+    private String profileImageURL;
+
     @Column(name = "NICKNAME")
     private String nickName;
 
@@ -50,6 +53,10 @@ public class Member extends TimeStamped {
 
     @Column(nullable = true)
     private String password;
+
+    public void setProfileImageURL(String profileImageURL) {
+        this.profileImageURL = profileImageURL;
+    }
 
     public void updateMember(MemberUpdateRequestDto request) {
         if (request.getMemberName() != null) {

@@ -17,6 +17,7 @@ public class MemberDetailResponseDto {
     private Long memberId;
     private String memberName;
     private String memberGender;
+    private String profileImageUrl;
     private String nickName;
     private String phoneNumber;
     private String email;
@@ -33,6 +34,7 @@ public class MemberDetailResponseDto {
                 .memberId(member.getMemberId())
                 .memberName(member.getMemberName())
                 .memberGender(String.valueOf(member.getMemberGender()))
+                .profileImageUrl(member.getProfileImageURL())
                 .nickName(member.getNickName())
                 .phoneNumber(member.getPhoneNumber())
                 .email(member.getEmail())
