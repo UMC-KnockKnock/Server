@@ -8,6 +8,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PasswordUpdateRequestDto {
-    private String code;
+    private Long memberId;
     private String newPassword;
 }

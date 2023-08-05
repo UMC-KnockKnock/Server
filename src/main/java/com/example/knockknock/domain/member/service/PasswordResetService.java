@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -46,13 +47,19 @@ public class PasswordResetService {
         emailService.sendEmail(email, "메일 테스트", emailBody);
     }
 
-    public void resetPassword(PasswordUpdateRequestDto request){
-        PasswordResetCode resetCode = resetCodeRepository.findByCode(request.getCode())
+    public Long isAuthenticated(String code){
+        PasswordResetCode resetCode = resetCodeRepository.findByCode(code)
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.INVALID_CODE));
-        Member member = resetCode.getMember();
-        String encryptedPassword = passwordEncoder.encode(request.getNewPassword());
-        member.setPassword(encryptedPassword);
-        memberRepository.save(member);
+        return resetCode.getMember().getMemberId();
+    }
+
+    public void resetPassword(PasswordUpdateRequestDto request){
+            Member member = memberRepository.findById(request.getMemberId())
+                    .orElseThrow(() -> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
+            String encryptedPassword = passwordEncoder.encode(request.getNewPassword());
+            member.setPassword(encryptedPassword);
+            memberRepository.save(member);
+
     }
 
 }

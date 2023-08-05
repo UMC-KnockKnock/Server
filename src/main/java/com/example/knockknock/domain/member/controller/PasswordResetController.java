@@ -23,8 +23,14 @@ public class PasswordResetController {
         return ResponseMessage.SuccessResponse("이메일 전송", "");
     }
 
+    @GetMapping("/authentication")
+    public ResponseEntity authentication(@RequestBody String code){
+        return ResponseMessage.SuccessResponse("인증이 완료되었습니다.", "memberId: " + passwordResetService.isAuthenticated(code));
+    }
+
     @PostMapping("/change-password")
-    public ResponseEntity newPassword(@RequestBody PasswordUpdateRequestDto request){
+    public ResponseEntity newPassword(@RequestBody PasswordUpdateRequestDto request) {
+
         passwordResetService.resetPassword(request);
         return ResponseMessage.SuccessResponse("비밀번호가 변경되었습니다.", "");
     }
