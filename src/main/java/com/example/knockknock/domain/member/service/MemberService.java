@@ -1,5 +1,6 @@
 package com.example.knockknock.domain.member.service;
 
+import com.example.knockknock.domain.member.dto.request.EmailAuthenticationRequestDto;
 import com.example.knockknock.domain.member.dto.request.LoginRequestDto;
 import com.example.knockknock.domain.member.dto.request.MemberSignUpRequestDto;
 import com.example.knockknock.domain.member.dto.request.MemberUpdateRequestDto;
@@ -7,6 +8,7 @@ import com.example.knockknock.domain.member.dto.response.GetMembersResponseDto;
 import com.example.knockknock.domain.member.dto.response.MemberDetailResponseDto;
 import com.example.knockknock.domain.member.repository.MemberRepository;
 import com.example.knockknock.domain.member.entity.Member;
+import com.example.knockknock.global.email.EmailService;
 import com.example.knockknock.global.exception.GlobalErrorCode;
 import com.example.knockknock.global.exception.GlobalException;
 import com.example.knockknock.global.image.service.S3Service;
@@ -32,6 +34,9 @@ public class MemberService {
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
     private final S3Service s3Service;
+    private final EmailService emailService;
+    private final EmailAuthenticationService emailAuthenticationService;
+
 
     // 회원가입
     @Transactional
@@ -71,6 +76,17 @@ public class MemberService {
         } else member.setProfileImageURL("https://e7.pngegg.com/pngimages/195/830/png-clipart-emoji-silhouette-service-company-person-emoji-cdr-head.png");
         member.calculateAge();
         memberRepository.save(member);
+    }
+    @Transactional
+    public void authentication(EmailAuthenticationRequestDto request){
+        String email = request.getEmail();
+        // 사용자의 이메일 주소로 Member를 찾음 (이메일 주소가 일치해야 함)
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(()-> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
+        String code = emailAuthenticationService.generateCode();
+
+        String emailBody = "이메일을 인증하려면 아래 코드를 입력하세요:\n" + code;
+        emailService.sendEmail(email, "메일 테스트", emailBody);
     }
 
     // 유저 로그인

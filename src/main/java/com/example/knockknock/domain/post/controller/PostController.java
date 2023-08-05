@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -43,6 +44,11 @@ public class PostController {
         return new ResponseEntity<>(postService.getPostDetail(postId), HttpStatus.OK);
     }
 
+    @GetMapping("/myPosts")
+    public ResponseEntity getMyPosts(
+            @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return new ResponseEntity<>(postService.getMyPosts(userDetails), HttpStatus.OK);
+    }
     @PutMapping("/edit/{postId}")
     public ResponseEntity updatePost(
             @PathVariable Long postId,

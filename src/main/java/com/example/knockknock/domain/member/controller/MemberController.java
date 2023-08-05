@@ -1,5 +1,6 @@
 package com.example.knockknock.domain.member.controller;
 
+import com.example.knockknock.domain.member.dto.request.EmailAuthenticationRequestDto;
 import com.example.knockknock.domain.member.dto.request.LoginRequestDto;
 import com.example.knockknock.domain.member.dto.request.MemberSignUpRequestDto;
 import com.example.knockknock.domain.member.dto.request.MemberUpdateRequestDto;
@@ -42,6 +43,12 @@ public class MemberController {
     public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
         memberService.login(loginRequestDto, response);
         return ResponseMessage.SuccessResponse("로그인 성공", "");
+    }
+
+    @PostMapping("/authentication")
+    public ResponseEntity authentication(@RequestBody EmailAuthenticationRequestDto request) {
+        memberService.authentication(request);
+        return ResponseMessage.SuccessResponse("인증메일을 발송하였습니다", "");
     }
 
     @GetMapping("/get/{memberId}")
