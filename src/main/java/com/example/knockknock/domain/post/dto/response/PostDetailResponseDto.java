@@ -18,18 +18,12 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class PostDetailResponseDto {
     private Long postId;
-
     private int boardType;
     private String nickName;
-
     private String title;
-
     private String content;
-
     private List<String> imageUrl;
-
     private int likeCount;
-
     private int commentCount;
     private int reportCount;
 

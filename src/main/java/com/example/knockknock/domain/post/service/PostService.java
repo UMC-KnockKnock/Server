@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -67,8 +68,14 @@ public class PostService {
     }
 
     @Transactional
-    public List<PostDetailResponseDto> getMyPosts(Long memberId){
+    public List<MyPostsResponseDto> getMyPosts(UserDetailsImpl userDetails){
+        Member member = memberIsLoginService.isLogin(userDetails);
+        List<Post> myPosts = postRepository.findByMember(member);
+        List<MyPostsResponseDto> myPostsResponseDtos = myPosts.stream()
+                .map(MyPostsResponseDto::of)
+                .collect(Collectors.toList());
 
+        return myPostsResponseDtos;
     }
 
     @Transactional
