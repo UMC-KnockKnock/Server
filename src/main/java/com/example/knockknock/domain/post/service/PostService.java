@@ -67,6 +67,11 @@ public class PostService {
     }
 
     @Transactional
+    public List<PostDetailResponseDto> getMyPosts(Long memberId){
+
+    }
+
+    @Transactional
     public void updatePost(Long postId, PostUpdateRequestDto request, List<MultipartFile> images, UserDetailsImpl userDetails) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
