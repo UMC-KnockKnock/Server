@@ -47,12 +47,13 @@ public class PasswordResetService {
         emailService.sendEmail(email, "메일 테스트", emailBody);
     }
 
+    @Transactional
     public Long isAuthenticated(String code){
         PasswordResetCode resetCode = resetCodeRepository.findByCode(code)
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.INVALID_CODE));
         return resetCode.getMember().getMemberId();
     }
-
+    @Transactional
     public void resetPassword(PasswordUpdateRequestDto request){
             Member member = memberRepository.findById(request.getMemberId())
                     .orElseThrow(() -> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
