@@ -17,6 +17,7 @@ public class GetCommentsResponseDto {
     private Long postId;
 
     private String nickName;
+    private String profileImageUrl;
     private String content;
     private int reportCount;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -45,6 +46,7 @@ public class GetCommentsResponseDto {
                 .commentId(comment.getCommentId())
                 .postId(comment.getPost().getPostId())
                 .nickName(nickName)
+                .profileImageUrl(comment.getMember().getProfileImageURL())
                 .content(comment.getContent())
                 .reportCount(comment.getReports().size())
                 .createdAt(comment.getCreatedAt())

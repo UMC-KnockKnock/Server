@@ -34,12 +34,6 @@ public class CommentController {
         return new ResponseEntity<>(commentService.registerComment(postId, request, userDetails), HttpStatus.OK);
     }
 
-    @GetMapping("/{postId}/all")
-    public ResponseEntity<List<GetCommentsResponseDto>> getComments(
-            @PathVariable Long postId
-    ) {
-        return new ResponseEntity<>(commentService.getComments(postId), HttpStatus.OK);
-    }
 
     @PutMapping("/edit/{commentId}")
     public ResponseEntity updateComment(
