@@ -69,6 +69,10 @@ public class Member extends TimeStamped {
         }
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public void calculateAge() {
         if (birthday != null) {
             LocalDate currentDate = LocalDate.now();
