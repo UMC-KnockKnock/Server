@@ -1,6 +1,7 @@
 package com.example.knockknock.global.config;
 
 
+import com.example.knockknock.domain.member.repository.MemberRepository;
 import com.example.knockknock.global.jwt.JwtAuthFilter;
 import com.example.knockknock.global.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,7 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 @EnableGlobalMethodSecurity(securedEnabled = true) // @Secured 어노테이션 활성화
 public class WebSecurityConfig {
     private final JwtUtil jwtUtil;
+    private final MemberRepository memberRepository;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -75,7 +77,8 @@ public class WebSecurityConfig {
 
         // 특정 헤더를 클라이언트 측에서 사용할 수 있게 지정
         // 만약 지정하지 않는다면, Authorization 헤더 내의 토큰 값을 사용할 수 없음
-        config.addExposedHeader(JwtUtil.AUTHORIZATION_HEADER);
+        config.addExposedHeader(JwtUtil.ACCESS_TOKEN_HEADER);
+        config.addExposedHeader(JwtUtil.REFRESH_TOKEN_HEADER);
 
         // 본 요청에 허용할 HTTP method(예비 요청에 대한 응답 헤더에 추가됨)
         config.addAllowedMethod("*");

@@ -8,11 +8,15 @@ import com.example.knockknock.domain.member.dto.response.GetMembersResponseDto;
 import com.example.knockknock.domain.member.dto.response.MemberDetailResponseDto;
 import com.example.knockknock.domain.member.repository.MemberRepository;
 import com.example.knockknock.domain.member.entity.Member;
+import com.example.knockknock.domain.member.repository.RefreshTokenRepository;
+import com.example.knockknock.domain.member.security.RefreshToken;
 import com.example.knockknock.global.email.EmailService;
 import com.example.knockknock.global.exception.GlobalErrorCode;
 import com.example.knockknock.global.exception.GlobalException;
 import com.example.knockknock.global.image.service.S3Service;
 import com.example.knockknock.global.jwt.JwtUtil;
+import com.example.knockknock.global.message.ResponseMessage;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +40,7 @@ public class MemberService {
     private final S3Service s3Service;
     private final EmailService emailService;
     private final EmailAuthenticationService emailAuthenticationService;
+    private final RefreshTokenRepository refreshTokenRepository;
 
 
     // 회원가입
@@ -106,7 +111,33 @@ public class MemberService {
         }
 
         // http 응답에 헤더 추가
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(member));
+        response.addHeader(JwtUtil.ACCESS_TOKEN_HEADER, jwtUtil.createAccessToken(email));
+        String rawToken = jwtUtil.createRefreshToken(email);
+        response.addHeader(JwtUtil.REFRESH_TOKEN_HEADER, rawToken); // 리프레시 토큰 추가
+        RefreshToken refreshToken = new RefreshToken(rawToken.substring(7), email);
+        refreshTokenRepository.save(refreshToken);
+
+
+    }
+
+    @Transactional
+    public String reissue(HttpServletRequest request){
+        String refreshToken = jwtUtil.resolveToken(request, "Refresh");
+        if (refreshToken == null) {
+            log.warn("Refresh token not found in the request");
+            return null;
+        }
+
+        boolean isValidRefreshToken = jwtUtil.validateRefreshToken(refreshToken);
+        if (!isValidRefreshToken) {
+            log.warn("Invalid refresh token: {}", refreshToken);
+            return null;
+        }
+
+        String memberEmail = jwtUtil.getMemberEmailFromToken(refreshToken);
+        String newAccessToken = jwtUtil.createAccessToken(memberEmail);
+
+        return newAccessToken;
     }
 
 

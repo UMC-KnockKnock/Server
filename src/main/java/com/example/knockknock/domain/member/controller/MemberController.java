@@ -8,6 +8,7 @@ import com.example.knockknock.domain.member.dto.response.GetMembersResponseDto;
 import com.example.knockknock.domain.member.dto.response.MemberDetailResponseDto;
 import com.example.knockknock.domain.member.service.MemberService;
 import com.example.knockknock.global.message.ResponseMessage;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +36,7 @@ public class MemberController {
     public ResponseEntity<Void> signup(
             @RequestBody MemberSignUpRequestDto request,
             @RequestPart(required = false) MultipartFile profileImage){
-        memberService.signup(request,profileImage);
+        memberService.signup(request, profileImage);
         return ResponseMessage.SuccessResponse("회원가입 성공", "");
     }
 
@@ -43,6 +44,12 @@ public class MemberController {
     public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
         memberService.login(loginRequestDto, response);
         return ResponseMessage.SuccessResponse("로그인 성공", "");
+    }
+
+    @GetMapping("/reissue")
+    public ResponseEntity<?> reissue(HttpServletRequest request){
+        return ResponseMessage.SuccessResponse("토큰 재발급 성공", "new accessToken: " + memberService.reissue(request));
+
     }
 
     @PostMapping("/authentication")

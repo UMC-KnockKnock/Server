@@ -14,11 +14,10 @@ import java.util.Collections;
 public class UserDetailsImpl implements UserDetails {
 
     private final Member user;
-    private final String id;
 
-    public UserDetailsImpl(Member user, String id) {
+
+    public UserDetailsImpl(Member user) {
         this.user = user;
-        this.id = id;
     }
 
     public Member getUser() {
@@ -33,7 +32,7 @@ public class UserDetailsImpl implements UserDetails {
     // 인증에 사용될 이름(이메일)
     @Override
     public String getUsername() {
-        return this.id;
+        return user.getEmail();
     }
 
     @Override
