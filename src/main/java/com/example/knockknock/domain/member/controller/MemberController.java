@@ -6,6 +6,7 @@ import com.example.knockknock.domain.member.dto.request.MemberSignUpRequestDto;
 import com.example.knockknock.domain.member.dto.request.MemberUpdateRequestDto;
 import com.example.knockknock.domain.member.dto.response.GetMembersResponseDto;
 import com.example.knockknock.domain.member.dto.response.MemberDetailResponseDto;
+import com.example.knockknock.domain.member.security.UserDetailsImpl;
 import com.example.knockknock.domain.member.service.MemberService;
 import com.example.knockknock.global.message.ResponseMessage;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -58,12 +60,11 @@ public class MemberController {
         return ResponseMessage.SuccessResponse("인증메일을 발송하였습니다", "");
     }
 
-    @GetMapping("/get/{memberId}")
+    @GetMapping()
     public ResponseEntity<MemberDetailResponseDto> getMemberDetail(
-            @PathVariable Long memberId
+            @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        MemberDetailResponseDto memberDetail = memberService.getMemberDetail(memberId);
-        return ResponseEntity.ok(memberDetail);
+        return new ResponseEntity<>(memberService.getMemberDetail(userDetails), HttpStatus.OK);
     }
 
     @GetMapping("/getAll")
@@ -71,21 +72,22 @@ public class MemberController {
         return new ResponseEntity<>(memberService.getAllMembers(), HttpStatus.OK);
     }
 
-    @PutMapping("/update/{memberId}")
+    @PutMapping("/update")
     public ResponseEntity updateUser(
-            @PathVariable Long memberId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody MemberUpdateRequestDto request,
             @RequestPart(required = false) MultipartFile profileImage
     ) {
-        memberService.updateMember(memberId, request, profileImage);
-        return ResponseEntity.ok().build();
+        memberService.updateMember(userDetails, request, profileImage);
+        return ResponseMessage.SuccessResponse("수정이 완료되었습니다.", "");
     }
 
-    @DeleteMapping("/delete/{memberId}")
+    @DeleteMapping("/delete")
     public ResponseEntity deleteUser(
-            @PathVariable Long memberId
+            @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        memberService.deleteMember(memberId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        memberService.deleteMember(userDetails);
+        return ResponseMessage.SuccessResponse("삭제가 완료되었습니다.", "");
+
     }
 }
