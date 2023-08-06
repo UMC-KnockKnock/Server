@@ -54,6 +54,9 @@ public class Member extends TimeStamped {
     @Column(nullable = true)
     private String password;
 
+    @Column
+    private String socialId;
+
     public void setProfileImageURL(String profileImageURL) {
         this.profileImageURL = profileImageURL;
     }

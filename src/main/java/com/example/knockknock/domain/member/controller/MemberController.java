@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -46,8 +47,14 @@ public class MemberController {
         return ResponseMessage.SuccessResponse("로그인 성공", "");
     }
 
+    @GetMapping("/socialLogin")
+    public void socialLogin(HttpServletResponse httpServletResponse) throws IOException {
+        httpServletResponse.sendRedirect("/oauth2/authorization/naver");
+    }
+
     @GetMapping("/reissue")
-    public ResponseEntity<?> reissue(HttpServletRequest request){
+    public ResponseEntity<?> reissue(HttpServletRequest request) {
+
         return ResponseMessage.SuccessResponse("토큰 재발급 성공", "new accessToken: " + memberService.reissue(request));
 
     }
