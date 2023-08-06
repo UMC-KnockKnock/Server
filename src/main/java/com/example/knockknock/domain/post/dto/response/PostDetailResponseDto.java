@@ -1,10 +1,8 @@
 package com.example.knockknock.domain.post.dto.response;
-import com.example.knockknock.domain.board.entity.BoardType;
 import com.example.knockknock.domain.comment.dto.response.GetCommentsResponseDto;
-import com.example.knockknock.domain.comment.entity.Comment;
 import com.example.knockknock.domain.hashtag.entity.Hashtag;
 import com.example.knockknock.domain.post.entity.Post;
-import com.example.knockknock.domain.postimage.entity.PostImage;
+import com.example.knockknock.domain.postimage.PostImage;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 

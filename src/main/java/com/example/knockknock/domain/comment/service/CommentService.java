@@ -2,12 +2,9 @@ package com.example.knockknock.domain.comment.service;
 
 import com.example.knockknock.domain.comment.dto.request.CommentRegisterRequestDto;
 import com.example.knockknock.domain.comment.dto.request.CommentUpdateRequestDto;
-import com.example.knockknock.domain.comment.dto.response.CommentRegisterResponseDto;
-import com.example.knockknock.domain.comment.dto.response.GetCommentsResponseDto;
 import com.example.knockknock.domain.comment.entity.Comment;
 import com.example.knockknock.domain.comment.repository.CommentRepository;
 import com.example.knockknock.domain.member.entity.Member;
-import com.example.knockknock.domain.member.repository.MemberRepository;
 import com.example.knockknock.domain.member.security.UserDetailsImpl;
 import com.example.knockknock.domain.member.service.MemberIsLoginService;
 import com.example.knockknock.domain.post.entity.Post;
@@ -16,9 +13,6 @@ import com.example.knockknock.global.exception.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +24,7 @@ public class CommentService {
 
 
     @Transactional
-    public CommentRegisterResponseDto registerComment(Long postId, CommentRegisterRequestDto request, UserDetailsImpl userDetails) {
+    public void registerComment(Long postId, CommentRegisterRequestDto request, UserDetailsImpl userDetails) {
         Member member = memberIsLoginService.isLogin(userDetails);
 
         Post post = postRepository.findById(postId)
@@ -48,7 +42,6 @@ public class CommentService {
 
         // Comment 저장
         commentRepository.save(comment);
-        return new CommentRegisterResponseDto(request.getContent());
     }
 
 

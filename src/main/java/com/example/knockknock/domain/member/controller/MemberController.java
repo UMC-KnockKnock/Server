@@ -79,7 +79,7 @@ public class MemberController {
             @RequestPart(required = false) MultipartFile profileImage
     ) {
         memberService.updateMember(userDetails, request, profileImage);
-        return ResponseMessage.SuccessResponse("수정이 완료되었습니다.", "");
+        return ResponseMessage.SuccessResponse("수정 완료", "");
     }
 
     @DeleteMapping("/delete")
@@ -87,7 +87,7 @@ public class MemberController {
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         memberService.deleteMember(userDetails);
-        return ResponseMessage.SuccessResponse("삭제가 완료되었습니다.", "");
+        return ResponseMessage.SuccessResponse("삭제 완료", "");
 
     }
 }

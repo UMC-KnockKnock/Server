@@ -4,6 +4,7 @@ import com.example.knockknock.domain.hashtag.dto.HashtagRegisterRequestDto;
 import com.example.knockknock.domain.member.security.UserDetailsImpl;
 import com.example.knockknock.domain.post.dto.request.*;
 import com.example.knockknock.domain.post.service.PostService;
+import com.example.knockknock.global.message.ResponseMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,7 @@ public class PostController {
             @RequestPart(required = false) List<MultipartFile> images)
     {
         postService.createPost(request, images, userDetails);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return ResponseMessage.SuccessResponse("게시글 작성 완료", "");
     }
 
     @GetMapping("/{postId}")
@@ -49,28 +50,28 @@ public class PostController {
             @AuthenticationPrincipal UserDetailsImpl userDetails){
         return new ResponseEntity<>(postService.getMyPosts(userDetails), HttpStatus.OK);
     }
-    @PutMapping("/edit/{postId}")
+    @PutMapping("/{postId}")
     public ResponseEntity updatePost(
             @PathVariable Long postId,
-            @RequestBody @Valid PostUpdateRequestDto request,
+            @RequestBody PostUpdateRequestDto request,
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestPart(required = false) List<MultipartFile> images
     ) {
         postService.updatePost(postId, request, images, userDetails);
-        return ResponseEntity.ok().build();
+        return ResponseMessage.SuccessResponse("게시글 수정 완료", "");
     }
 
-    @DeleteMapping("/delete/{postId}")
+    @DeleteMapping("/{postId}")
     public ResponseEntity deletePost(
             @PathVariable Long postId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         postService.deletePost(postId, userDetails);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseMessage.SuccessResponse("게시글 삭제 완료", "");
     }
 
 
-    @GetMapping("/share/{postId}")
+    @GetMapping("/{postId}/share")
     public ResponseEntity<String> sharePost(
             @PathVariable Long postId, HttpServletRequest request
     ) {

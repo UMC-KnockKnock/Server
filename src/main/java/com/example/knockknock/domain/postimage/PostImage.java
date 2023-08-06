@@ -1,4 +1,4 @@
-package com.example.knockknock.domain.postimage.entity;
+package com.example.knockknock.domain.postimage;
 
 import com.example.knockknock.domain.post.entity.Post;
 import jakarta.persistence.*;
