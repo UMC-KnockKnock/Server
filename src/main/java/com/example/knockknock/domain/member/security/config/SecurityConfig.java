@@ -1,6 +1,5 @@
 package com.example.knockknock.domain.member.security.config;
 
-import com.example.knockknock.domain.member.oAuth2.OAuth2UserCustomService;
 import com.example.knockknock.domain.member.repository.MemberRepository;
 
 import com.example.knockknock.domain.member.security.filter.LoginAuthenticaiotnProcessingfilter;
@@ -22,6 +21,7 @@ import org.springframework.security.config.Customizer;
 
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -34,10 +34,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 
-
-
 @Configuration
 @RequiredArgsConstructor
+@EnableWebSecurity
 public class SecurityConfig {
 
     private final MemberDetailService memberDetailService;
@@ -46,7 +45,10 @@ public class SecurityConfig {
     private final MemberService memberService;
     private final ObjectMapper objectMapper;
     private final PasswordEncoder passwordEncoder;
-    private final OAuth2UserCustomService auth2UserCustomService;
+
+
+
+
 
     @Bean
     public WebSecurityCustomizer customizer(){
@@ -74,10 +76,10 @@ public class SecurityConfig {
 
                 .oauth2Login(auth2Login -> auth2Login
                         .loginPage("/login/auth")
-                        /*     .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
-                                .userService(auth2UserCustomService))  */
+                      //     .userInfoEndpoint(point -> point
+                                //.userService(oAuth2UserCustomService)
+                //))
                 )
-
                 .addFilterAfter(loginAuthenticaiotnProcessingfilter(), LogoutFilter.class)
                 .addFilterBefore(jwtAuthenticationProcessingFilter(), LoginAuthenticaiotnProcessingfilter.class)
                 .logout(logout -> logout
@@ -85,6 +87,8 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+
 
 
 

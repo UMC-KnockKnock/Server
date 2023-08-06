@@ -29,16 +29,18 @@ public class MemberController {
     @PostMapping("/signup")
     public ResponseEntity signup(@Valid @RequestBody MemberSignupDto signUpDto) throws Exception{
         log.info("회원 가입 확인 중 : " + signUpDto.getEmail());
-        memberService.signup(signUpDto);
+
     return new ResponseEntity<>(HttpStatus.OK);
     }
+
+
 
 
     // 변경 및 비밀번호 변경
 
     @PutMapping("/update")
     public ResponseEntity updateInfo(@Valid @RequestBody MemberUpdateDto memberUpdateDto) throws Exception{
-        log.info(" 정보 변경 중 입니다 : " + memberUpdateDto.email());
+
         memberService.update(memberUpdateDto);
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -54,7 +56,7 @@ public class MemberController {
 
     @GetMapping("/{id}")
     public ResponseEntity getInfo(@PathVariable("id") Long id) throws Exception {
-        log.info("회원 조회 중 입니다" + id);
+
         Member info = memberService.getInfo(id);
 
         return new ResponseEntity<>(info, HttpStatus.OK);

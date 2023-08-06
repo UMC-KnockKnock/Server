@@ -25,12 +25,10 @@ public class MemberServiceImpl implements MemberService{
     @Override
     public void signup(MemberSignupDto memberSignupDto) throws Exception {
 
+
         Member member = memberSignupDto.signUpToEntity(memberSignupDto);
-
         member.encodePassword(passwordEncoder);
-        log.info("passwordEncode : " + member.getPassword());
 
-        log.info("memberSignupDto : " + memberSignupDto);
 
         if(memberRepository.findByEmail(memberSignupDto.getEmail()).isPresent()){
             throw new IllegalArgumentException("이미 사용 중인 아이디 입니다");
