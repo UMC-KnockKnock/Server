@@ -1,6 +1,6 @@
 package com.example.knockknock.domain.member.service;
 
-import com.example.knockknock.domain.member.MemberRepository;
+import com.example.knockknock.domain.member.repository.MemberRepository;
 import com.example.knockknock.domain.member.SecurityUtil;
 import com.example.knockknock.domain.member.dto.MemberSignupDto;
 import com.example.knockknock.domain.member.dto.MemberUpdateDto;
@@ -8,7 +8,6 @@ import com.example.knockknock.domain.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,11 +32,14 @@ public class MemberServiceImpl implements MemberService{
 
         log.info("memberSignupDto : " + memberSignupDto);
 
+        if(memberRepository.findByEmail(memberSignupDto.getEmail()).isPresent()){
+            throw new IllegalArgumentException("이미 사용 중인 아이디 입니다");
+        }
 
-        memberRepository.findByEmail(memberSignupDto.getEmail()).orElseThrow(()->
-                new IllegalArgumentException("이미 사용 중인 아이디 입니다 " + memberSignupDto.getEmail()));
-        memberRepository.findByNickName(memberSignupDto.getNickname()).orElseThrow
-                (()-> new IllegalArgumentException("이미 사용 중인 별칭 입니다" + memberSignupDto.getNickname()));
+        if(memberRepository.findByNickName(memberSignupDto.getNickname()).isPresent()){
+            throw new IllegalArgumentException("이미 사용 중인 닉네임 입니다");
+        }
+
 
         memberRepository.save(member);
 

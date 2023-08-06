@@ -17,11 +17,14 @@ import org.springframework.web.bind.annotation.*;
 import java.net.http.HttpResponse;
 
 @Slf4j
-@RestController()
+@RestController
 @RequiredArgsConstructor
+@RequestMapping("/member")
 public class MemberController {
 
     private final MemberService memberService;
+
+    // 회원가입
 
     @PostMapping("/signup")
     public ResponseEntity signup(@Valid @RequestBody MemberSignupDto signUpDto) throws Exception{
@@ -31,9 +34,9 @@ public class MemberController {
     }
 
 
+    // 변경 및 비밀번호 변경
 
     @PutMapping("/update")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity updateInfo(@Valid @RequestBody MemberUpdateDto memberUpdateDto) throws Exception{
         log.info(" 정보 변경 중 입니다 : " + memberUpdateDto.email());
         memberService.update(memberUpdateDto);
@@ -47,21 +50,28 @@ public class MemberController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("member/{id}")
-    public ResponseEntity getInfo(@Valid @PathVariable("id") Long id) throws Exception {
+    // 회원 조회
+
+    @GetMapping("/{id}")
+    public ResponseEntity getInfo(@PathVariable("id") Long id) throws Exception {
+        log.info("회원 조회 중 입니다" + id);
         Member info = memberService.getInfo(id);
 
         return new ResponseEntity<>(info, HttpStatus.OK);
     }
 
-    @GetMapping("member")
+    // 본인 조회
+
+    @GetMapping("/myinfo")
     public ResponseEntity getMyInfo(HttpResponse httpResponse) throws Exception{
         Member myInfo = memberService.getMyInfo();
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("/member")
+    // 삭제
+
+    @DeleteMapping("/withdraw")
     public ResponseEntity withdraw(@Valid @RequestBody MemberWithdraw memberWithdraw) throws Exception {
 
         memberService.withdraw(memberWithdraw.getCheckPassword());

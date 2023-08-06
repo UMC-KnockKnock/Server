@@ -1,15 +1,22 @@
 package com.example.knockknock.domain.member.security.config;
 
-import com.example.knockknock.domain.member.jwt.TokenProvider;
-import com.example.knockknock.domain.member.jwt.filter.TokenAuthenticationFilter;
-import com.example.knockknock.domain.member.jwt.jwtRepository.RefreshTokenRepository;
-import com.example.knockknock.domain.member.oAuth2.CustomOAuth2MemberService;
+import com.example.knockknock.domain.member.oAuth2.OAuth2UserCustomService;
+import com.example.knockknock.domain.member.repository.MemberRepository;
+
+import com.example.knockknock.domain.member.security.filter.LoginAuthenticaiotnProcessingfilter;
+import com.example.knockknock.domain.member.security.filter.JwtAuthenticationProcessingFilter;
+import com.example.knockknock.domain.member.security.handler.LoginFailureHandler;
+import com.example.knockknock.domain.member.security.service.JwtService;
+import com.example.knockknock.domain.member.security.handler.LoginSuccessHandler;
 import com.example.knockknock.domain.member.security.service.MemberDetailService;
 import com.example.knockknock.domain.member.service.MemberService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 
 
@@ -19,14 +26,13 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import org.springframework.security.web.authentication.logout.LogoutFilter;
+
 
 
 
@@ -35,10 +41,12 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfig {
 
     private final MemberDetailService memberDetailService;
-    private final CustomOAuth2MemberService customOAuth2MemberService;
-    private final TokenProvider tokenProvider;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final JwtService jwtService;
+    private final MemberRepository memberRepository;
     private final MemberService memberService;
+    private final ObjectMapper objectMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final OAuth2UserCustomService auth2UserCustomService;
 
     @Bean
     public WebSecurityCustomizer customizer(){
@@ -54,50 +62,75 @@ public class SecurityConfig {
         http
                 .csrf(CsrfConfigurer::disable)
                 .cors(Customizer.withDefaults())
-
+                .formLogin(login -> login.disable())
+                .httpBasic(httpbasic -> httpbasic.disable())
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 설정 안함
 
-                .addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/login", "/signup").permitAll()
-                        .requestMatchers("/api/**").authenticated()
+                        .requestMatchers("member/login", "member/signup", "member/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .oauth2Login(outh2Login -> outh2Login
-                        .loginPage("/login")
-                        .authorizationEndpoint(authorizationEndpointConfig -> authorizationEndpointConfig
-                                .authorizationRequestRepository(oAuth2AuthorizationRequestBasedOnCookieRepository()))
-                        .successHandler(oAuth2SuccessHandler())
 
-                        .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint
-                                .userService(customOAuth2MemberService))
+                .oauth2Login(auth2Login -> auth2Login
+                        .loginPage("/login/auth")
+                        /*     .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
+                                .userService(auth2UserCustomService))  */
                 )
-                .logout(logut -> logut
-                        .logoutSuccessUrl("/logut"))
 
-                .exceptionHandling(exceptionHandling -> exceptionHandling
-                        .defaultAuthenticationEntryPointFor(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED), new AntPathRequestMatcher("/api/**")));
-
+                .addFilterAfter(loginAuthenticaiotnProcessingfilter(), LogoutFilter.class)
+                .addFilterBefore(jwtAuthenticationProcessingFilter(), LoginAuthenticaiotnProcessingfilter.class)
+                .logout(logout -> logout
+                        .logoutSuccessUrl("/logout"));
 
         return http.build();
     }
 
+
+
+    /*
+    DaoAuthentication 비밀번호 확인
+     */
+
     @Bean
-    public OAuth2SuccessHandler oAuth2SuccessHandler() {
-        return new OAuth2SuccessHandler(tokenProvider, refreshTokenRepository, oAuth2AuthorizationRequestBasedOnCookieRepository(), memberService);
+    public AuthenticationManager authenticationManger() {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
+        daoAuthenticationProvider.setUserDetailsService(memberDetailService);
+    return new ProviderManager(daoAuthenticationProvider);
+    }
+
+    /*
+    로그인 실패시
+     */
+    @Bean
+    public LoginFailureHandler loginFailureHandler(){
+        return new LoginFailureHandler();
+    }
+
+    /*
+     로그인 이후 작업업     */
+    @Bean
+    public LoginSuccessHandler loginSuccessHandler(){
+        return new LoginSuccessHandler(jwtService, memberRepository);
     }
 
     @Bean
-    public OAuth2AuthorizationRequestBasedOnCookieRepository oAuth2AuthorizationRequestBasedOnCookieRepository() {
-        return new OAuth2AuthorizationRequestBasedOnCookieRepository();
+    public LoginAuthenticaiotnProcessingfilter loginAuthenticaiotnProcessingfilter(){
+        LoginAuthenticaiotnProcessingfilter loginAuthenticaiotnProcessingfilter =new LoginAuthenticaiotnProcessingfilter(objectMapper);
+        loginAuthenticaiotnProcessingfilter.setAuthenticationManager(authenticationManger());
+        loginAuthenticaiotnProcessingfilter.setAuthenticationSuccessHandler(loginSuccessHandler());
+        loginAuthenticaiotnProcessingfilter.setAuthenticationFailureHandler(loginFailureHandler());;
+        return loginAuthenticaiotnProcessingfilter;
     }
 
+
     @Bean
-    public TokenAuthenticationFilter tokenAuthenticationFilter() {
-        return new TokenAuthenticationFilter(tokenProvider);
+    public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter(){
+        JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter = new JwtAuthenticationProcessingFilter(jwtService, memberRepository);
+        return jwtAuthenticationProcessingFilter;
     }
+
 
 
 

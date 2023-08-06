@@ -52,6 +52,35 @@ public class Member {
 
     private String socialId;
 
+    private String refreshToken;
+
+    // 찐친 관리
+
+    /*
+    public void  updateBestBestFriend(String BestFriend){
+        this.bestFriend = bestFriend;
+    }
+    */
+
+
+    @Builder
+    public Member(String email, String nickName, Integer age, String memberName, String birthday){
+        this.email = email;
+        this.nickName =nickName;
+        this.age =age;
+        this.memberName = memberName;
+        this.birthday =birthday;
+    }
+
+    //jwt  토큰
+    public void updateRefreshToken(String refreshToken){
+        this.refreshToken =refreshToken;
+    }
+
+    public void destroyRefreshToken(){
+        this.refreshToken = null;
+    }
+
     //  정보 수정 //
     public void upPassword(PasswordEncoder passwordEncoder, String toBePassword){
         this.password = passwordEncoder.encode(password);

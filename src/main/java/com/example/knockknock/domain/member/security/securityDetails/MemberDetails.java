@@ -1,12 +1,10 @@
-package com.example.knockknock.domain.member.security.securityEntity;
+package com.example.knockknock.domain.member.security.securityDetails;
 
 import com.example.knockknock.domain.member.entity.Member;
-import com.example.knockknock.domain.member.entity.SocialType;
-import lombok.RequiredArgsConstructor;
+import lombok.Builder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.List;
@@ -20,6 +18,7 @@ public class MemberDetails implements UserDetails {
     public MemberDetails(Member member) {
         this.member = member;
     }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

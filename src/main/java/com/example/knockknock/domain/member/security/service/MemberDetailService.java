@@ -1,9 +1,9 @@
 package com.example.knockknock.domain.member.security.service;
 
-import com.example.knockknock.domain.member.MemberRepository;
+import com.example.knockknock.domain.member.repository.MemberRepository;
 import com.example.knockknock.domain.member.entity.Member;
 
-import com.example.knockknock.domain.member.security.securityEntity.MemberDetails;
+import com.example.knockknock.domain.member.security.securityDetails.MemberDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

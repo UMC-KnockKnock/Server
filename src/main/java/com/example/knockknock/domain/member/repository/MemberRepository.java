@@ -1,4 +1,4 @@
-package com.example.knockknock.domain.member;
+package com.example.knockknock.domain.member.repository;
 
 import com.example.knockknock.domain.member.entity.Member;
 import com.example.knockknock.domain.member.entity.SocialType;
@@ -16,4 +16,5 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Optional<Member> findBySocialTypeAndSocialId(SocialType socialType, String socialId);
 
+    Optional<Member> findByRefreshToken(String refreshToken);
 }
