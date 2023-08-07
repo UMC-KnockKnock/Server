@@ -8,6 +8,7 @@ import com.example.knockknock.domain.member.dto.response.GetMembersResponseDto;
 import com.example.knockknock.domain.member.dto.response.MemberDetailResponseDto;
 import com.example.knockknock.domain.member.security.UserDetailsImpl;
 import com.example.knockknock.domain.member.service.MemberService;
+import com.example.knockknock.global.exception.GlobalErrorCode;
 import com.example.knockknock.global.message.ResponseMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -35,8 +36,8 @@ public class MemberController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<Void> signup(
-            @RequestBody MemberSignUpRequestDto request,
+    public ResponseEntity signup(
+            @RequestPart MemberSignUpRequestDto request,
             @RequestPart(required = false) MultipartFile profileImage){
         memberService.signup(request, profileImage);
         return ResponseMessage.SuccessResponse("회원가입 성공", "");
@@ -54,10 +55,18 @@ public class MemberController {
 
     }
 
-    @PostMapping("/authentication")
+    @PostMapping("/emailcode")
     public ResponseEntity authentication(@RequestBody EmailAuthenticationRequestDto request) {
-        memberService.authentication(request);
+        memberService.sendCode(request);
         return ResponseMessage.SuccessResponse("인증메일을 발송하였습니다", "");
+    }
+
+    @GetMapping("/authentication")
+    public ResponseEntity isAuthenticated (@RequestBody String code) {
+        Boolean isAuthenticated = memberService.isValid(code);
+        if (isAuthenticated){
+        return ResponseMessage.SuccessResponse("인증이 완료되었습니다.", "");
+        } else return ResponseMessage.ErrorResponse(GlobalErrorCode.INVALID_CODE);
     }
 
     @GetMapping()
@@ -75,7 +84,7 @@ public class MemberController {
     @PutMapping("/update")
     public ResponseEntity updateUser(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestBody MemberUpdateRequestDto request,
+            @RequestPart MemberUpdateRequestDto request,
             @RequestPart(required = false) MultipartFile profileImage
     ) {
         memberService.updateMember(userDetails, request, profileImage);
