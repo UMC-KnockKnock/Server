@@ -28,7 +28,7 @@ public class MemberController {
 
     @PostMapping("/signup")
     public ResponseEntity signup(@Valid @RequestBody MemberSignupDto signUpDto) throws Exception{
-        log.info("회원 가입 확인 중 : " + signUpDto.getEmail());
+        memberService.signup(signUpDto);
 
     return new ResponseEntity<>(HttpStatus.OK);
     }

@@ -70,16 +70,17 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 설정 안함
 
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("member/login", "member/signup", "member/**").permitAll()
+                        .requestMatchers("/login/**", "member/signup", "member/**").permitAll()
                         .anyRequest().authenticated()
                 )
 
-                .oauth2Login(auth2Login -> auth2Login
-                        .loginPage("/login/auth")
-                      //     .userInfoEndpoint(point -> point
-                                //.userService(oAuth2UserCustomService)
-                //))
-                )
+//                .oauth2Login(auth2Login -> auth2Login
+//                        .loginPage("/login/auth")
+//                      //     .userInfoEndpoint(point -> point
+//                                //.userService(oAuth2UserCustomService)
+//                //))
+  //              )
+
                 .addFilterAfter(loginAuthenticaiotnProcessingfilter(), LogoutFilter.class)
                 .addFilterBefore(jwtAuthenticationProcessingFilter(), LoginAuthenticaiotnProcessingfilter.class)
                 .logout(logout -> logout
@@ -102,6 +103,14 @@ public class SecurityConfig {
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
         daoAuthenticationProvider.setUserDetailsService(memberDetailService);
     return new ProviderManager(daoAuthenticationProvider);
+
+    }
+
+    /*
+    로그인 이후 작업업     */
+    @Bean
+    public LoginSuccessHandler loginSuccessHandler(){
+        return new LoginSuccessHandler(jwtService, memberRepository);
     }
 
     /*
@@ -112,16 +121,11 @@ public class SecurityConfig {
         return new LoginFailureHandler();
     }
 
-    /*
-     로그인 이후 작업업     */
-    @Bean
-    public LoginSuccessHandler loginSuccessHandler(){
-        return new LoginSuccessHandler(jwtService, memberRepository);
-    }
+
 
     @Bean
     public LoginAuthenticaiotnProcessingfilter loginAuthenticaiotnProcessingfilter(){
-        LoginAuthenticaiotnProcessingfilter loginAuthenticaiotnProcessingfilter =new LoginAuthenticaiotnProcessingfilter(objectMapper);
+        LoginAuthenticaiotnProcessingfilter loginAuthenticaiotnProcessingfilter = new LoginAuthenticaiotnProcessingfilter(objectMapper);
         loginAuthenticaiotnProcessingfilter.setAuthenticationManager(authenticationManger());
         loginAuthenticaiotnProcessingfilter.setAuthenticationSuccessHandler(loginSuccessHandler());
         loginAuthenticaiotnProcessingfilter.setAuthenticationFailureHandler(loginFailureHandler());;

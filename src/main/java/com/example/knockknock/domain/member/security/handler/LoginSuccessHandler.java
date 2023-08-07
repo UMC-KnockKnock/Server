@@ -2,16 +2,19 @@ package com.example.knockknock.domain.member.security.handler;
 
 import com.example.knockknock.domain.member.repository.MemberRepository;
 import com.example.knockknock.domain.member.security.service.JwtService;
+import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
 import java.io.IOException;
 
+@Slf4j
 @RequiredArgsConstructor
 public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
@@ -22,6 +25,8 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+
+        log.info("로그인 성고시 LoginSuccessHandler 시행 중 입니다" + request);
 
         String username = extractEmail(authentication);
         String accessToken = jwtService.createAccessToken(username);

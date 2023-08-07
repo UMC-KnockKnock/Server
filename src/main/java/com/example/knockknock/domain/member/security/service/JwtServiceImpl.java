@@ -35,18 +35,29 @@ public class JwtServiceImpl implements JwtService{
 
     @Value("${jwt.secret}")
     private String secret;
+    //    secret: knockknock
 
     @Value("${jwt.access.expiration}")
     private long accessExpiration;
 
+    //  expiration: 20000
+
     @Value("${jwt.access.header}")
     private String accessHeader;
+
+    //header: Authorization
 
     @Value("${jwt.refresh.expiration}")
     private long refreshExpiration;
 
+    // expiration: 90
+
     @Value("${jwt.refresh.header}")
     private String refreshHeader;
+
+    //     header : Authentication-refresh
+
+
 
     @Override
     public String createAccessToken(String email) {
