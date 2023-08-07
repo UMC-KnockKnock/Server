@@ -6,6 +6,8 @@ import com.example.knockknock.domain.member.dto.request.MemberSignUpRequestDto;
 import com.example.knockknock.domain.member.dto.request.MemberUpdateRequestDto;
 import com.example.knockknock.domain.member.dto.response.GetMembersResponseDto;
 import com.example.knockknock.domain.member.dto.response.MemberDetailResponseDto;
+import com.example.knockknock.domain.member.entity.EmailCode;
+import com.example.knockknock.domain.member.repository.EmailCodeRepository;
 import com.example.knockknock.domain.member.repository.MemberRepository;
 import com.example.knockknock.domain.member.entity.Member;
 import com.example.knockknock.domain.member.repository.RefreshTokenRepository;
@@ -44,6 +46,8 @@ public class MemberService {
     private final MemberIsLoginService memberIsLoginService;
     private final EmailAuthenticationService emailAuthenticationService;
     private final RefreshTokenRepository refreshTokenRepository;
+
+    private final EmailCodeRepository emailCodeRepository;
 
 
     // 회원가입
@@ -86,15 +90,30 @@ public class MemberService {
         memberRepository.save(member);
     }
     @Transactional
-    public void authentication(EmailAuthenticationRequestDto request){
+    public void sendCode(EmailAuthenticationRequestDto request){
         String email = request.getEmail();
         // 사용자의 이메일 주소로 Member를 찾음 (이메일 주소가 일치해야 함)
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(()-> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
         String code = emailAuthenticationService.generateCode();
+
+        EmailCode emailCode = EmailCode.builder()
+                .email(email)
+                .code(code)
+                .build();
+
+        emailCodeRepository.save(emailCode);
 
         String emailBody = "이메일을 인증하려면 아래 코드를 입력하세요:\n" + code;
         emailService.sendEmail(email, "메일 테스트", emailBody);
+    }
+
+    @Transactional
+    public Boolean isValid(String code) {
+        Optional<EmailCode> codeOptional = emailCodeRepository.findByCode(code);
+        if (codeOptional.isPresent()){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     // 유저 로그인

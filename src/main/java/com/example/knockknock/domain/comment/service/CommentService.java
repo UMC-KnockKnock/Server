@@ -2,6 +2,7 @@ package com.example.knockknock.domain.comment.service;
 
 import com.example.knockknock.domain.comment.dto.request.CommentRegisterRequestDto;
 import com.example.knockknock.domain.comment.dto.request.CommentUpdateRequestDto;
+import com.example.knockknock.domain.comment.dto.response.GetCommentsResponseDto;
 import com.example.knockknock.domain.comment.entity.Comment;
 import com.example.knockknock.domain.comment.repository.CommentRepository;
 import com.example.knockknock.domain.member.entity.Member;
@@ -13,6 +14,9 @@ import com.example.knockknock.global.exception.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +46,16 @@ public class CommentService {
 
         // Comment 저장
         commentRepository.save(comment);
+    }
+
+    @Transactional
+    public List<GetCommentsResponseDto> getComments(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
+        List<Comment> comments = commentRepository.findByPost(post);
+        return comments.stream()
+                .map(GetCommentsResponseDto::from)
+                .collect(Collectors.toList());
     }
 
 

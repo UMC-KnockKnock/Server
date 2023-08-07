@@ -28,7 +28,6 @@ public class PostDetailResponseDto {
     private int commentCount;
     private int reportCount;
 
-    private List<GetCommentsResponseDto> comments;
 
     private List<String> hashtags;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -52,9 +51,6 @@ public class PostDetailResponseDto {
                 .map(Hashtag::getTagName)
                 .collect(Collectors.toList());
 
-        List<GetCommentsResponseDto> comments = post.getComments().stream()
-                .map(GetCommentsResponseDto::from)
-                .collect(Collectors.toList());
 
         return PostDetailResponseDto.builder()
                 .postId(post.getPostId())
@@ -67,7 +63,6 @@ public class PostDetailResponseDto {
                 .likeCount(post.getLikeCount())
                 .commentCount(post.getComments().size())
                 .reportCount(post.getReports().size())
-                .comments(comments)
                 .hashtags(hashtagNames)
                 .createdAt(post.getCreatedAt())
                 .modifiedAt(post.getModifiedAt())
