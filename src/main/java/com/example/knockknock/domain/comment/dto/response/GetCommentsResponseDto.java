@@ -25,7 +25,6 @@ public class GetCommentsResponseDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime modifiedAt;
 
-    private List<GetRepliesResponseDto> replies;
 
 
     public static GetCommentsResponseDto from(Comment comment) {
@@ -38,9 +37,6 @@ public class GetCommentsResponseDto {
             nickName = comment.getMember().getNickName();
         }
 
-        List<GetRepliesResponseDto> replies = comment.getReplies().stream()
-                .map(GetRepliesResponseDto::from)
-                .collect(Collectors.toList());
 
         return GetCommentsResponseDto.builder()
                 .commentId(comment.getCommentId())
@@ -51,7 +47,6 @@ public class GetCommentsResponseDto {
                 .reportCount(comment.getReports().size())
                 .createdAt(comment.getCreatedAt())
                 .modifiedAt(comment.getModifiedAt())
-                .replies(replies)
                 .build();
     }
 
