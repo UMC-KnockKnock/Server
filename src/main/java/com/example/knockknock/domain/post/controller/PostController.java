@@ -1,14 +1,18 @@
 package com.example.knockknock.domain.post.controller;
 
 import com.example.knockknock.domain.hashtag.dto.HashtagRegisterRequestDto;
+import com.example.knockknock.domain.member.security.UserDetailsImpl;
 import com.example.knockknock.domain.post.dto.request.*;
 import com.example.knockknock.domain.post.service.PostService;
+import com.example.knockknock.global.message.ResponseMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,10 +31,11 @@ public class PostController {
             @RequestPart("request")
             @Valid
             PostCreateRequestDto request,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestPart(required = false) List<MultipartFile> images)
     {
-        postService.createPost(request, images);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        postService.createPost(request, images, userDetails);
+        return ResponseMessage.SuccessResponse("게시글 작성 완료", "");
     }
 
     @GetMapping("/{postId}")
@@ -40,26 +45,33 @@ public class PostController {
         return new ResponseEntity<>(postService.getPostDetail(postId), HttpStatus.OK);
     }
 
-    @PutMapping("/edit/{postId}")
+    @GetMapping("/myPosts")
+    public ResponseEntity getMyPosts(
+            @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return new ResponseEntity<>(postService.getMyPosts(userDetails), HttpStatus.OK);
+    }
+    @PutMapping("/{postId}")
     public ResponseEntity updatePost(
             @PathVariable Long postId,
-            @RequestBody @Valid PostUpdateRequestDto request,
+            @RequestBody PostUpdateRequestDto request,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestPart(required = false) List<MultipartFile> images
     ) {
-        postService.updatePost(postId, request, images);
-        return ResponseEntity.ok().build();
+        postService.updatePost(postId, request, images, userDetails);
+        return ResponseMessage.SuccessResponse("게시글 수정 완료", "");
     }
 
-    @DeleteMapping("/delete/{postId}")
+    @DeleteMapping("/{postId}")
     public ResponseEntity deletePost(
-            @PathVariable Long postId
+            @PathVariable Long postId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        postService.deletePost(postId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        postService.deletePost(postId, userDetails);
+        return ResponseMessage.SuccessResponse("게시글 삭제 완료", "");
     }
 
 
-    @GetMapping("/share/{postId}")
+    @GetMapping("/{postId}/share")
     public ResponseEntity<String> sharePost(
             @PathVariable Long postId, HttpServletRequest request
     ) {

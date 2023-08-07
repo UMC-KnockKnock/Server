@@ -1,11 +1,8 @@
-package com.example.knockknock.domain.member.dto;
+package com.example.knockknock.domain.member.dto.response;
 
 import com.example.knockknock.domain.member.entity.Member;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.constraints.Pattern;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,6 +17,7 @@ public class MemberDetailResponseDto {
     private Long memberId;
     private String memberName;
     private String memberGender;
+    private String profileImageUrl;
     private String nickName;
     private String phoneNumber;
     private String email;
@@ -36,6 +34,7 @@ public class MemberDetailResponseDto {
                 .memberId(member.getMemberId())
                 .memberName(member.getMemberName())
                 .memberGender(String.valueOf(member.getMemberGender()))
+                .profileImageUrl(member.getProfileImageURL())
                 .nickName(member.getNickName())
                 .phoneNumber(member.getPhoneNumber())
                 .email(member.getEmail())

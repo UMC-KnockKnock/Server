@@ -1,7 +1,7 @@
 package com.example.knockknock.domain.member.entity;
 
 import com.example.knockknock.domain.post.entity.Post;
-import com.example.knockknock.domain.member.dto.MemberUpdateRequestDto;
+import com.example.knockknock.domain.member.dto.request.MemberUpdateRequestDto;
 import com.example.knockknock.global.timestamp.TimeStamped;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -23,7 +23,7 @@ public class Member extends TimeStamped {
     @Column(name = "MEMBER_ID")
     private Long memberId;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Post> posts;
 
     @Column(name = "MEMBER_NAME")
@@ -32,6 +32,9 @@ public class Member extends TimeStamped {
     @Enumerated(EnumType.STRING)
     @Column(name = "MEMBER_GENDER")
     private Gender memberGender;
+
+    @Column(name ="PROFILE_IMAGE")
+    private String profileImageURL;
 
     @Column(name = "NICKNAME")
     private String nickName;
@@ -51,6 +54,10 @@ public class Member extends TimeStamped {
     @Column(nullable = true)
     private String password;
 
+    public void setProfileImageURL(String profileImageURL) {
+        this.profileImageURL = profileImageURL;
+    }
+
     public void updateMember(MemberUpdateRequestDto request) {
         if (request.getMemberName() != null) {
             this.memberName = request.getMemberName();
@@ -67,6 +74,10 @@ public class Member extends TimeStamped {
         if (request.getBirthday() != null) {
             this.birthday = request.getBirthday();
         }
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public void calculateAge() {

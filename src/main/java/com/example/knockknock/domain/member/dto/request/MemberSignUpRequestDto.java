@@ -1,4 +1,4 @@
-package com.example.knockknock.domain.member.dto;
+package com.example.knockknock.domain.member.dto.request;
 import com.example.knockknock.domain.member.entity.Gender;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

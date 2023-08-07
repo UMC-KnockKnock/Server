@@ -5,7 +5,7 @@ import com.example.knockknock.domain.board.entity.BoardType;
 import com.example.knockknock.domain.hashtag.entity.Hashtag;
 import com.example.knockknock.domain.member.entity.Member;
 import com.example.knockknock.domain.post.dto.request.PostUpdateRequestDto;
-import com.example.knockknock.domain.postimage.entity.PostImage;
+import com.example.knockknock.domain.postimage.PostImage;
 import com.example.knockknock.domain.postlike.entity.PostLike;
 import com.example.knockknock.domain.report.entity.Report;
 import com.example.knockknock.global.timestamp.TimeStamped;
@@ -102,9 +102,9 @@ public class Post extends TimeStamped {
     public void addComment(Comment comment) {
         comments.add(comment);
         comment.setPost(this);
-        Integer anonymousNumber = anonymousWriters.size() + 1;
         if (comment.getIsAnonymous()) {
             Long memberId = comment.getMember().getMemberId();
+            int anonymousNumber = anonymousWriters.getOrDefault(memberId, 0) + 1;
             anonymousWriters.put(memberId, anonymousNumber);
         }
     }

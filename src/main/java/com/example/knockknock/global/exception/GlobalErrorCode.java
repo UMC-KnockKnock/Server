@@ -19,9 +19,11 @@ public enum GlobalErrorCode {
     NOT_VALID_NICKNAME(BAD_REQUEST, "영문, 한글, 숫자를 포함한 2~ 16글자를 입력해 주세요."),
     NOT_VALID_PASSWORD(BAD_REQUEST, "영문, 숫자, 특수문자를 포함한 8~20 글자를 입력해 주세요."),
     NOT_VALID_PHONENUMBER(BAD_REQUEST, "11자리 이내의 번호를 '-'를 제외한 숫자만 입력해 주세요."),
+
     // 401 Unauthorized - 권한 없음
     INVALID_TOKEN(UNAUTHORIZED, "토큰이 유효하지 않습니다"),
     LOGIN_REQUIRED(UNAUTHORIZED, "로그인이 필요한 서비스입니다."),
+    INVALID_CODE(UNAUTHORIZED, "유효하지 않은 코드입니다"),
     // 404 Not Found - 찾을 수 없음
     EMAIL_NOT_FOUND(NOT_FOUND, "존재하지 않는 이메일 입니다."),
     NEED_AGREE_REQUIRE_TERMS(NOT_FOUND, "필수 약관에 동의해 주세요"),
@@ -41,12 +43,17 @@ public enum GlobalErrorCode {
     // 400 BAD_REQUEST - 잘못된 요청
     DUPLICATE_REPORT(BAD_REQUEST, "이미 신고한 게시물/댓글입니다."),
     // 401 Unauthorized = 권한 없음
+    PERMISSION_DENIED(UNAUTHORIZED, "권한이 없습니다."),
     // 404 Not Found - 찾을 수 없음
     MEMBER_NOT_FOUND(NOT_FOUND, "사용자를 찾을 수 없습니다."),
     POST_NOT_FOUND(NOT_FOUND, "게시글이 존재하지 않습니다"),
     COMMENT_NOT_FOUND(NOT_FOUND, "존재하지 않는 댓글입니다."),
     REPLY_NOT_FOUND(NOT_FOUND, "존재하지 않는 답글입니다."),
     HASHTAG_NOT_FOUND(NOT_FOUND, "존재하지 않는 해시태그입니다."),
+
+    //Gathering
+    //404 Not Found - 찾을 수 없음
+    GATHERING_NOT_FOUND(NOT_FOUND, "존재하지 않는 모임입니다."),
 
     ;
 

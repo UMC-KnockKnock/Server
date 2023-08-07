@@ -1,6 +1,8 @@
 package com.example.knockknock.global.jwt;
 
 import com.example.knockknock.domain.member.entity.Member;
+import com.example.knockknock.domain.member.repository.RefreshTokenRepository;
+import com.example.knockknock.domain.member.security.RefreshToken;
 import com.example.knockknock.domain.member.security.UserDetailsServiceImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -18,17 +20,21 @@ import org.springframework.util.StringUtils;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Optional;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtUtil {
 
-    public static final String AUTHORIZATION_HEADER = "Authorization";
+    public static final String ACCESS_TOKEN_HEADER = "Authorization";
+    public static final String REFRESH_TOKEN_HEADER = "Refresh-Token";
     private static final String BEARER_PREFIX = "Bearer ";
     private static final long TOKEN_TIME = 60 * 60 * 1000L;
+    private static final long REFRESH_TOKEN_TIME = 24 * 60 * 60 * 1000L;
 
     private final UserDetailsServiceImpl userDetailsService;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Value("${jwt.secret.key}")
     private String secretKey;
@@ -45,27 +51,48 @@ public class JwtUtil {
     }
 
     // header 토큰을 가져오기
-    public String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
-            return bearerToken.substring(7);
+    public String resolveToken(HttpServletRequest request, String tokenType) {
+        String headerName;
+
+        if ("Access".equals(tokenType)) {
+            headerName = ACCESS_TOKEN_HEADER; // 올바른 상수 이름이어야 합니다.
+        } else if ("Refresh".equals(tokenType)) {
+            headerName = REFRESH_TOKEN_HEADER; // 올바른 상수 이름이어야 합니다.
+        } else {
+            return null; // 또는 적절한 예외를 던질 수 있습니다.
+        }
+
+        String token = request.getHeader(headerName);
+        if (StringUtils.hasText(token) && token.startsWith(BEARER_PREFIX)) {
+            return token.substring(7);
         }
         return null;
     }
 
     // 토큰 생성
-    public String createToken(Member member) {
+    public String createAccessToken(String memberEmail) {
         Date date = new Date();
 
         return BEARER_PREFIX +
                 Jwts.builder()
-                        .setSubject(member.getMemberId().toString())
+                        .setSubject(memberEmail)
 //                        .claim(AUTHORIZATION_KEY, role)
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME))
                         .setIssuedAt(date)
                         .signWith(key, signatureAlgorithm)
                         .compact();
     }
+    public String createRefreshToken(String memberEmail) {
+        Date date = new Date();
+        return  BEARER_PREFIX +
+                Jwts.builder()
+                .setSubject(memberEmail)
+                .setExpiration(new Date(date.getTime() + REFRESH_TOKEN_TIME))
+                .setIssuedAt(date)
+                .signWith(key, signatureAlgorithm)
+                .compact();
+    }
+
 
     // 토큰 검증
     public boolean validateToken(String token) {
@@ -84,10 +111,38 @@ public class JwtUtil {
         return false;
     }
 
+    public boolean validateRefreshToken(String refreshToken) {
+        if (!validateToken(refreshToken)) {
+            log.warn("Refresh token validation failed in the first phase");
+            return false;
+        }
+
+        // 저장된 토큰과 비교
+        String memberEmail = getMemberEmailFromToken(refreshToken);
+        Optional<RefreshToken> refreshTokenOptional = refreshTokenRepository.findByMemberEmail(memberEmail);
+
+        if (!refreshTokenOptional.isPresent()) {
+            log.warn("No matching refresh token found for email: {}", memberEmail);
+            return false;
+        }
+
+        boolean isEqual = refreshToken.equals(refreshTokenOptional.get().getRefreshToken());
+        if (!isEqual) {
+            log.warn("Refresh token mismatch for email: {}", memberEmail);
+        }
+
+        return isEqual;
+
+    }
+
     // 토큰에서 사용자 정보 가져오기
     public Claims getUserInfoFromToken(String token) {
         // jwt 토큰을 파싱해서 그 안에 들어있는 클레임을 추출하는 코드
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+    }
+
+    public String getMemberEmailFromToken(String token) {
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
     }
 
     // 인증 객체 생성

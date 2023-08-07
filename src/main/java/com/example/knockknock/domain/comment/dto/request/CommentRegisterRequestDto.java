@@ -9,8 +9,6 @@ import jakarta.validation.constraints.NotBlank;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommentRegisterRequestDto {
-    @NotNull
-    private Long memberId;
     @NotBlank
     private String content;
     @NotNull

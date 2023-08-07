@@ -13,8 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 public class PostCreateRequestDto {
     @NotNull
-    private Long memberId;
-    @NotNull
     private BoardType boardType;
     @NotNull
     @Builder.Default

@@ -11,10 +11,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostUpdateRequestDto {
-    @NotBlank
+
     private String title;
 
-    @NotBlank
     private String content;
 
     private List<String> imagesToDelete;

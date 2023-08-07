@@ -10,8 +10,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReplyRegisterRequestDto {
-    @NotNull
-    private Long memberId;
     @NotBlank
     private String content;
     @NotNull
