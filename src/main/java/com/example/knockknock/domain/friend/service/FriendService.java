@@ -129,4 +129,13 @@ public class FriendService {
         Friend friend = getFriendService.checkRole(friendId, member);
         friend.setBestFriend();
     }
+
+    @Transactional
+    public List<FriendResponseDto> searchFriends(String keyword) {
+        List<Friend> friends = friendRepository.searchFriends(keyword);
+
+        return friends.stream()
+                .map(FriendResponseDto::of)
+                .collect(Collectors.toList());
+    }
 }

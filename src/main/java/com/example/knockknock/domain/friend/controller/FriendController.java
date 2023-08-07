@@ -46,6 +46,10 @@ public class FriendController {
     }
 
     // 친구 검색 /friends/search
+    @GetMapping("/search")
+    public ResponseEntity getFriendsByKeyword(@RequestParam("keyword") String keyword) {
+        return ResponseMessage.SuccessResponse("친구 검색 성공", friendService.searchFriends(keyword));
+    }
 
     // 친구 페이지 내용 불러오기 (첫 화면) GET: /friends/{friendId}
     @Operation(summary = "친구 상세 조회", description = "친구 상세 조회")
