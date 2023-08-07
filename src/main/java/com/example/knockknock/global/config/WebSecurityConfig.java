@@ -54,6 +54,7 @@ public class WebSecurityConfig {
         http.sessionManagement((session) -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         );
+        http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()));
 
         return http
                 .authorizeHttpRequests(authorize -> authorize
