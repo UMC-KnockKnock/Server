@@ -1,9 +1,6 @@
 package com.example.knockknock.domain.member.service;
 
-import com.example.knockknock.domain.member.dto.request.EmailAuthenticationRequestDto;
-import com.example.knockknock.domain.member.dto.request.LoginRequestDto;
-import com.example.knockknock.domain.member.dto.request.MemberSignUpRequestDto;
-import com.example.knockknock.domain.member.dto.request.MemberUpdateRequestDto;
+import com.example.knockknock.domain.member.dto.request.*;
 import com.example.knockknock.domain.member.dto.response.GetMembersResponseDto;
 import com.example.knockknock.domain.member.dto.response.MemberDetailResponseDto;
 import com.example.knockknock.domain.member.entity.EmailCode;
@@ -107,8 +104,10 @@ public class MemberService {
     }
 
     @Transactional
-    public Boolean isValid(String code) {
-        Optional<EmailCode> codeOptional = emailCodeRepository.findByCode(code);
+    public Boolean isValid(CheckAuthCodeRequestDto request) {
+        String email = request.getEmail();
+        String code = request.getCode();
+        Optional<EmailCode> codeOptional = emailCodeRepository.findByEmailAndCode(email, code);
         if (codeOptional.isPresent()){
             return true;
         } else {

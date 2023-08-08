@@ -1,9 +1,6 @@
 package com.example.knockknock.domain.member.controller;
 
-import com.example.knockknock.domain.member.dto.request.EmailAuthenticationRequestDto;
-import com.example.knockknock.domain.member.dto.request.LoginRequestDto;
-import com.example.knockknock.domain.member.dto.request.MemberSignUpRequestDto;
-import com.example.knockknock.domain.member.dto.request.MemberUpdateRequestDto;
+import com.example.knockknock.domain.member.dto.request.*;
 import com.example.knockknock.domain.member.dto.response.GetMembersResponseDto;
 import com.example.knockknock.domain.member.dto.response.MemberDetailResponseDto;
 import com.example.knockknock.domain.member.security.UserDetailsImpl;
@@ -62,8 +59,8 @@ public class MemberController {
     }
 
     @GetMapping("/authentication")
-    public ResponseEntity isAuthenticated (@RequestBody String code) {
-        Boolean isAuthenticated = memberService.isValid(code);
+    public ResponseEntity isAuthenticated (@RequestBody CheckAuthCodeRequestDto request) {
+        Boolean isAuthenticated = memberService.isValid(request);
         if (isAuthenticated){
         return ResponseMessage.SuccessResponse("인증이 완료되었습니다.", "");
         } else return ResponseMessage.ErrorResponse(GlobalErrorCode.INVALID_CODE);
