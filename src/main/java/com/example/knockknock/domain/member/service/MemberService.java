@@ -1,15 +1,15 @@
 package com.example.knockknock.domain.member.service;
 
-import com.example.knockknock.domain.member.dto.request.EmailAuthenticationRequestDto;
-import com.example.knockknock.domain.member.dto.request.LoginRequestDto;
-import com.example.knockknock.domain.member.dto.request.MemberSignUpRequestDto;
-import com.example.knockknock.domain.member.dto.request.MemberUpdateRequestDto;
+import com.example.knockknock.domain.member.dto.request.*;
 import com.example.knockknock.domain.member.dto.response.GetMembersResponseDto;
 import com.example.knockknock.domain.member.dto.response.MemberDetailResponseDto;
+import com.example.knockknock.domain.member.entity.EmailCode;
+import com.example.knockknock.domain.member.repository.EmailCodeRepository;
 import com.example.knockknock.domain.member.repository.MemberRepository;
 import com.example.knockknock.domain.member.entity.Member;
 import com.example.knockknock.domain.member.repository.RefreshTokenRepository;
 import com.example.knockknock.domain.member.security.RefreshToken;
+import com.example.knockknock.domain.member.security.UserDetailsImpl;
 import com.example.knockknock.global.email.EmailService;
 import com.example.knockknock.global.exception.GlobalErrorCode;
 import com.example.knockknock.global.exception.GlobalException;
@@ -20,6 +20,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,8 +40,11 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final S3Service s3Service;
     private final EmailService emailService;
+    private final MemberIsLoginService memberIsLoginService;
     private final EmailAuthenticationService emailAuthenticationService;
     private final RefreshTokenRepository refreshTokenRepository;
+
+    private final EmailCodeRepository emailCodeRepository;
 
 
     // 회원가입
@@ -83,15 +87,32 @@ public class MemberService {
         memberRepository.save(member);
     }
     @Transactional
-    public void authentication(EmailAuthenticationRequestDto request){
+    public void sendCode(EmailAuthenticationRequestDto request){
         String email = request.getEmail();
         // 사용자의 이메일 주소로 Member를 찾음 (이메일 주소가 일치해야 함)
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(()-> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
         String code = emailAuthenticationService.generateCode();
+
+        EmailCode emailCode = EmailCode.builder()
+                .email(email)
+                .code(code)
+                .build();
+
+        emailCodeRepository.save(emailCode);
 
         String emailBody = "이메일을 인증하려면 아래 코드를 입력하세요:\n" + code;
         emailService.sendEmail(email, "메일 테스트", emailBody);
+    }
+
+    @Transactional
+    public Boolean isValid(CheckAuthCodeRequestDto request) {
+        String email = request.getEmail();
+        String code = request.getCode();
+        Optional<EmailCode> codeOptional = emailCodeRepository.findByEmailAndCode(email, code);
+        if (codeOptional.isPresent()){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     // 유저 로그인
@@ -142,9 +163,8 @@ public class MemberService {
 
 
     @Transactional
-    public MemberDetailResponseDto getMemberDetail(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
+    public MemberDetailResponseDto getMemberDetail(UserDetailsImpl userDetails) {
+        Member member = memberIsLoginService.isLogin(userDetails);
 
         return MemberDetailResponseDto.of(member);
     }
@@ -158,10 +178,8 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateMember(Long memberId, MemberUpdateRequestDto request, MultipartFile profileImage) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
-        if(profileImage != null) {
+    public void updateMember(UserDetailsImpl userDetails, MemberUpdateRequestDto request, MultipartFile profileImage) {
+        Member member = memberIsLoginService.isLogin(userDetails);        if(profileImage != null) {
             String imageUrl = null;
             try {
                 imageUrl = s3Service.uploadImage(profileImage);
@@ -173,9 +191,8 @@ public class MemberService {
     }
 
     @Transactional
-    public void deleteMember(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
+    public void deleteMember(UserDetailsImpl userDetails) {
+        Member member = memberIsLoginService.isLogin(userDetails);
         memberRepository.delete(member);
     }
 

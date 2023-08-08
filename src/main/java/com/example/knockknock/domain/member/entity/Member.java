@@ -23,7 +23,7 @@ public class Member extends TimeStamped {
     @Column(name = "MEMBER_ID")
     private Long memberId;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Post> posts;
 
     @Column(name = "MEMBER_NAME")
