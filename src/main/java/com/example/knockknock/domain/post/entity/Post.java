@@ -67,6 +67,9 @@ public class Post extends TimeStamped {
     @CollectionTable(name = "anonymous_writers", joinColumns = @JoinColumn(name = "post_id"))
     private Map<Long, Integer> anonymousWriters = new LinkedHashMap<>();
 
+    @Column(name = "ANONYMOUS_COUNTER")
+    private int anonymousCounter = 0;
+
     public void addLike() {
         this.likeCount += 1;
     }
@@ -104,8 +107,10 @@ public class Post extends TimeStamped {
         comment.setPost(this);
         if (comment.getIsAnonymous()) {
             Long memberId = comment.getMember().getMemberId();
-            int anonymousNumber = anonymousWriters.getOrDefault(memberId, 0) + 1;
-            anonymousWriters.put(memberId, anonymousNumber);
+            if (!anonymousWriters.containsKey(memberId)) {
+                anonymousCounter += 1;
+                anonymousWriters.put(memberId, anonymousCounter);
+            }
         }
     }
 
@@ -114,7 +119,11 @@ public class Post extends TimeStamped {
         comment.setPost(null);
         if (comment.getIsAnonymous()) {
             Long memberId = comment.getMember().getMemberId();
-            anonymousWriters.remove(memberId);
+            boolean isMemberStillAnonymousInThisPost = comments.stream()
+                    .anyMatch(c -> c.getIsAnonymous() && c.getMember().getMemberId().equals(memberId));
+            if (!isMemberStillAnonymousInThisPost) {
+                anonymousWriters.remove(memberId);
+            }
         }
     }
 
