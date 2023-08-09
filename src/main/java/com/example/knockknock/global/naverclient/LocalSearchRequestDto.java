@@ -12,7 +12,7 @@ import org.springframework.util.MultiValueMap;
 public class LocalSearchRequestDto {
     private String query = "";  // 검색을 원하는 문자열로서 UTF-8로 인코딩한다.
 
-    private int display = 1;  // 검색 결과 출력 건수 지정(1 ~ 5)
+    private int display = 5;  // 검색 결과 출력 건수 지정(1 ~ 5)
 
     private int  start = 1;  // 검색 시작 위치로 1만 가능
 

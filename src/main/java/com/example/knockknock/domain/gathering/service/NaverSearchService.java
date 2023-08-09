@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class NaverSearchService {
     private final NaverClient naverClient;
 
-    public LocalSearchResponseDto searchLocal(LocalSearchRequestDto request) {
+    public LocalSearchResponseDto localSearch(LocalSearchRequestDto request) {
         return naverClient.localSearch(request);
     }
 }

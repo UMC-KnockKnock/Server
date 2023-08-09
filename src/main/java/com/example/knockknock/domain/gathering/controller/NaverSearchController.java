@@ -18,7 +18,7 @@ public class NaverSearchController {
     private final NaverSearchService naverSearchService;
 
     @GetMapping("/search/local")
-    public ResponseEntity<LocalSearchResponseDto> searchLocal(@RequestBody LocalSearchRequestDto request) {
-        return ResponseEntity.ok(naverSearchService.searchLocal(request));
+    public ResponseEntity<LocalSearchResponseDto> localSearch(@RequestBody LocalSearchRequestDto request) {
+        return ResponseEntity.ok(naverSearchService.localSearch(request));
     }
 }
