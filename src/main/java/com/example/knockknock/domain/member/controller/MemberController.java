@@ -34,9 +34,9 @@ public class MemberController {
 
     @PostMapping("/signup")
     public ResponseEntity signup(
-            @RequestPart MemberSignUpRequestDto request,
-            @RequestPart(required = false) MultipartFile profileImage){
-        memberService.signup(request, profileImage);
+            @RequestBody MemberSignUpRequestDto request
+    ){
+        memberService.signup(request);
         return ResponseMessage.SuccessResponse("회원가입 성공", "");
     }
 
