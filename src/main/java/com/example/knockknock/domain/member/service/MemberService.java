@@ -72,7 +72,7 @@ public class MemberService {
                 .birthday(request.getBirthday())
                 .password(password)
                 .build();
-        if(profileImage != null) {
+        if(profileImage != null && !profileImage.isEmpty()) {
             String imageUrl = null;
             try {
                 imageUrl = s3Service.uploadImage(profileImage);
