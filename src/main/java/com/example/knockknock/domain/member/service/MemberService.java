@@ -49,7 +49,7 @@ public class MemberService {
 
     // 회원가입
     @Transactional
-    public void signup(final MemberSignUpRequestDto signupRequestDto) {
+    public void signup(final MemberSignUpRequestDto signupRequestDto, MultipartFile profileImage) {
         String email = signupRequestDto.getEmail();
         String password = passwordEncoder.encode(signupRequestDto.getPassword());
 
@@ -59,12 +59,12 @@ public class MemberService {
             throw new GlobalException(GlobalErrorCode.DUPLICATE_EMAIL);
         }
 
-        createMember(signupRequestDto, password);
+        createMember(signupRequestDto, profileImage, password);
     }
 
 
     @Transactional
-    public void createMember(MemberSignUpRequestDto request, String password) {
+    public void createMember(MemberSignUpRequestDto request, MultipartFile profileImage, String password) {
         Member member = Member.builder()
                 .memberGender(request.getMemberGender())
                 .nickName(request.getNickName())
@@ -72,15 +72,15 @@ public class MemberService {
                 .birthday(request.getBirthday())
                 .password(password)
                 .build();
-//        if(profileImage != null) {
-//            String imageUrl = null;
-//            try {
-//                imageUrl = s3Service.uploadImage(profileImage);
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            } member.setProfileImageURL(imageUrl);
-//
-//        } else member.setProfileImageURL("https://e7.pngegg.com/pngimages/195/830/png-clipart-emoji-silhouette-service-company-person-emoji-cdr-head.png");
+        if(profileImage != null) {
+            String imageUrl = null;
+            try {
+                imageUrl = s3Service.uploadImage(profileImage);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } member.setProfileImageURL(imageUrl);
+
+        } else member.setProfileImageURL("https://e7.pngegg.com/pngimages/195/830/png-clipart-emoji-silhouette-service-company-person-emoji-cdr-head.png");
         member.calculateAge();
         memberRepository.save(member);
     }
