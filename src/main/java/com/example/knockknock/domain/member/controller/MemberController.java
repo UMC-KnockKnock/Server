@@ -65,7 +65,7 @@ public class MemberController {
         return ResponseMessage.SuccessResponse("인증메일을 발송하였습니다", "");
     }
 
-    @GetMapping("/authentication")
+    @PostMapping("/authentication")
     public ResponseEntity isAuthenticated (@RequestBody CheckAuthCodeRequestDto request) {
         Boolean isAuthenticated = memberService.isValid(request);
         if (isAuthenticated){
