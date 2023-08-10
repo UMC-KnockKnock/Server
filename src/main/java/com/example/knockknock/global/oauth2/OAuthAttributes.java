@@ -44,9 +44,7 @@ public class OAuthAttributes {
         return Member.builder()
                 .memberName(oauth2UserInfo.getName())
                 .memberGender(oauth2UserInfo.getGender())
-                .age(oauth2UserInfo.getAge())
                 .socialId(oauth2UserInfo.getId())
-                .email(oauth2UserInfo.getEmail())
                 .nickName(oauth2UserInfo.getNickname())
                 .profileImageURL(oauth2UserInfo.getImageUrl())
                 .build();

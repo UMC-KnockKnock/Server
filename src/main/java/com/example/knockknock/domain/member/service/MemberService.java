@@ -177,7 +177,10 @@ public class MemberService {
 
     @Transactional
     public void updateMember(UserDetailsImpl userDetails, MemberUpdateRequestDto request, MultipartFile profileImage) {
-        Member member = memberIsLoginService.isLogin(userDetails);        if(profileImage != null) {
+        Member targetMember = memberIsLoginService.isLogin(userDetails);
+        Member member = memberRepository.findById(targetMember.getMemberId())
+                .orElseThrow(() -> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
+        if(profileImage != null) {
             String imageUrl = null;
             try {
                 imageUrl = s3Service.uploadImage(profileImage);
@@ -190,7 +193,9 @@ public class MemberService {
 
     @Transactional
     public void deleteMember(UserDetailsImpl userDetails) {
-        Member member = memberIsLoginService.isLogin(userDetails);
+        Member targetMember = memberIsLoginService.isLogin(userDetails);
+        Member member = memberRepository.findById(targetMember.getMemberId())
+                .orElseThrow(() -> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
         memberRepository.delete(member);
     }
 
