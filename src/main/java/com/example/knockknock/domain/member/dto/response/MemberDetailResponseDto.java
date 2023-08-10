@@ -15,11 +15,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class MemberDetailResponseDto {
     private Long memberId;
-    private String memberName;
     private String memberGender;
     private String profileImageUrl;
     private String nickName;
-    private String phoneNumber;
     private String email;
     private String birthday;
     private Integer age;
@@ -35,11 +33,9 @@ public class MemberDetailResponseDto {
         }
         return MemberDetailResponseDto.builder()
                 .memberId(member.getMemberId())
-                .memberName(member.getMemberName())
                 .memberGender(String.valueOf(member.getMemberGender()))
                 .profileImageUrl(member.getProfileImageURL())
                 .nickName(member.getNickName())
-                .phoneNumber(member.getPhoneNumber())
                 .email(member.getEmail())
                 .birthday(formattedBirthday)
                 .age(member.getAge())
