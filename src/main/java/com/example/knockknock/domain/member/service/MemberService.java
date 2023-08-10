@@ -66,15 +66,13 @@ public class MemberService {
     @Transactional
     public void createMember(MemberSignUpRequestDto request, MultipartFile profileImage, String password) {
         Member member = Member.builder()
-                .memberName(request.getMemberName())
                 .memberGender(request.getMemberGender())
                 .nickName(request.getNickName())
-                .phoneNumber(request.getPhoneNumber())
                 .email(request.getEmail())
                 .birthday(request.getBirthday())
                 .password(password)
                 .build();
-        if(profileImage != null) {
+        if(profileImage != null && !profileImage.isEmpty()) {
             String imageUrl = null;
             try {
                 imageUrl = s3Service.uploadImage(profileImage);
