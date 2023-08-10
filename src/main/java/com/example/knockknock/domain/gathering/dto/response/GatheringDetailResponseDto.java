@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class GatheringDetailResponseDto {
     private String title;
-    private List<String> gatheringMembers;
+    private List<GatheringMemberResponseDto> gatheringMembers;
 
     private String location;
 
@@ -26,12 +26,12 @@ public class GatheringDetailResponseDto {
     private LocalDateTime gatheringTime;
 
     public static GatheringDetailResponseDto of(Gathering gathering){
-        List<String> friendNames = gathering.getGatheringMembers().stream()
-                .map(Friend::getFriendName)
+        List<GatheringMemberResponseDto> members = gathering.getGatheringMembers().stream()
+                .map(GatheringMemberResponseDto::from)
                 .collect(Collectors.toList());
         return GatheringDetailResponseDto.builder()
                 .title(gathering.getTitle())
-                .gatheringMembers(friendNames)
+                .gatheringMembers(members)
                 .location(gathering.getLocation())
                 .gatheringTime(gathering.getGatheringTime())
                 .build();

@@ -44,36 +44,32 @@ public class Gathering {
     private List<Friend> gatheringMembers = new ArrayList<>();
 
 
-    public void updateGathering(GatheringUpdateRequestDto request, List<Friend> gatheringMembers) {
-        if(request.getTitle() != null){
-            this.title = request.getTitle();}
-
-        if(request.getLocation() != null){
-            this.location = request.getLocation();}
-
-        if(request.getGatheringTime() != null){
-            this.gatheringTime = request.getGatheringTime();}
-        // 새로운 gatheringMembers 목록을 만듭니다.
-        List<Friend> currentGatheringMembers = new ArrayList<>(this.gatheringMembers);
-
-        // 복사한 리스트를 반복하면서 요청에 포함되지 않은 멤버를 제거합니다.
-        Iterator<Friend> iterator = currentGatheringMembers.iterator();
-        while (iterator.hasNext()) {
-            Friend member = iterator.next();
-            if (!request.getGatheringMemberIds().contains(member.getFriendId())) {
-                iterator.remove();
-            }
+    public void updateGathering(GatheringUpdateRequestDto request, List<Friend> newGatheringMembers) {
+        if (request.getTitle() != null) {
+            this.title = request.getTitle();
         }
 
-        // gatheringMembers 리스트에 요청에서 추가된 새로운 멤버를 추가합니다.
-        for (Friend member : gatheringMembers) {
-            if (!currentGatheringMembers.contains(member) && request.getGatheringMemberIds().contains(member.getFriendId())) {
-                currentGatheringMembers.add(member);
-            }
+        if (request.getLocation() != null) {
+            this.location = request.getLocation();
         }
 
-        // 수정된 리스트로 gatheringMembers 리스트를 업데이트합니다.
-        this.gatheringMembers = currentGatheringMembers;
+        if (request.getGatheringTime() != null) {
+            this.gatheringTime = request.getGatheringTime();
+        }
 
+        if (newGatheringMembers != null && !newGatheringMembers.isEmpty()) {
+            List<Long> requestedMemberIds = request.getGatheringMemberIds();
+            if(requestedMemberIds != null) {
+                // 현재 gatheringMembers에서 요청에 포함되지 않은 멤버를 제거
+                this.gatheringMembers.removeIf(member -> !requestedMemberIds.contains(member.getFriendId()));
+
+                // 요청에 새로 포함된 멤버를 gatheringMembers에 추가
+                for (Friend member : newGatheringMembers) {
+                    if (!this.gatheringMembers.contains(member) && requestedMemberIds.contains(member.getFriendId())) {
+                        this.gatheringMembers.add(member);
+                    }
+                }
+            }
+        }
     }
 }

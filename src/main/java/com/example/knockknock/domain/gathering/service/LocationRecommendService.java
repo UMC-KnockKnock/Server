@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class NaverSearchService {
+public class LocationRecommendService {
     private final NaverClient naverClient;
 
     public LocalSearchResponseDto localSearch(LocalSearchRequestDto request) {

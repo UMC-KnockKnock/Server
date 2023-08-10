@@ -24,6 +24,13 @@ public class GatheringController {
         return ResponseMessage.SuccessResponse("모임 생성 성공", "");
     }
 
+    @GetMapping("/{gatheringId}/location")
+    public ResponseEntity recommendLocation(
+            @PathVariable Long gatheringId
+    ) {
+        return new ResponseEntity<>(gatheringService.recommendLocation(gatheringId), HttpStatus.OK);
+    }
+
     @GetMapping
     public ResponseEntity getGatherings(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseMessage.SuccessResponse("불러오기 성공", gatheringService.getGatherings(userDetails));

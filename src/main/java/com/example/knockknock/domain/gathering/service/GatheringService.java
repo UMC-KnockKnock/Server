@@ -12,6 +12,8 @@ import com.example.knockknock.domain.member.security.UserDetailsImpl;
 import com.example.knockknock.domain.member.service.MemberIsLoginService;
 import com.example.knockknock.global.exception.GlobalErrorCode;
 import com.example.knockknock.global.exception.GlobalException;
+import com.example.knockknock.global.naverclient.LocalSearchRequestDto;
+import com.example.knockknock.global.naverclient.LocalSearchResponseDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,8 @@ public class GatheringService {
     private final GatheringRepository gatheringRepository;
     private final FriendRepository friendRepository;
     private final MemberIsLoginService memberIsLoginService;
+
+    private final LocationRecommendService locationRecommendService;
 
     @Transactional
     public void createGathering(GatheringRequestDto request, UserDetailsImpl userDetails){
@@ -40,6 +44,16 @@ public class GatheringService {
 
         gatheringRepository.save(gathering);
 
+    }
+
+    @Transactional
+    public LocalSearchResponseDto recommendLocation(Long gatheringId){
+        Gathering gathering = gatheringRepository.findById(gatheringId)
+                .orElseThrow(() -> new GlobalException(GlobalErrorCode.GATHERING_NOT_FOUND));
+        String location = gathering.getLocation();
+        LocalSearchRequestDto request = new LocalSearchRequestDto();
+        request.setQuery(location + "맛집");
+        return locationRecommendService.localSearch(request);
     }
 
     @Transactional
