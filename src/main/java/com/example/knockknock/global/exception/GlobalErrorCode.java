@@ -24,6 +24,8 @@ public enum GlobalErrorCode {
     INVALID_TOKEN(UNAUTHORIZED, "토큰이 유효하지 않습니다"),
     LOGIN_REQUIRED(UNAUTHORIZED, "로그인이 필요한 서비스입니다."),
     INVALID_CODE(UNAUTHORIZED, "유효하지 않은 코드입니다"),
+
+    AUTHENTICATION_REQUIRED(UNAUTHORIZED, "인증 정보가 유효하지 않습니다."),
     // 404 Not Found - 찾을 수 없음
     EMAIL_NOT_FOUND(NOT_FOUND, "존재하지 않는 이메일 입니다."),
     NEED_AGREE_REQUIRE_TERMS(NOT_FOUND, "필수 약관에 동의해 주세요"),

@@ -98,7 +98,7 @@ public class MemberService {
         emailCodeRepository.save(emailCode);
 
         String emailBody = "이메일을 인증하려면 아래 코드를 입력하세요:\n" + code;
-        emailService.sendEmail(email, "메일 테스트", emailBody);
+        emailService.sendEmail(email, "KnockKnock 이메일 인증 코드", emailBody);
     }
 
     @Transactional
@@ -107,6 +107,8 @@ public class MemberService {
         String code = request.getCode();
         Optional<EmailCode> codeOptional = emailCodeRepository.findByEmailAndCode(email, code);
         if (codeOptional.isPresent()){
+            EmailCode emailCode = codeOptional.get();
+            emailCodeRepository.delete(emailCode);
             return true;
         } else {
             return false;
