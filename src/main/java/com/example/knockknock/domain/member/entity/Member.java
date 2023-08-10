@@ -29,9 +29,8 @@ public class Member extends TimeStamped {
     @Column(name = "MEMBER_NAME")
     private String memberName;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "MEMBER_GENDER")
-    private Gender memberGender;
+    private String memberGender;
 
     @Column(name ="PROFILE_IMAGE")
     private String profileImageURL;
