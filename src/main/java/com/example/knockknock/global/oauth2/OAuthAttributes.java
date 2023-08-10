@@ -37,16 +37,30 @@ public class OAuthAttributes {
     /**
      * ofNaver 메소드로 OAuthAttributes 객체가 생성되어, 유저 정보들이 담긴 OAuth2UserInfo가 주입된 상태
      * OAuth2UserInfo에서 socialId(식별값), nickname, imageUrl을 가져와서 build
-     * email에는 UUID로 중복 없는 랜덤 값 생성
-     * role은 GUEST로 설정
      */
     public Member toEntity(OAuth2UserInfo oauth2UserInfo) {
-        return Member.builder()
+        String email = oauth2UserInfo.getEmail();
+        if(email == null || email.isEmpty()) {
+            email = UUID.randomUUID().toString() + "@example.com"; // 여기서 "@example.com"는 임의의 도메인으로 설정했습니다.
+        }
+        String birthYear = oauth2UserInfo.getBirthYear();
+        String birthDay = oauth2UserInfo.getBirthday();
+        String birthDate = "";
+        if(birthYear != null && birthDay != null){
+        // 마지막 2자리를 취하여 YYMMDD 형태로 변환
+            birthDate = birthYear.substring(birthYear.length() - 2) + birthDay.replace("-", "");
+        }
+
+        Member member = Member.builder()
                 .memberName(oauth2UserInfo.getName())
                 .memberGender(oauth2UserInfo.getGender())
                 .socialId(oauth2UserInfo.getId())
                 .nickName(oauth2UserInfo.getNickname())
+                .birthday(birthDate)
+                .email(email)
                 .profileImageURL(oauth2UserInfo.getImageUrl())
                 .build();
+        member.calculateAge();
+        return member;
     }
 }

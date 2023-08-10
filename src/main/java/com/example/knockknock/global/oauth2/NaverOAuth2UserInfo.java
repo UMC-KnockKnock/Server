@@ -81,16 +81,27 @@ public class NaverOAuth2UserInfo extends OAuth2UserInfo {
     }
 
     @Override
-    public Integer getAge() {
+    public String getBirthday() {
         Map<String, Object> response = (Map<String, Object>) attributes.get("response");
 
         if (response == null) {
             return null;
-        } else if(response.get("age") != null) {
-            return Integer.parseInt((String) response.get("age"));
+        } else if (response.get("birthday") != null) {
+            return (String) response.get("birthday");
         }
         return null;
+    }
 
+    @Override
+    public String getBirthYear(){
+        Map<String, Object> response = (Map<String, Object>) attributes.get("response");
+
+        if (response == null) {
+            return null;
+        } else if (response.get("birthyear") != null) {
+            return (String) response.get("birthyear");
+        }
+        return null;
     }
 
 }
