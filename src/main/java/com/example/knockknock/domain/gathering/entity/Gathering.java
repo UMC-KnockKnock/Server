@@ -43,6 +43,8 @@ public class Gathering {
     )
     private List<Friend> gatheringMembers = new ArrayList<>();
 
+    private int queryIndex = 0;
+
 
     public void updateGathering(GatheringUpdateRequestDto request, List<Friend> newGatheringMembers) {
         if (request.getTitle() != null) {
@@ -71,5 +73,9 @@ public class Gathering {
                 }
             }
         }
+    }
+
+    public void setQueryIndex(int queryIndex) {
+        this.queryIndex = queryIndex;
     }
 }

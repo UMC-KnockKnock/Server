@@ -18,7 +18,10 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,6 +32,10 @@ public class GatheringService {
     private final MemberIsLoginService memberIsLoginService;
 
     private final LocationRecommendService locationRecommendService;
+
+    private final List<String> SEARCH_QUERIES = Arrays.asList("맛집", "카페", "술집", "관광지", "쇼핑몰");
+
+
 
     @Transactional
     public void createGathering(GatheringRequestDto request, UserDetailsImpl userDetails){
@@ -48,11 +55,15 @@ public class GatheringService {
 
     @Transactional
     public LocalSearchResponseDto recommendLocation(Long gatheringId){
+
         Gathering gathering = gatheringRepository.findById(gatheringId)
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.GATHERING_NOT_FOUND));
+
         String location = gathering.getLocation();
+        String currentQuery = SEARCH_QUERIES.get(gathering.getQueryIndex());
         LocalSearchRequestDto request = new LocalSearchRequestDto();
-        request.setQuery(location + "맛집");
+        request.setQuery(location + currentQuery);
+        gathering.setQueryIndex((gathering.getQueryIndex() + 1) % SEARCH_QUERIES.size());;
         return locationRecommendService.localSearch(request);
     }
 
