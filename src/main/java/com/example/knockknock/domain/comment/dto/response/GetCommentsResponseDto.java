@@ -29,12 +29,15 @@ public class GetCommentsResponseDto {
 
     public static GetCommentsResponseDto from(Comment comment) {
         String nickName;
-
+        String profileImageUrl;
         Integer anonymousNumber = comment.getPost().getAnonymousNumberByMemberId(comment.getMember().getMemberId());
         if (comment.getIsAnonymous()) {
             nickName = "익명" + anonymousNumber;
+            //익명일 때 기본 프로필 사진
+            profileImageUrl = "https://e7.pngegg.com/pngimages/195/830/png-clipart-emoji-silhouette-service-company-person-emoji-cdr-head.png";
         } else {
             nickName = comment.getMember().getNickName();
+            profileImageUrl = comment.getMember().getProfileImageURL();
         }
 
 
@@ -42,7 +45,7 @@ public class GetCommentsResponseDto {
                 .commentId(comment.getCommentId())
                 .postId(comment.getPost().getPostId())
                 .nickName(nickName)
-                .profileImageUrl(comment.getMember().getProfileImageURL())
+                .profileImageUrl(profileImageUrl)
                 .content(comment.getContent())
                 .reportCount(comment.getReports().size())
                 .createdAt(comment.getCreatedAt())

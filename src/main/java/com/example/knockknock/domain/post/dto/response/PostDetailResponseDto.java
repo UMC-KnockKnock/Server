@@ -37,10 +37,14 @@ public class PostDetailResponseDto {
 
     public static PostDetailResponseDto of(Post post) {
         String nickName;
+        String profileImageUrl;
         if (post.getIsAnonymous()) {
             nickName = "익명";
+            //익명일 때 기본 프로필 사진
+            profileImageUrl = "https://e7.pngegg.com/pngimages/195/830/png-clipart-emoji-silhouette-service-company-person-emoji-cdr-head.png";
         } else {
             nickName = post.getMember().getNickName();
+            profileImageUrl = post.getMember().getProfileImageURL();
         }
 
         List<String> imageUrls = post.getPostImages().stream()
@@ -55,7 +59,7 @@ public class PostDetailResponseDto {
         return PostDetailResponseDto.builder()
                 .postId(post.getPostId())
                 .boardType(post.getBoardType().ordinal())
-                .profileImageUrl(post.getMember().getProfileImageURL())
+                .profileImageUrl(profileImageUrl)
                 .nickName(nickName)
                 .title(post.getTitle())
                 .content(post.getContent())
