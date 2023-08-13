@@ -4,6 +4,7 @@ import com.example.knockknock.domain.hashtag.dto.HashtagRegisterRequestDto;
 import com.example.knockknock.domain.member.security.UserDetailsImpl;
 import com.example.knockknock.domain.post.dto.request.*;
 import com.example.knockknock.domain.post.service.PostService;
+import com.example.knockknock.global.exception.GlobalErrorCode;
 import com.example.knockknock.global.message.ResponseMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -50,23 +51,33 @@ public class PostController {
             @AuthenticationPrincipal UserDetailsImpl userDetails){
         return new ResponseEntity<>(postService.getMyPosts(userDetails), HttpStatus.OK);
     }
+
+    @PostMapping("/{postId}/verification")
+    public ResponseEntity isMyPost(
+            @PathVariable Long postId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        Boolean isVerified = postService.isMyPost(postId, userDetails);
+        if(isVerified){
+            return ResponseMessage.SuccessResponse("작성자와 일치합니다.", "");
+        } else return ResponseMessage.ErrorResponse(GlobalErrorCode.PERMISSION_DENIED);
+    }
+
     @PutMapping("/{postId}")
     public ResponseEntity updatePost(
             @PathVariable Long postId,
             @RequestBody PostUpdateRequestDto request,
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestPart(required = false) List<MultipartFile> images
     ) {
-        postService.updatePost(postId, request, images, userDetails);
+        postService.updatePost(postId, request, images);
         return ResponseMessage.SuccessResponse("게시글 수정 완료", "");
     }
 
     @DeleteMapping("/{postId}")
     public ResponseEntity deletePost(
-            @PathVariable Long postId,
-            @AuthenticationPrincipal UserDetailsImpl userDetails
+            @PathVariable Long postId
     ) {
-        postService.deletePost(postId, userDetails);
+        postService.deletePost(postId);
         return ResponseMessage.SuccessResponse("게시글 삭제 완료", "");
     }
 
