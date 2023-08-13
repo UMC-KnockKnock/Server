@@ -46,23 +46,33 @@ public class MemberService {
 
     private final EmailCodeRepository emailCodeRepository;
 
-
-    // 회원가입
+    //닉네임 중복검사
     @Transactional
-    public void signup(final MemberSignUpRequestDto signupRequestDto, MultipartFile profileImage) {
-        String email = signupRequestDto.getEmail();
-        String password = passwordEncoder.encode(signupRequestDto.getPassword());
-
-        // 중복 아이디 불가
+    public void checkNickname (NicknameCheckRequestDto request){
+        Optional<Member> found = memberRepository.findByNickName(request.getNickName());
+        if(found.isPresent()){
+            throw new GlobalException(GlobalErrorCode.DUPLICATE_NICK_NAME);
+        }
+    }
+    //이메일 중복검사
+    @Transactional
+    public void checkEmail(String email){
         Optional<Member> found = memberRepository.findByEmail(email);
         if(found.isPresent()){
             throw new GlobalException(GlobalErrorCode.DUPLICATE_EMAIL);
         }
+    }
+
+
+    // 회원가입
+    @Transactional
+    public void signup(final MemberSignUpRequestDto signupRequestDto, MultipartFile profileImage) {
+        String password = passwordEncoder.encode(signupRequestDto.getPassword());
 
         createMember(signupRequestDto, profileImage, password);
     }
 
-
+    //멤버 객체 생성
     @Transactional
     public void createMember(MemberSignUpRequestDto request, MultipartFile profileImage, String password) {
         Member member = Member.builder()
@@ -84,10 +94,12 @@ public class MemberService {
         member.calculateAge();
         memberRepository.save(member);
     }
+
+    //이메일 인증 코드 발송
     @Transactional
     public void sendCode(EmailAuthenticationRequestDto request){
         String email = request.getEmail();
-        // 사용자의 이메일 주소로 Member를 찾음 (이메일 주소가 일치해야 함)
+        checkEmail(email);
         String code = emailAuthenticationService.generateCode();
 
         EmailCode emailCode = EmailCode.builder()
@@ -101,6 +113,7 @@ public class MemberService {
         emailService.sendEmail(email, "KnockKnock 이메일 인증 코드", emailBody);
     }
 
+    //이메일 인증코드 확인
     @Transactional
     public Boolean isValid(CheckAuthCodeRequestDto request) {
         String email = request.getEmail();
@@ -141,6 +154,7 @@ public class MemberService {
 
     }
 
+    //토큰 재발급
     @Transactional
     public String reissue(HttpServletRequest request){
         String refreshToken = jwtUtil.resolveToken(request, "Refresh");
@@ -161,14 +175,14 @@ public class MemberService {
         return newAccessToken;
     }
 
-
+    //내 정보 보기
     @Transactional
     public MemberDetailResponseDto getMemberDetail(UserDetailsImpl userDetails) {
         Member member = memberIsLoginService.isLogin(userDetails);
 
         return MemberDetailResponseDto.of(member);
     }
-
+    //가입된 모든 회원 목록
     @Transactional
     public List<GetMembersResponseDto> getAllMembers() {
         List<Member> members = memberRepository.findAll();
@@ -177,6 +191,7 @@ public class MemberService {
                 .collect(Collectors.toList());
     }
 
+    //내 정보 수정
     @Transactional
     public void updateMember(UserDetailsImpl userDetails, MemberUpdateRequestDto request, MultipartFile profileImage) {
         Member member = memberIsLoginService.isLogin(userDetails);        if(profileImage != null) {
@@ -189,7 +204,7 @@ public class MemberService {
         }
         member.updateMember(request);
     }
-
+    //회원 탈퇴
     @Transactional
     public void deleteMember(UserDetailsImpl userDetails) {
         Member member = memberIsLoginService.isLogin(userDetails);

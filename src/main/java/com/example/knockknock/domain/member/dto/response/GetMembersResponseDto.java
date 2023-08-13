@@ -9,12 +9,12 @@ import lombok.*;
 @NoArgsConstructor
 public class GetMembersResponseDto {
     private Long memberId;
-    private String memberName;
+    private String nickName;
 
     public static GetMembersResponseDto from(Member member) {
         return GetMembersResponseDto.builder()
                 .memberId(member.getMemberId())
-                .memberName(member.getMemberName())
+                .nickName(member.getNickName())
                 .build();
     }
 }

@@ -7,8 +7,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberSignUpRequestDto {
+
     private String memberGender;
-    @NotNull
     private String nickName;
     private String email;
     private String birthday;
