@@ -1,7 +1,5 @@
 package com.example.knockknock.global.oauth2;
 
-import com.example.knockknock.domain.member.entity.Gender;
-
 import java.util.Map;
 
 public class NaverOAuth2UserInfo extends OAuth2UserInfo {

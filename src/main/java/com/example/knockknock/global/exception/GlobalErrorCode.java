@@ -15,7 +15,7 @@ public enum GlobalErrorCode {
     NOT_VALID_EMAIL(BAD_REQUEST, "유효하지 않은 이메일 입니다."),
     PASSWORD_MISMATCH(BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
     DUPLICATE_PASSWORD(BAD_REQUEST, "비밀번호가 동일합니다."),
-    DUPLICATE_NICK_NAME(BAD_REQUEST, "닉네임이 동일합니다."),
+    DUPLICATE_NICK_NAME(BAD_REQUEST, "중복된 닉네임이 존재합니다."),
     NOT_VALID_NICKNAME(BAD_REQUEST, "영문, 한글, 숫자를 포함한 2~ 16글자를 입력해 주세요."),
     NOT_VALID_PASSWORD(BAD_REQUEST, "영문, 숫자, 특수문자를 포함한 8~20 글자를 입력해 주세요."),
     NOT_VALID_PHONENUMBER(BAD_REQUEST, "11자리 이내의 번호를 '-'를 제외한 숫자만 입력해 주세요."),
@@ -24,6 +24,8 @@ public enum GlobalErrorCode {
     INVALID_TOKEN(UNAUTHORIZED, "토큰이 유효하지 않습니다"),
     LOGIN_REQUIRED(UNAUTHORIZED, "로그인이 필요한 서비스입니다."),
     INVALID_CODE(UNAUTHORIZED, "유효하지 않은 코드입니다"),
+
+    AUTHENTICATION_REQUIRED(UNAUTHORIZED, "인증 정보가 유효하지 않습니다."),
     // 404 Not Found - 찾을 수 없음
     EMAIL_NOT_FOUND(NOT_FOUND, "존재하지 않는 이메일 입니다."),
     NEED_AGREE_REQUIRE_TERMS(NOT_FOUND, "필수 약관에 동의해 주세요"),

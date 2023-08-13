@@ -32,6 +32,13 @@ public class MemberController {
         memberService.test();
         return ResponseMessage.SuccessResponse("성공", "");
     }
+    @PostMapping("/nickname")
+    public ResponseEntity checkNickName(
+            @RequestBody NicknameCheckRequestDto request){
+        memberService.checkNickname(request);
+        return ResponseMessage.SuccessResponse("사용 가능한 닉네임입니다.", "");
+    }
+
 
     @PostMapping("/signup")
     public ResponseEntity signup(

@@ -34,7 +34,7 @@ public class PasswordResetService {
                 .orElseThrow(()-> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
         String code = emailAuthenticationService.generateCode();
 
-        // 비밀번호 재설정 코드 생성 (임의의 코드를 생성하거나, 랜덤한 UUID 등을 활용)
+        // 비밀번호 재설정 코드 생성
         PasswordResetCode resetCode = PasswordResetCode.builder()
                 .member(member)
                 .code(code)
@@ -44,7 +44,7 @@ public class PasswordResetService {
 
         // 이메일로 비밀번호 재설정 코드를 발송
         String emailBody = "비밀번호를 재설정하려면 아래 코드를 입력하세요:\n" + code;
-        emailService.sendEmail(email, "메일 테스트", emailBody);
+        emailService.sendEmail(email, "KnockKnock 비밀번호 변경 인증 코드", emailBody);
     }
 
     @Transactional
@@ -57,10 +57,12 @@ public class PasswordResetService {
     public void resetPassword(PasswordUpdateRequestDto request){
             Member member = memberRepository.findById(request.getMemberId())
                     .orElseThrow(() -> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
+            PasswordResetCode passwordResetCode = resetCodeRepository.findByMember(member)
+                        .orElseThrow(() -> new GlobalException(GlobalErrorCode.AUTHENTICATION_REQUIRED));
             String encryptedPassword = passwordEncoder.encode(request.getNewPassword());
             member.setPassword(encryptedPassword);
             memberRepository.save(member);
-
+            resetCodeRepository.delete(passwordResetCode);
     }
 
 }
