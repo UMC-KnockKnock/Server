@@ -58,9 +58,8 @@ public class CommentService {
                 .collect(Collectors.toList());
     }
 
-
     @Transactional
-    public void updateComment(Long commentId, CommentUpdateRequestDto request, UserDetailsImpl userDetails) {
+    public Boolean isMyComment(Long commentId, UserDetailsImpl userDetails){
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.COMMENT_NOT_FOUND));
 
@@ -70,33 +69,24 @@ public class CommentService {
         // 작성자 정보 가져오기
         Long commentAuthorId = comment.getMember().getMemberId();
 
-        if (!currentMemberId.equals(commentAuthorId)) {
-            throw new GlobalException(GlobalErrorCode.PERMISSION_DENIED);
-        }
+        return currentMemberId.equals(commentAuthorId);
+    }
+
+
+    @Transactional
+    public void updateComment(Long commentId, CommentUpdateRequestDto request) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new GlobalException(GlobalErrorCode.COMMENT_NOT_FOUND));
 
         comment.updateComment(request.getContent());
     }
 
     @Transactional
-    public void deleteComment(Long commentId, UserDetailsImpl userDetails) {
-
+    public void deleteComment(Long commentId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.COMMENT_NOT_FOUND));
-        // 현재 로그인한 멤버 정보 가져오기
-        Long currentMemberId = userDetails.getUser().getMemberId();
-
-        // 게시글 작성자 정보 가져오기
-        Long commentAuthorId = comment.getMember().getMemberId();
-
-        if (!currentMemberId.equals(commentAuthorId)) {
-            throw new GlobalException(GlobalErrorCode.PERMISSION_DENIED);
-        } else{
-
-        if (comment.getIsAnonymous()){
-            comment.getPost().removeComment(comment);
-        }
-
+        comment.getPost().removeComment(comment);
         commentRepository.delete(comment);
         }
     }
-}
+
