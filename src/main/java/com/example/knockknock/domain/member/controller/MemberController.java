@@ -53,8 +53,17 @@ public class MemberController {
         return ResponseMessage.SuccessResponse("로그인 성공", "");
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(
+            HttpServletRequest request
+    ) {
+        memberService.logout(request);
+        return ResponseMessage.SuccessResponse("로그아웃 완료", "");
+    }
+
     @GetMapping("/reissue")
-    public ResponseEntity<?> reissue(HttpServletRequest request){
+    public ResponseEntity<?> reissue(HttpServletRequest request) {
+
         return ResponseMessage.SuccessResponse("토큰 재발급 성공", "new accessToken: " + memberService.reissue(request));
 
     }
