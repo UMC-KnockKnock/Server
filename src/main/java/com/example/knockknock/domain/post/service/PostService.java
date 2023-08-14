@@ -61,10 +61,10 @@ public class PostService {
     }
 
     @Transactional
-    public PostDetailResponseDto getPostDetail(Long postId) {
+    public CountsResponseDto getPostDetail(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
-        return PostDetailResponseDto.of(post);
+        return CountsResponseDto.of(post);
     }
 
     @Transactional
@@ -79,18 +79,23 @@ public class PostService {
     }
 
     @Transactional
-    public void updatePost(Long postId, PostUpdateRequestDto request, List<MultipartFile> images, UserDetailsImpl userDetails) {
+    public Boolean isMyPost(Long postId, UserDetailsImpl userDetails){
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
-        // 현재 로그인한 멤버 정보 가져오기
+
         Long currentMemberId = userDetails.getUser().getMemberId();
 
         // 게시글 작성자 정보 가져오기
         Long postAuthorId = post.getMember().getMemberId();
 
-        if (!currentMemberId.equals(postAuthorId)) {
-            throw new GlobalException(GlobalErrorCode.PERMISSION_DENIED);
-        }
+        return currentMemberId.equals(postAuthorId);
+    }
+
+    @Transactional
+    public void updatePost(Long postId, PostUpdateRequestDto request, List<MultipartFile> images) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
+
         post.updatePost(request);
 
         //이미지 추가
@@ -115,19 +120,10 @@ public class PostService {
     }
 
     @Transactional
-    public void deletePost(Long postId, UserDetailsImpl userDetails) {
+    public void deletePost(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
 
-        // 현재 로그인한 멤버 정보 가져오기
-        Long currentMemberId = userDetails.getUser().getMemberId();
-
-        // 게시글 작성자 정보 가져오기
-        Long postAuthorId = post.getMember().getMemberId();
-
-        if (!currentMemberId.equals(postAuthorId)) {
-            throw new GlobalException(GlobalErrorCode.PERMISSION_DENIED);
-        }
         postRepository.delete(post);
     }
 

@@ -26,9 +26,6 @@ public class Member extends TimeStamped {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Post> posts;
 
-    @Column(name = "MEMBER_NAME")
-    private String memberName;
-
     @Column(name = "MEMBER_GENDER")
     private String memberGender;
 
@@ -53,22 +50,16 @@ public class Member extends TimeStamped {
     @Column(nullable = true)
     private String password;
 
+    @Column
+    private String socialId;
+
     public void setProfileImageURL(String profileImageURL) {
         this.profileImageURL = profileImageURL;
     }
 
     public void updateMember(MemberUpdateRequestDto request) {
-        if (request.getMemberName() != null) {
-            this.memberName = request.getMemberName();
-        }
         if (request.getNickName() != null) {
             this.nickName = request.getNickName();
-        }
-        if (request.getPhoneNumber() != null) {
-            this.phoneNumber = request.getPhoneNumber();
-        }
-        if (request.getEmail() != null) {
-            this.email = request.getEmail();
         }
         if (request.getBirthday() != null) {
             this.birthday = request.getBirthday();

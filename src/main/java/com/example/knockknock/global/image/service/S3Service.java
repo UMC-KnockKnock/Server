@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import java.io.IOException;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +28,7 @@ public class S3Service {
         metadata.setContentLength(file.getSize());
 
         metadata.setContentDisposition("inline");
+        fileName = getUuidFileName(fileName);
 
         PutObjectRequest putObjectRequest = new PutObjectRequest(bucket, fileName, file.getInputStream(), metadata);
 
@@ -36,5 +38,10 @@ public class S3Service {
 
         amazonS3Client.putObject(putObjectRequest);
         return amazonS3.getUrl(bucket, fileName).toString();
+    }
+
+    public String getUuidFileName(String fileName) {
+        String ext = fileName.substring(fileName.indexOf(".") + 1);
+        return UUID.randomUUID().toString() + "." + ext;
     }
 }

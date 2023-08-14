@@ -34,7 +34,7 @@ public class PasswordResetService {
                 .orElseThrow(()-> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
         String code = emailAuthenticationService.generateCode();
 
-        // 비밀번호 재설정 코드 생성 (임의의 코드를 생성하거나, 랜덤한 UUID 등을 활용)
+        // 비밀번호 재설정 코드 생성
         PasswordResetCode resetCode = PasswordResetCode.builder()
                 .member(member)
                 .code(code)

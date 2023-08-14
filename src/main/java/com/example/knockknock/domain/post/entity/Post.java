@@ -58,8 +58,10 @@ public class Post extends TimeStamped {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "post", orphanRemoval = true)
     private List<PostImage> postImages = new ArrayList<>();
 
+    @Column(name = "COMMENT_COUNT")
+    private int commentCount = 0;
     @Column(name = "LIKE_COUNT")
-    private int likeCount;
+    private int likeCount = 0;
 
     @Column(name = "IS_ANONYMOUS")
     private Boolean isAnonymous;
@@ -112,6 +114,7 @@ public class Post extends TimeStamped {
                 anonymousWriters.put(memberId, anonymousCounter);
             }
         }
+        this.commentCount += 1;
     }
 
     public void removeComment(Comment comment) {
@@ -125,6 +128,7 @@ public class Post extends TimeStamped {
                 anonymousWriters.remove(memberId);
             }
         }
+        this.commentCount -= 1;
     }
 
     public Integer getAnonymousNumberByMemberId(Long memberId) {

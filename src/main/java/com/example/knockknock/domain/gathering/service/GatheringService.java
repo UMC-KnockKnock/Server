@@ -12,11 +12,16 @@ import com.example.knockknock.domain.member.security.UserDetailsImpl;
 import com.example.knockknock.domain.member.service.MemberIsLoginService;
 import com.example.knockknock.global.exception.GlobalErrorCode;
 import com.example.knockknock.global.exception.GlobalException;
+import com.example.knockknock.global.naverclient.LocalSearchRequestDto;
+import com.example.knockknock.global.naverclient.LocalSearchResponseDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +30,12 @@ public class GatheringService {
     private final GatheringRepository gatheringRepository;
     private final FriendRepository friendRepository;
     private final MemberIsLoginService memberIsLoginService;
+
+    private final LocationRecommendService locationRecommendService;
+
+    private final List<String> SEARCH_QUERIES = Arrays.asList("맛집", "카페", "술집", "관광지", "쇼핑몰");
+
+
 
     @Transactional
     public void createGathering(GatheringRequestDto request, UserDetailsImpl userDetails){
@@ -40,6 +51,20 @@ public class GatheringService {
 
         gatheringRepository.save(gathering);
 
+    }
+
+    @Transactional
+    public LocalSearchResponseDto recommendLocation(Long gatheringId){
+
+        Gathering gathering = gatheringRepository.findById(gatheringId)
+                .orElseThrow(() -> new GlobalException(GlobalErrorCode.GATHERING_NOT_FOUND));
+
+        String location = gathering.getLocation();
+        String currentQuery = SEARCH_QUERIES.get(gathering.getQueryIndex());
+        LocalSearchRequestDto request = new LocalSearchRequestDto();
+        request.setQuery(location + currentQuery);
+        gathering.setQueryIndex((gathering.getQueryIndex() + 1) % SEARCH_QUERIES.size());;
+        return locationRecommendService.localSearch(request);
     }
 
     @Transactional
