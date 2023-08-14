@@ -150,8 +150,17 @@ public class MemberService {
         response.addHeader(JwtUtil.REFRESH_TOKEN_HEADER, rawToken); // 리프레시 토큰 추가
         RefreshToken refreshToken = new RefreshToken(rawToken.substring(7), email);
         refreshTokenRepository.save(refreshToken);
+    }
 
-
+    @Transactional
+    public void logout(HttpServletRequest request) {
+        String refreshToken = jwtUtil.resolveToken(request, "Refresh");
+        boolean isValidRefreshToken = jwtUtil.validateRefreshToken(refreshToken);
+        if(isValidRefreshToken){
+            refreshTokenRepository.deleteByRefreshToken(refreshToken);
+        } else {
+            throw new GlobalException(GlobalErrorCode.INVALID_TOKEN);
+        }
     }
 
     //토큰 재발급
@@ -166,13 +175,13 @@ public class MemberService {
         boolean isValidRefreshToken = jwtUtil.validateRefreshToken(refreshToken);
         if (!isValidRefreshToken) {
             log.warn("Invalid refresh token: {}", refreshToken);
-            return null;
+            throw new GlobalException(GlobalErrorCode.INVALID_TOKEN);
+        } else {
+            String memberEmail = jwtUtil.getMemberEmailFromToken(refreshToken);
+            String newAccessToken = jwtUtil.createAccessToken(memberEmail);
+
+            return newAccessToken;
         }
-
-        String memberEmail = jwtUtil.getMemberEmailFromToken(refreshToken);
-        String newAccessToken = jwtUtil.createAccessToken(memberEmail);
-
-        return newAccessToken;
     }
 
     //내 정보 보기

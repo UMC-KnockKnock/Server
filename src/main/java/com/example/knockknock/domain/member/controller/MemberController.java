@@ -57,7 +57,16 @@ public class MemberController {
         memberService.login(loginRequestDto, response);
         return ResponseMessage.SuccessResponse("로그인 성공", "");
     }
-
+    
+    @Operation(summary = "로그아웃 (토큰O)", description = "리프레시 토큰을 헤더에 담아 보내면 삭제해줌으로써 로그아웃이 됨")
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(
+            HttpServletRequest request
+    ) {
+        memberService.logout(request);
+        return ResponseMessage.SuccessResponse("로그아웃 완료", "");
+    }
+    
     @Operation(summary = "네이버 로그인 (토큰X)", description = "네이버 로그인 요청 보내면 익숙한 네이버 로그인 화면 나옴 브라우저에서 테스트 더 잘 됨")
     @GetMapping("/socialLogin")
     public void socialLogin(HttpServletResponse httpServletResponse) throws IOException {
