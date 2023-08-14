@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-@Setter
 @Builder
 @ToString
 @AllArgsConstructor
@@ -65,7 +64,7 @@ public class PostDetailResponseDto {
                 .content(post.getContent())
                 .imageUrl(imageUrls)
                 .likeCount(post.getLikeCount())
-                .commentCount(post.getComments().size())
+                .commentCount(post.getCommentCount())
                 .reportCount(post.getReports().size())
                 .hashtags(hashtagNames)
                 .createdAt(post.getCreatedAt())

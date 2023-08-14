@@ -61,10 +61,10 @@ public class PostService {
     }
 
     @Transactional
-    public PostDetailResponseDto getPostDetail(Long postId) {
+    public CountsResponseDto getPostDetail(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
-        return PostDetailResponseDto.of(post);
+        return CountsResponseDto.of(post);
     }
 
     @Transactional

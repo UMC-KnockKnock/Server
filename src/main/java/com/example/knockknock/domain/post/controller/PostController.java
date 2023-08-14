@@ -40,6 +40,14 @@ public class PostController {
         return ResponseMessage.SuccessResponse("게시글 작성 완료", "");
     }
 
+    @Operation(summary = "특정 게시글 좋아요 수, 댓글 수 (토큰X)", description = "특정 게시글 좋아요 수, 댓글 수를 불러오기")
+    @GetMapping("/{postId}/details")
+    public ResponseEntity getPostDetails(
+            @PathVariable Long postId
+    ) {
+        return new ResponseEntity<>(postService.getPostDetail(postId), HttpStatus.OK);
+    }
+
     @Operation(summary = "내가 쓴 글 (토큰O)", description = "현재 로그인 한 회원이 작성한 게시글들 불러오기")
     @GetMapping("/myPosts")
     public ResponseEntity getMyPosts(
