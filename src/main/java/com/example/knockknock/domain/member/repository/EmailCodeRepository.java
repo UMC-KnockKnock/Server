@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface EmailCodeRepository extends JpaRepository<EmailCode, Long> {
 
     Optional<EmailCode> findByEmailAndCode(String email, String code);
+
+    Optional<EmailCode> findByEmail(String email);
 }
