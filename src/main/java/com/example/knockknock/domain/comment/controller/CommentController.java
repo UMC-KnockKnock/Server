@@ -45,7 +45,7 @@ public class CommentController {
     }
 
     @Operation(summary = "작성자와 비교 동작 (토큰O)", description = "현재 접근한 댓글이 내가 작성한 것인지 확인")
-    @PostMapping("/{commentId}/verification")
+    @PostMapping("/comment/{commentId}/verification")
     public ResponseEntity isMyComment(
             @PathVariable Long commentId,
             @AuthenticationPrincipal UserDetailsImpl userDetails

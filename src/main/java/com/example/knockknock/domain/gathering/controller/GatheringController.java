@@ -46,14 +46,14 @@ public class GatheringController {
         return new ResponseEntity<>(gatheringService.getGatheringDetail(gatheringId, userDetails), HttpStatus.OK);
     }
     @Operation(summary = "모임 정보 수정하기 (토큰O)", description = "모임 상세정보 수정하기")
-    @PutMapping("/{gatheringId}/edit")
+    @PutMapping("/{gatheringId}")
     public ResponseEntity updateGatheringInfo(@PathVariable Long gatheringId, @RequestBody GatheringUpdateRequestDto request, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         gatheringService.updateGatheringInfo(gatheringId, request, userDetails);
         return ResponseMessage.SuccessResponse("수정 완료", "");
     }
 
     @Operation(summary = "모임 삭제하기 (토큰O)", description = "모임 삭제하기")
-    @DeleteMapping("/{gatheringId}/delete")
+    @DeleteMapping("/{gatheringId}")
     public ResponseEntity deleteGathering(@PathVariable Long gatheringId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         gatheringService.deleteGathering(gatheringId, userDetails);
         return ResponseMessage.SuccessResponse("삭제 완료", "");
