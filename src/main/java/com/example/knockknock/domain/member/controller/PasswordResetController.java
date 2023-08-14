@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class PasswordResetController {
     private final PasswordResetService passwordResetService;
-    private final BCryptPasswordEncoder passwordEncoder;
     @PostMapping("/code")
     public ResponseEntity resetPassword(@RequestBody EmailAuthenticationRequestDto request) {
         passwordResetService.sendResetCode(request);
@@ -25,7 +24,7 @@ public class PasswordResetController {
 
     @PostMapping("/authentication")
     public ResponseEntity authentication(@RequestBody String code){
-        return ResponseMessage.SuccessResponse("인증이 완료되었습니다.", "memberId: " + passwordResetService.isAuthenticated(code));
+        return ResponseMessage.SuccessResponse("인증이 완료되었습니다.", passwordResetService.isAuthenticated(code));
     }
 
     @PostMapping("/change-password")
