@@ -1,5 +1,6 @@
 package com.example.knockknock.domain.member.service;
 
+import com.example.knockknock.domain.member.dto.request.CheckResetCodeRequestDto;
 import com.example.knockknock.domain.member.dto.request.EmailAuthenticationRequestDto;
 import com.example.knockknock.domain.member.dto.request.PasswordUpdateRequestDto;
 import com.example.knockknock.domain.member.entity.Member;
@@ -48,8 +49,8 @@ public class PasswordResetService {
     }
 
     @Transactional
-    public Long isAuthenticated(String code){
-        PasswordResetCode resetCode = resetCodeRepository.findByCode(code)
+    public Long isAuthenticated(CheckResetCodeRequestDto request){
+        PasswordResetCode resetCode = resetCodeRepository.findByCode(request.getCode())
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.INVALID_CODE));
         return resetCode.getMember().getMemberId();
     }

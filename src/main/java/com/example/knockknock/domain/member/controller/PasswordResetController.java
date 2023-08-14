@@ -1,5 +1,6 @@
 package com.example.knockknock.domain.member.controller;
 
+import com.example.knockknock.domain.member.dto.request.CheckResetCodeRequestDto;
 import com.example.knockknock.domain.member.dto.request.EmailAuthenticationRequestDto;
 import com.example.knockknock.domain.member.dto.request.PasswordUpdateRequestDto;
 import com.example.knockknock.domain.member.service.PasswordResetService;
@@ -23,8 +24,8 @@ public class PasswordResetController {
     }
 
     @PostMapping("/authentication")
-    public ResponseEntity authentication(@RequestBody String code){
-        return ResponseMessage.SuccessResponse("인증이 완료되었습니다.", passwordResetService.isAuthenticated(code));
+    public ResponseEntity authentication(@RequestBody CheckResetCodeRequestDto request){
+        return ResponseMessage.SuccessResponse("인증이 완료되었습니다.", passwordResetService.isAuthenticated(request));
     }
 
     @PostMapping("/change-password")
