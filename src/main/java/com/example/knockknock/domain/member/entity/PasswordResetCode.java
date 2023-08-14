@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Entity
-public class PasswordResetCode extends TimeStamped {
+public class PasswordResetCode {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long codeId;
