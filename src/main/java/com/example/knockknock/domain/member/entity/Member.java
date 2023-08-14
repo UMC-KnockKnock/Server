@@ -50,7 +50,7 @@ public class Member extends TimeStamped {
     @Column(nullable = true)
     private String password;
 
-    @Column
+    @Column(name = "SOCIAL_ID")
     private String socialId;
 
     public void setProfileImageURL(String profileImageURL) {
