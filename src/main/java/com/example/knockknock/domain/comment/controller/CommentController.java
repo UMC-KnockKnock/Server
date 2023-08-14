@@ -7,6 +7,7 @@ import com.example.knockknock.domain.comment.service.CommentService;
 import com.example.knockknock.domain.member.security.UserDetailsImpl;
 import com.example.knockknock.global.exception.GlobalErrorCode;
 import com.example.knockknock.global.message.ResponseMessage;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ import java.util.List;
 public class CommentController {
     private final CommentService commentService;
 
+    @Operation(summary = "특정 게시글에 댓글 달기 (토큰O)", description = "특정 게시글에 댓글 달기")
     @PostMapping("/post/{postId}/comment/register")
     public ResponseEntity registerComment(
             @RequestBody @Valid CommentRegisterRequestDto request,
@@ -34,6 +36,7 @@ public class CommentController {
         return ResponseMessage.SuccessResponse("댓글 작성 완료", "");
     }
 
+    @Operation(summary = "특정 게시글에 달린 댓글들 (토큰X)", description = "특정 게시글에 달린 모든 댓글 불러오기")
     @GetMapping("/post/{postId}/comments")
     public ResponseEntity<List<GetCommentsResponseDto>> getComments(
             @PathVariable Long postId
@@ -41,6 +44,7 @@ public class CommentController {
         return new ResponseEntity<>(commentService.getComments(postId), HttpStatus.OK);
     }
 
+    @Operation(summary = "작성자와 비교 동작 (토큰O)", description = "현재 접근한 댓글이 내가 작성한 것인지 확인")
     @PostMapping("/{commentId}/verification")
     public ResponseEntity isMyComment(
             @PathVariable Long commentId,
@@ -52,18 +56,18 @@ public class CommentController {
         } else return ResponseMessage.ErrorResponse(GlobalErrorCode.PERMISSION_DENIED);
     }
 
-
+    @Operation(summary = "댓글 수정하기 (토큰X)", description = "내 댓글 수정하기")
     @PutMapping("/comment/{commentId}")
     public ResponseEntity updateComment(
             @RequestBody @Valid CommentUpdateRequestDto request,
-            @PathVariable Long commentId,
-            @AuthenticationPrincipal UserDetailsImpl userDetails
+            @PathVariable Long commentId
     ) {
 
         commentService.updateComment(commentId, request);
         return ResponseMessage.SuccessResponse("댓글 수정 완료", "");
     }
 
+    @Operation(summary = "댓글 삭제하기 (토큰X)", description = "내 댓글 삭제하기")
     @DeleteMapping("/comment/{commentId}")
     public ResponseEntity deleteComment(
             @PathVariable Long commentId

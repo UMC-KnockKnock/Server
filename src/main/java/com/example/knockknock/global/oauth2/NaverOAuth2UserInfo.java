@@ -62,16 +62,16 @@ public class NaverOAuth2UserInfo extends OAuth2UserInfo {
     }
 
     @Override
-    public Gender getGender() {
+    public String getGender() {
         Map<String, Object> response = (Map<String, Object>) attributes.get("response");
 
         if (response == null) {
             return null;
         }
         if (response.get("gender").equals("M")) {
-            return Gender.MALE;
+            return "MALE";
         } else if (response.get("gender").equals("F")) {
-            return Gender.FEMALE;
+            return "FEMALE";
         } else {
             throw new IllegalArgumentException("Invalid gender: " + attributes.get("gender"));
         }

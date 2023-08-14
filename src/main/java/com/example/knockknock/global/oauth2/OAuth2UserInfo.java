@@ -11,7 +11,7 @@ public abstract class OAuth2UserInfo {
 
     public abstract String getId(); //소셜 식별 값 : 네이버 - "id"
     public abstract String getName();
-    public abstract Gender getGender();
+    public abstract String getGender();
     public abstract String getBirthday();
     public abstract String getBirthYear();
 

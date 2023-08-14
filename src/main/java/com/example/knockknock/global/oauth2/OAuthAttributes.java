@@ -52,7 +52,6 @@ public class OAuthAttributes {
         }
 
         Member member = Member.builder()
-                .memberName(oauth2UserInfo.getName())
                 .memberGender(oauth2UserInfo.getGender())
                 .socialId(oauth2UserInfo.getId())
                 .nickName(oauth2UserInfo.getNickname())
