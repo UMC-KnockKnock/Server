@@ -27,7 +27,10 @@ public class MemberDetailResponseDto {
     private LocalDateTime modifiedAt;
 
     public static MemberDetailResponseDto of(Member member) {
-        String formattedBirthday = formatDate(member.getBirthday());
+        String formattedBirthday = null;
+        if (member.getBirthday() != null) {
+            formattedBirthday = formatDate(member.getBirthday());
+        }
         return MemberDetailResponseDto.builder()
                 .memberId(member.getMemberId())
                 .memberGender(String.valueOf(member.getMemberGender()))

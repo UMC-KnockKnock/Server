@@ -4,6 +4,9 @@ package com.example.knockknock.global.config;
 import com.example.knockknock.domain.member.repository.MemberRepository;
 import com.example.knockknock.global.jwt.JwtAuthFilter;
 import com.example.knockknock.global.jwt.JwtUtil;
+import com.example.knockknock.global.oauth2.CustomOAuth2UserService;
+import com.example.knockknock.global.oauth2.OAuth2LoginFailureHandler;
+import com.example.knockknock.global.oauth2.OAuth2LoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +19,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.userinfo.DelegatingOAuth2UserService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -33,7 +37,9 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 @EnableGlobalMethodSecurity(securedEnabled = true) // @Secured 어노테이션 활성화
 public class WebSecurityConfig {
     private final JwtUtil jwtUtil;
-    private final MemberRepository memberRepository;
+    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+    private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
+    private final CustomOAuth2UserService customOAuth2UserService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -56,15 +62,22 @@ public class WebSecurityConfig {
         );
         http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()));
 
-        return http
-                .authorizeHttpRequests(authorize -> authorize
+         http.authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("**").permitAll()
 //                        .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .anyRequest().authenticated()
                 )
-                .cors(withDefaults())
-                .addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
-                .build();
+                .cors(withDefaults());
+
+        http.oauth2Login(oauth2 -> oauth2
+                .successHandler(oAuth2LoginSuccessHandler)
+                .failureHandler(oAuth2LoginFailureHandler)
+                .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint
+                    .userService(customOAuth2UserService)));
+
+
+        http.addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        return http.build();
 
     }
 
