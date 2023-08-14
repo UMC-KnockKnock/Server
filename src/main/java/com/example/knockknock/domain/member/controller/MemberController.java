@@ -7,6 +7,7 @@ import com.example.knockknock.domain.member.security.UserDetailsImpl;
 import com.example.knockknock.domain.member.service.MemberService;
 import com.example.knockknock.global.exception.GlobalErrorCode;
 import com.example.knockknock.global.message.ResponseMessage;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -89,11 +91,19 @@ public class MemberController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity deleteUser(
-            @AuthenticationPrincipal UserDetailsImpl userDetails
-    ) {
+    public ResponseEntity deleteUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         memberService.deleteMember(userDetails);
         return ResponseMessage.SuccessResponse("삭제 완료", "");
+    }
 
+    @DeleteMapping("/init")
+    public ResponseEntity deleteMemberAndData(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        memberService.initData(userDetails);
+        return ResponseMessage.SuccessResponse("데이터 초기화 성공", "");
+    }
+
+    @PostMapping("/logout")
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        new SecurityContextLogoutHandler().logout(request, response, null);
     }
 }
