@@ -45,7 +45,6 @@ public class GatheringService {
                 .member(member)
                 .title(request.getTitle())
                 .location(request.getLocation())
-                .gatheringTime(request.getGatheringTime())
                 .gatheringMembers(gatheringMembers)
                 .build();
 
