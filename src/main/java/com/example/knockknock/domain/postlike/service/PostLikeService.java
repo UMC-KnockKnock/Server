@@ -2,10 +2,11 @@ package com.example.knockknock.domain.postlike.service;
 
 import com.example.knockknock.domain.member.entity.Member;
 import com.example.knockknock.domain.member.repository.MemberRepository;
+import com.example.knockknock.domain.member.security.UserDetailsImpl;
+import com.example.knockknock.domain.member.service.MemberIsLoginService;
 import com.example.knockknock.domain.post.entity.Post;
 import com.example.knockknock.domain.post.repository.PostRepository;
 import com.example.knockknock.domain.postlike.dto.PostLikeDetailResponseDto;
-import com.example.knockknock.domain.postlike.dto.PostLikeRequestDto;
 import com.example.knockknock.domain.postlike.entity.PostLike;
 import com.example.knockknock.domain.postlike.repository.PostLikeRepository;
 import com.example.knockknock.global.exception.GlobalErrorCode;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,28 +29,28 @@ public class PostLikeService {
 
     private final MemberRepository memberRepository;
 
-    @Transactional
-    public String likePost(PostLikeRequestDto request) {
-        Member member = memberRepository.findById(request.getMemberId())
-                .orElseThrow(() -> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
+    private final MemberIsLoginService memberIsLoginService;
 
-        Post post = postRepository.findById(request.getPostId())
+    @Transactional
+    public String likePost(Long postId, UserDetailsImpl userDetails) {
+        Member member = memberIsLoginService.isLogin(userDetails);
+
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
 
-        PostLike postLike = postLikeRepository.findByMemberAndPost(member, post)
-                .orElse(PostLike.builder()
-                        .member(member)
-                        .post(post)
-                        .isLiked(false)
-                        .build());
-        postLikeRepository.save(postLike);
-        if (postLike.isLiked()) {
-            postLike.deletePostLike();
+        Optional<PostLike> postLikeOptional = postLikeRepository.findByMemberAndPost(member, post);
+        if(postLikeOptional.isPresent()){
+            PostLike postLike = postLikeOptional.get();
             post.removeLike();
-            return "좋아요가 취소되었습니다.";
+            postLikeRepository.delete(postLike);
+            return "좋아요를 취소했습니다.";
         } else {
-            postLike.likePost();
+            PostLike postLike = PostLike.builder()
+                    .member(member)
+                    .post(post)
+                    .build();
             post.addLike();
+            postLikeRepository.save(postLike);
             return "좋아요를 눌렀습니다.";
         }
     }
