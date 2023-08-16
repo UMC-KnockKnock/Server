@@ -28,14 +28,4 @@ public class PostLike extends TimeStamped {
     @JoinColumn(name = "POST_ID")
     private Post post;
 
-    @Column(name = "IS_LIKED")
-    private boolean isLiked;
-
-    public void likePost() {
-        this.isLiked = true;
-    }
-
-    public void deletePostLike() {
-        this.isLiked = false;
-    }
 }

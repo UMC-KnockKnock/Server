@@ -62,6 +62,8 @@ public class Post extends TimeStamped {
     private int commentCount = 0;
     @Column(name = "LIKE_COUNT")
     private int likeCount = 0;
+    @Column(name = "REPORT_COUNT")
+    private int reportCount = 0;
 
     @Column(name = "IS_ANONYMOUS")
     private Boolean isAnonymous;
@@ -129,6 +131,10 @@ public class Post extends TimeStamped {
             }
         }
         this.commentCount -= 1;
+    }
+
+    public void addReport() {
+        this.reportCount += 1;
     }
 
     public Integer getAnonymousNumberByMemberId(Long memberId) {

@@ -38,10 +38,4 @@ public class Report extends TimeStamped {
     private Comment targetComment;
 
 
-    @Column(name = "IS_REPORTED")
-    private boolean isReported;
-
-    public void report() {
-        this.isReported = true;    }
-
 }

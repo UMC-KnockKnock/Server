@@ -45,6 +45,9 @@ public class Comment extends TimeStamped {
     @Column(name = "IS_ANONYMOUS")
     private Boolean isAnonymous;
 
+    @Column(name = "REPORT_COUNT")
+    private int reportCount;
+
     @Builder.Default
     @OneToMany(mappedBy = "parentComment")
     private List<Reply> replies = new ArrayList<>();
@@ -56,6 +59,10 @@ public class Comment extends TimeStamped {
 
     public void setPost(Post post) {
         this.post = post;
+    }
+
+    public void addReport() {
+        this.reportCount += 1;
     }
 
 

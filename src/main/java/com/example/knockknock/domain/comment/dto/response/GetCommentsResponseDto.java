@@ -47,7 +47,7 @@ public class GetCommentsResponseDto {
                 .nickName(nickName)
                 .profileImageUrl(profileImageUrl)
                 .content(comment.getContent())
-                .reportCount(comment.getReports().size())
+                .reportCount(comment.getReportCount())
                 .createdAt(comment.getCreatedAt())
                 .modifiedAt(comment.getModifiedAt())
                 .build();
