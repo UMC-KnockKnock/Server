@@ -84,8 +84,12 @@ public class Post extends TimeStamped {
 
 
     public void updatePost(PostUpdateRequestDto request) {
-        this.title = request.getTitle();
-        this.content = request.getContent();
+        if (request.getTitle() != null) {
+            this.title = request.getTitle();
+        }
+        if(request.getContent() != null){
+            this.content = request.getContent();
+        }
     }
 
     public void addPostImage(String imageUrl) {
@@ -96,14 +100,10 @@ public class Post extends TimeStamped {
         postImages.add(postImage);
     }
 
-    public void removePostImage(String imageUrl) {
-        for (PostImage postImage : postImages) {
-            if (postImage.getPostImageUrl().equals(imageUrl)) {
-                postImages.remove(postImage);
+    public void removeAllPostImages() {
+        for (PostImage postImage : this.postImages) {
                 postImage.setPost(null);
-                break;
-            }
-        }
+        } postImages.clear();
     }
 
     public void addComment(Comment comment) {
