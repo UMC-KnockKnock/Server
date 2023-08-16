@@ -11,13 +11,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GatheringMemberResponseDto {
-
+    private Long friendId;
     private String friendName;
     private String phoneNumber;
     private boolean bestFriend;
 
     public static GatheringMemberResponseDto from(Friend friend) {
         return GatheringMemberResponseDto.builder()
+                .friendId(friend.getFriendId())
                 .friendName(friend.getFriendName())
                 .phoneNumber(friend.getPhoneNumber())
                 .bestFriend(friend.isBestFriend())

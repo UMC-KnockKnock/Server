@@ -17,7 +17,4 @@ public class GatheringRequestDto {
     private List<Long> gatheringMemberIds;
 
     private String location;
-
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime gatheringTime;
 }
