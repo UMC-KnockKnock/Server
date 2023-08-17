@@ -34,6 +34,10 @@ public class CommentService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
 
+        int memberAgeGroup = member.getAge() / 10;
+        int authorAgeGroup = post.getMember().getAge() / 10;
+
+        if(memberAgeGroup == authorAgeGroup){
         Comment comment = Comment.builder()
                 .member(member)
                 .post(post)
@@ -46,6 +50,9 @@ public class CommentService {
 
         // Comment 저장
         commentRepository.save(comment);
+        } else {
+            throw new GlobalException(GlobalErrorCode.PERMISSION_DENIED);
+        }
     }
 
     @Transactional
