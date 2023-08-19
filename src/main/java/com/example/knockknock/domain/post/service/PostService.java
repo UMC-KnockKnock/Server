@@ -9,6 +9,7 @@ import com.example.knockknock.domain.hashtag.entity.Hashtag;
 import com.example.knockknock.domain.hashtag.repository.HashtagRepository;
 import com.example.knockknock.domain.member.entity.Member;
 import com.example.knockknock.domain.member.repository.MemberRepository;
+import com.example.knockknock.domain.postimage.PostImage;
 import com.example.knockknock.domain.postlike.repository.PostLikeRepository;
 import com.example.knockknock.domain.post.repository.PostRepository;
 import com.example.knockknock.domain.post.entity.Post;
@@ -97,25 +98,22 @@ public class PostService {
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
 
         post.updatePost(request);
+        //이미지들 모두 지우기
+        post.removeAllPostImages();
 
-        //이미지 추가
-        if (images != null && !images.isEmpty()) {
-            for (MultipartFile image : images) {
-                String imageUrl = null;
-                try {
-                    imageUrl = s3Service.uploadImage(image);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                post.addPostImage(imageUrl);
-            }
+        if (images == null || images.isEmpty()) {
+            return;
         }
-        //이미지 삭제
-        List<String> imagesToDelete = request.getImagesToDelete();
-        if (imagesToDelete != null && !imagesToDelete.isEmpty()) {
-            for (String imageUrl : imagesToDelete) {
-                post.removePostImage(imageUrl);
+
+        //새로 들어온 이미지로 변경 - 이미 있던 이미지와 동일하더라도 uuid값은 다르기 때문에 이것이 가능
+        for (MultipartFile image : images) {
+            String imageUrl = null;
+            try {
+                imageUrl = s3Service.uploadImage(image);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
+            post.addPostImage(imageUrl);
         }
     }
 

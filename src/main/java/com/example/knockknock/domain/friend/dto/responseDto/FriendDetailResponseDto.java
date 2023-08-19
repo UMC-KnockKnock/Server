@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 public class FriendDetailResponseDto {
+    private Long friendId;
     private String friendName;
     private String profileImageURL;
     private String phoneNumber;
@@ -27,6 +28,7 @@ public class FriendDetailResponseDto {
     private NotificationRepeatEnum notificationRepeat;
 
     public FriendDetailResponseDto(Friend friend, Notification notification) {
+        this.friendId = friend.getFriendId();
         this.friendName = friend.getFriendName();
         this.profileImageURL = friend.getProfileImageURL();
         this.phoneNumber = friend.getPhoneNumber();

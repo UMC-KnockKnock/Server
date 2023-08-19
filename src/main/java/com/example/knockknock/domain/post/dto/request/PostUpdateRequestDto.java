@@ -7,7 +7,6 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostUpdateRequestDto {
@@ -15,7 +14,5 @@ public class PostUpdateRequestDto {
     private String title;
 
     private String content;
-
-    private List<String> imagesToDelete;
 
 }
