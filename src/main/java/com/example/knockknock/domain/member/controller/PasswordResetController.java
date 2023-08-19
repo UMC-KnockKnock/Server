@@ -1,5 +1,6 @@
 package com.example.knockknock.domain.member.controller;
 
+import com.example.knockknock.domain.member.dto.request.CheckResetCodeRequestDto;
 import com.example.knockknock.domain.member.dto.request.EmailAuthenticationRequestDto;
 import com.example.knockknock.domain.member.dto.request.PasswordUpdateRequestDto;
 import com.example.knockknock.domain.member.service.PasswordResetService;
@@ -16,16 +17,15 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class PasswordResetController {
     private final PasswordResetService passwordResetService;
-    private final BCryptPasswordEncoder passwordEncoder;
     @PostMapping("/code")
     public ResponseEntity resetPassword(@RequestBody EmailAuthenticationRequestDto request) {
         passwordResetService.sendResetCode(request);
         return ResponseMessage.SuccessResponse("이메일 전송", "");
     }
 
-    @GetMapping("/authentication")
-    public ResponseEntity authentication(@RequestBody String code){
-        return ResponseMessage.SuccessResponse("인증이 완료되었습니다.", "memberId: " + passwordResetService.isAuthenticated(code));
+    @PostMapping("/authentication")
+    public ResponseEntity authentication(@RequestBody CheckResetCodeRequestDto request){
+        return ResponseMessage.SuccessResponse("인증이 완료되었습니다.", passwordResetService.isAuthenticated(request));
     }
 
     @PostMapping("/change-password")

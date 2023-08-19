@@ -67,11 +67,11 @@ public class PostController {
         } else return ResponseMessage.ErrorResponse(GlobalErrorCode.PERMISSION_DENIED);
     }
 
-    @Operation(summary = "게시글 수정 (토큰X)", description = "게시글 수정 - imagesToDelete에 삭제할 이미지 Url 배열에 담아 입력")
-    @PutMapping("/{postId}")
+    @Operation(summary = "게시글 수정 (토큰X)", description = "게시글 수정 - 이미지는 게시글 생성 때 이미 들어있던 이미지도 다시 담아서 보내야 함")
+    @PutMapping("/{postId}/edit")
     public ResponseEntity updatePost(
             @PathVariable Long postId,
-            @RequestBody PostUpdateRequestDto request,
+            @RequestPart("request") PostUpdateRequestDto request,
             @RequestPart(required = false) List<MultipartFile> images
     ) {
         postService.updatePost(postId, request, images);

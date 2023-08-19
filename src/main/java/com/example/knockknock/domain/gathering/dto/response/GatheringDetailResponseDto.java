@@ -19,11 +19,7 @@ import java.util.stream.Collectors;
 public class GatheringDetailResponseDto {
     private String title;
     private List<GatheringMemberResponseDto> gatheringMembers;
-
     private String location;
-
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime gatheringTime;
 
     public static GatheringDetailResponseDto of(Gathering gathering){
         List<GatheringMemberResponseDto> members = gathering.getGatheringMembers().stream()
@@ -33,7 +29,6 @@ public class GatheringDetailResponseDto {
                 .title(gathering.getTitle())
                 .gatheringMembers(members)
                 .location(gathering.getLocation())
-                .gatheringTime(gathering.getGatheringTime())
                 .build();
     }
 }

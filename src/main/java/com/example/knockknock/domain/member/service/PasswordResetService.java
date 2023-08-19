@@ -1,5 +1,6 @@
 package com.example.knockknock.domain.member.service;
 
+import com.example.knockknock.domain.member.dto.request.CheckResetCodeRequestDto;
 import com.example.knockknock.domain.member.dto.request.EmailAuthenticationRequestDto;
 import com.example.knockknock.domain.member.dto.request.PasswordUpdateRequestDto;
 import com.example.knockknock.domain.member.entity.Member;
@@ -32,6 +33,11 @@ public class PasswordResetService {
         // 사용자의 이메일 주소로 Member를 찾음 (이메일 주소가 일치해야 함)
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(()-> new GlobalException(GlobalErrorCode.MEMBER_NOT_FOUND));
+        Optional<PasswordResetCode> codeOptional = resetCodeRepository.findByMember(member);
+        if(codeOptional.isPresent()){
+            PasswordResetCode code = codeOptional.get();
+            resetCodeRepository.delete(code);
+        } else {
         String code = emailAuthenticationService.generateCode();
 
         // 비밀번호 재설정 코드 생성
@@ -45,11 +51,12 @@ public class PasswordResetService {
         // 이메일로 비밀번호 재설정 코드를 발송
         String emailBody = "비밀번호를 재설정하려면 아래 코드를 입력하세요:\n" + code;
         emailService.sendEmail(email, "KnockKnock 비밀번호 변경 인증 코드", emailBody);
+        }
     }
 
     @Transactional
-    public Long isAuthenticated(String code){
-        PasswordResetCode resetCode = resetCodeRepository.findByCode(code)
+    public Long isAuthenticated(CheckResetCodeRequestDto request){
+        PasswordResetCode resetCode = resetCodeRepository.findByCode(request.getCode())
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.INVALID_CODE));
         return resetCode.getMember().getMemberId();
     }

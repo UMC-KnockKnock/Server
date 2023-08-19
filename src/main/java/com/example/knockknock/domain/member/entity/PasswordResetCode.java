@@ -1,5 +1,6 @@
 package com.example.knockknock.domain.member.entity;
 
+import com.example.knockknock.global.timestamp.TimeStamped;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

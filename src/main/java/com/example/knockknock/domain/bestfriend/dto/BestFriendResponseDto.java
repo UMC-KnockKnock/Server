@@ -9,11 +9,13 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BestFriendResponseDto {
+    private Long friendId;
     private String friendName;
     private String phoneNumber;
 
     public static BestFriendResponseDto from(Friend friend){
         return BestFriendResponseDto.builder()
+                .friendId(friend.getFriendId())
                 .friendName(friend.getFriendName())
                 .phoneNumber(friend.getPhoneNumber())
                 .build();

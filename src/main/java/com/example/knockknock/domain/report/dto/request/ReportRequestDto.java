@@ -11,8 +11,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReportRequestDto {
-    @NotNull
-    private Long reporterId;
     @NotBlank
     private ReportType reportType;
 

@@ -13,22 +13,19 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostLikeDetailResponseDto {
-    private Long postLikeId;
     private Long postId;
     private Long memberId;
+    private String nickName;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
 
     public static PostLikeDetailResponseDto from(PostLike postLike) {
-        if (postLike.isLiked()) {
             return PostLikeDetailResponseDto.builder()
-                    .postLikeId(postLike.getPostLikeId())
                     .postId(postLike.getPost().getPostId())
                     .memberId(postLike.getMember().getMemberId())
+                    .nickName(postLike.getMember().getNickName())
                     .createdAt(postLike.getCreatedAt())
                     .build();
-        } else {
-            return null;
         }
     }
-}
+

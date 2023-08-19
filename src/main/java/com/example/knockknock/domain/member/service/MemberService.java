@@ -4,6 +4,7 @@ import com.example.knockknock.domain.member.dto.request.*;
 import com.example.knockknock.domain.member.dto.response.GetMembersResponseDto;
 import com.example.knockknock.domain.member.dto.response.MemberDetailResponseDto;
 import com.example.knockknock.domain.member.entity.EmailCode;
+import com.example.knockknock.domain.member.entity.PasswordResetCode;
 import com.example.knockknock.domain.member.repository.EmailCodeRepository;
 import com.example.knockknock.domain.member.repository.MemberRepository;
 import com.example.knockknock.domain.member.entity.Member;
@@ -100,6 +101,11 @@ public class MemberService {
     public void sendCode(EmailAuthenticationRequestDto request){
         String email = request.getEmail();
         checkEmail(email);
+        Optional<EmailCode> codeOptional = emailCodeRepository.findByEmail(email);
+        if(codeOptional.isPresent()){
+            EmailCode code = codeOptional.get();
+            emailCodeRepository.delete(code);
+        } else {
         String code = emailAuthenticationService.generateCode();
 
         EmailCode emailCode = EmailCode.builder()
@@ -111,6 +117,7 @@ public class MemberService {
 
         String emailBody = "이메일을 인증하려면 아래 코드를 입력하세요:\n" + code;
         emailService.sendEmail(email, "KnockKnock 이메일 인증 코드", emailBody);
+        }
     }
 
     //이메일 인증코드 확인
