@@ -3,6 +3,7 @@ package com.example.knockknock.domain.gathering.entity;
 import com.example.knockknock.domain.friend.entity.Friend;
 import com.example.knockknock.domain.gathering.dto.request.GatheringUpdateRequestDto;
 import com.example.knockknock.domain.member.entity.Member;
+import com.example.knockknock.global.timestamp.TimeStamped;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-public class Gathering {
+public class Gathering extends TimeStamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "GATHERING_ID")
@@ -32,8 +33,9 @@ public class Gathering {
     @Column(name = "LOCATION")
     private String location;
 
-    @Column(name = "TIME")
-    private LocalDateTime gatheringTime;
+    @OneToOne(mappedBy = "gathering", cascade = CascadeType.REMOVE)
+    private GatheringNotification gatheringNotification;
+
 
     @ManyToMany
     @JoinTable(
@@ -53,10 +55,6 @@ public class Gathering {
 
         if (request.getLocation() != null) {
             this.location = request.getLocation();
-        }
-
-        if (request.getGatheringTime() != null) {
-            this.gatheringTime = request.getGatheringTime();
         }
 
         if (newGatheringMembers != null && !newGatheringMembers.isEmpty()) {
