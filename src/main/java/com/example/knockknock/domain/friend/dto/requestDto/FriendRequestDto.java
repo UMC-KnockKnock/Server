@@ -12,6 +12,4 @@ public class FriendRequestDto {
     private String friendName;
     private String nickName;
     private String phoneNumber;
-
-    MultipartFile profileImage;
 }

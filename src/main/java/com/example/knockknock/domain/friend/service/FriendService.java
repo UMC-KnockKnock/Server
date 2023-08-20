@@ -10,6 +10,8 @@ import com.example.knockknock.domain.member.security.UserDetailsImpl;
 import com.example.knockknock.domain.member.service.MemberIsLoginService;
 import com.example.knockknock.domain.notification.entity.Notification;
 import com.example.knockknock.domain.notification.service.NotificationService;
+import com.example.knockknock.global.image.service.S3Service;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,14 +31,22 @@ public class FriendService {
     private final GetFriendService getFriendService;
     private final NotificationService notificationService;
     private final MemberIsLoginService memberIsLoginService;
+    private final S3Service s3Service;
 
     @Transactional
-    public void createFriends(FriendRequestDto friendRequestDto, UserDetailsImpl userDetails) {
+    public void createFriends(FriendRequestDto friendRequestDto, UserDetailsImpl userDetails, MultipartFile profileImage) {
         // isLogin
         Member member = memberIsLoginService.isLogin(userDetails);
         // 해당 member 정보도 friend에 저장
-        String profileImageURL = null;
-        Friend friend = new Friend(friendRequestDto, profileImageURL, member);
+        String imageUrl = null;
+        if(profileImage != null && !profileImage.isEmpty()){
+            try {
+                imageUrl = s3Service.uploadImage(profileImage);
+            } catch (IOException e) {
+            throw new RuntimeException(e);
+            }
+        } else {imageUrl = "https://e7.pngegg.com/pngimages/195/830/png-clipart-emoji-silhouette-service-company-person-emoji-cdr-head.png";}
+        Friend friend = new Friend(friendRequestDto, imageUrl, member);
         friendRepository.save(friend);
     }
 
@@ -62,8 +72,8 @@ public class FriendService {
         for (FriendRequestDto friendRequestDto : friendRequestDtos) {
             String phoneNumber = friendRequestDto.getPhoneNumber();
             if (!friendsMap.containsKey(phoneNumber)) {
-                // todo : 각 friend profileimage 추가
-                Friend newFriend = new Friend(friendRequestDto, null, member);
+                String imageUrl = "https://e7.pngegg.com/pngimages/195/830/png-clipart-emoji-silhouette-service-company-person-emoji-cdr-head.png";
+                Friend newFriend = new Friend(friendRequestDto, imageUrl, member);
                 friendRepository.save(newFriend);
             }
         }
@@ -93,7 +103,7 @@ public class FriendService {
     }
 
     @Transactional
-    public void updateFriendInfo(Long friendId, FriendRequestDto friendRequestDto, UserDetailsImpl userDetails) {
+    public void updateFriendInfo(Long friendId, FriendRequestDto friendRequestDto, UserDetailsImpl userDetails, MultipartFile profileImage) {
         // isLogin
         Member member = memberIsLoginService.isLogin(userDetails);
         // checkRole
@@ -104,8 +114,14 @@ public class FriendService {
         if (friendRequestDto.getPhoneNumber() != null) friend.setPhoneNumber(friendRequestDto.getPhoneNumber());
 
         // 원래 있던 프로필이미지 지우고 올리기
-        MultipartFile profileImage = friendRequestDto.getProfileImage();
-        String profileImageURL = null;
+        if(profileImage != null) {
+            String imageUrl = null;
+            try {
+                imageUrl = s3Service.uploadImage(profileImage);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } friend.setProfileImageURL(imageUrl);
+        }
 
         // profileImageURL 구현
     }

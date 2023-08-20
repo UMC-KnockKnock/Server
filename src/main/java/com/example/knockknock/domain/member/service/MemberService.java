@@ -4,7 +4,7 @@ import com.example.knockknock.domain.member.dto.request.*;
 import com.example.knockknock.domain.member.dto.response.GetMembersResponseDto;
 import com.example.knockknock.domain.member.dto.response.MemberDetailResponseDto;
 import com.example.knockknock.domain.member.entity.EmailCode;
-import com.example.knockknock.domain.member.entity.PasswordResetCode;
+
 import com.example.knockknock.domain.member.repository.EmailCodeRepository;
 import com.example.knockknock.domain.member.repository.MemberRepository;
 import com.example.knockknock.domain.member.entity.Member;
@@ -16,12 +16,12 @@ import com.example.knockknock.global.exception.GlobalErrorCode;
 import com.example.knockknock.global.exception.GlobalException;
 import com.example.knockknock.global.image.service.S3Service;
 import com.example.knockknock.global.jwt.JwtUtil;
-import com.example.knockknock.global.message.ResponseMessage;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
