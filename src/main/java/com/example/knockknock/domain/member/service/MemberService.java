@@ -4,7 +4,7 @@ import com.example.knockknock.domain.member.dto.request.*;
 import com.example.knockknock.domain.member.dto.response.GetMembersResponseDto;
 import com.example.knockknock.domain.member.dto.response.MemberDetailResponseDto;
 import com.example.knockknock.domain.member.entity.EmailCode;
-import com.example.knockknock.domain.member.entity.PasswordResetCode;
+
 import com.example.knockknock.domain.member.repository.EmailCodeRepository;
 import com.example.knockknock.domain.member.repository.MemberRepository;
 import com.example.knockknock.domain.member.entity.Member;
@@ -16,12 +16,12 @@ import com.example.knockknock.global.exception.GlobalErrorCode;
 import com.example.knockknock.global.exception.GlobalException;
 import com.example.knockknock.global.image.service.S3Service;
 import com.example.knockknock.global.jwt.JwtUtil;
-import com.example.knockknock.global.message.ResponseMessage;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -91,7 +91,7 @@ public class MemberService {
                 throw new RuntimeException(e);
             } member.setProfileImageURL(imageUrl);
 
-        } else member.setProfileImageURL("https://e7.pngegg.com/pngimages/195/830/png-clipart-emoji-silhouette-service-company-person-emoji-cdr-head.png");
+        } else member.setProfileImageURL("https://knockknockimage.s3.ap-northeast-2.amazonaws.com/%EA%B8%B0%EB%B3%B8+%EC%9D%B4%EB%AF%B8%EC%A7%80.png");
         member.calculateAge();
         memberRepository.save(member);
     }

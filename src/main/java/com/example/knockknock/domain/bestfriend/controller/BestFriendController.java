@@ -23,13 +23,4 @@ public class BestFriendController {
     public ResponseEntity getBestFriends(@AuthenticationPrincipal UserDetailsImpl userDetails){
         return new ResponseEntity<>(bestFriendService.getBestFriends(userDetails), HttpStatus.OK);
     }
-
-    @Operation(summary = "찐친 관리 - 찐친 목록 - 찐친 추가하기 (토큰O)", description = "찐친 추가하기")
-    @PostMapping("/add")
-    public ResponseEntity addToBestFriend(
-            @RequestBody List<Long> friendIds,
-            @AuthenticationPrincipal UserDetailsImpl userDetails){
-        bestFriendService.addToBestFriend(friendIds, userDetails);
-        return ResponseMessage.SuccessResponse("찐친으로 추가하였습니다.", "");
-    }
 }

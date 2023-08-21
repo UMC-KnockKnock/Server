@@ -45,6 +45,14 @@ public class PostController {
     public ResponseEntity getPostDetails(
             @PathVariable Long postId
     ) {
+        return new ResponseEntity<>(postService.getPostCountings(postId), HttpStatus.OK);
+    }
+
+    @Operation(summary = "특정 게시글 조회 (토큰X)", description = "특정 게시글 제목, 내용 등")
+    @GetMapping("/{postId}")
+    public ResponseEntity getPost(
+            @PathVariable Long postId
+    ) {
         return new ResponseEntity<>(postService.getPostDetail(postId), HttpStatus.OK);
     }
 
@@ -71,7 +79,7 @@ public class PostController {
     @PutMapping("/{postId}/edit")
     public ResponseEntity updatePost(
             @PathVariable Long postId,
-            @RequestPart("request") PostUpdateRequestDto request,
+            @RequestPart("request") @Valid PostUpdateRequestDto request,
             @RequestPart(required = false) List<MultipartFile> images
     ) {
         postService.updatePost(postId, request, images);

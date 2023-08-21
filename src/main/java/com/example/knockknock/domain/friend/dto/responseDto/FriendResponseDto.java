@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class FriendResponseDto {
     private Long friendId;
     private String friendName;
+    private String nickName;
     private String profileImageURL;
     private String phoneNumber;
     private boolean bestFriend;
@@ -20,6 +21,7 @@ public class FriendResponseDto {
     public FriendResponseDto(Friend friend) {
         this.friendId = friend.getFriendId();
         this.friendName = friend.getFriendName();
+        this.nickName = friend.getNickname();
         this.profileImageURL = friend.getProfileImageURL();
         this.phoneNumber = friend.getPhoneNumber();
         this.bestFriend = friend.isBestFriend();
@@ -29,6 +31,7 @@ public class FriendResponseDto {
         return FriendResponseDto.builder()
                 .friendId(friend.getFriendId())
                 .friendName(friend.getFriendName())
+                .nickName(friend.getNickname())
                 .profileImageURL(friend.getProfileImageURL())
                 .phoneNumber(friend.getPhoneNumber())
                 .bestFriend(friend.isBestFriend())
