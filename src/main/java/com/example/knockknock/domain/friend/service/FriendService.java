@@ -45,7 +45,7 @@ public class FriendService {
             } catch (IOException e) {
             throw new RuntimeException(e);
             }
-        } else {imageUrl = "https://e7.pngegg.com/pngimages/195/830/png-clipart-emoji-silhouette-service-company-person-emoji-cdr-head.png";}
+        } else {imageUrl = "https://knockknockimage.s3.ap-northeast-2.amazonaws.com/%EA%B8%B0%EB%B3%B8+%EC%9D%B4%EB%AF%B8%EC%A7%80.png";}
         Friend friend = new Friend(friendRequestDto, imageUrl, member);
         friendRepository.save(friend);
     }
@@ -72,7 +72,7 @@ public class FriendService {
         for (FriendRequestDto friendRequestDto : friendRequestDtos) {
             String phoneNumber = friendRequestDto.getPhoneNumber();
             if (!friendsMap.containsKey(phoneNumber)) {
-                String imageUrl = "https://e7.pngegg.com/pngimages/195/830/png-clipart-emoji-silhouette-service-company-person-emoji-cdr-head.png";
+                String imageUrl = "https://knockknockimage.s3.ap-northeast-2.amazonaws.com/%EA%B8%B0%EB%B3%B8+%EC%9D%B4%EB%AF%B8%EC%A7%80.png";
                 Friend newFriend = new Friend(friendRequestDto, imageUrl, member);
                 friendRepository.save(newFriend);
             }

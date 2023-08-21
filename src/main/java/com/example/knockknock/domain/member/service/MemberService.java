@@ -91,7 +91,7 @@ public class MemberService {
                 throw new RuntimeException(e);
             } member.setProfileImageURL(imageUrl);
 
-        } else member.setProfileImageURL("https://e7.pngegg.com/pngimages/195/830/png-clipart-emoji-silhouette-service-company-person-emoji-cdr-head.png");
+        } else member.setProfileImageURL("https://knockknockimage.s3.ap-northeast-2.amazonaws.com/%EA%B8%B0%EB%B3%B8+%EC%9D%B4%EB%AF%B8%EC%A7%80.png");
         member.calculateAge();
         memberRepository.save(member);
     }
