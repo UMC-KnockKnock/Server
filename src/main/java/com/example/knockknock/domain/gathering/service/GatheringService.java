@@ -5,6 +5,7 @@ import com.example.knockknock.domain.friend.repository.FriendRepository;
 import com.example.knockknock.domain.gathering.dto.request.GatheringRequestDto;
 import com.example.knockknock.domain.gathering.dto.request.GatheringUpdateRequestDto;
 import com.example.knockknock.domain.gathering.dto.response.GatheringDetailResponseDto;
+import com.example.knockknock.domain.gathering.dto.response.GatheringResponseDto;
 import com.example.knockknock.domain.gathering.entity.Gathering;
 import com.example.knockknock.domain.gathering.repository.GatheringRepository;
 import com.example.knockknock.domain.member.entity.Member;
@@ -67,11 +68,11 @@ public class GatheringService {
     }
 
     @Transactional
-    public List<String> getGatherings(UserDetailsImpl userDetails) {
+    public List<GatheringResponseDto> getGatherings(UserDetailsImpl userDetails) {
         Member member = memberIsLoginService.isLogin(userDetails);
         List<Gathering> gatherings = gatheringRepository.findAllByMember(member);
         return gatherings.stream()
-                .map(Gathering::getTitle)
+                .map(GatheringResponseDto::of)
                 .collect(Collectors.toList());
     }
 

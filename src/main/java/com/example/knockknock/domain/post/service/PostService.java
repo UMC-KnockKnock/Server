@@ -62,7 +62,7 @@ public class PostService {
     }
 
     @Transactional
-    public CountsResponseDto getPostDetail(Long postId) {
+    public CountsResponseDto getPostCountings(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
         return CountsResponseDto.of(post);
@@ -133,4 +133,9 @@ public class PostService {
         return shareUrl;
     }
 
+    public PostDetailResponseDto getPostDetail(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new GlobalException(GlobalErrorCode.POST_NOT_FOUND));
+        return PostDetailResponseDto.of(post);
+    }
 }

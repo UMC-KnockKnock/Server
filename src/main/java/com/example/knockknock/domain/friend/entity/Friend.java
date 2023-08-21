@@ -47,7 +47,7 @@ public class Friend extends TimeStamped {
     public Friend(FriendRequestDto friendRequestDto, String profileImageURL, Member member){
         this.profileImageURL = Objects.requireNonNullElse(profileImageURL, "https://e7.pngegg.com/pngimages/195/830/png-clipart-emoji-silhouette-service-company-person-emoji-cdr-head.png");
         this.friendName = friendRequestDto.getFriendName();
-        this.nickname = friendRequestDto.getFriendName();
+        this.nickname = friendRequestDto.getNickName();
         this.phoneNumber = friendRequestDto.getPhoneNumber();
         this.bestFriend = false;
         this.member = member;

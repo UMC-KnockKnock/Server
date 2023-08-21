@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -25,8 +26,10 @@ public class FriendController {
     // 친구 연락처 추가 (수기로)
     @Operation(summary = "친구 연락처 추가", description = "친구 연락처 추가")
     @PostMapping("/create")
-    public ResponseEntity createFriends(@RequestBody FriendRequestDto friendRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        friendService.createFriends(friendRequestDto, userDetails);
+    public ResponseEntity createFriends(@RequestPart FriendRequestDto friendRequestDto,
+                                        @RequestPart(required = false) MultipartFile profileImage,
+                                        @AuthenticationPrincipal UserDetailsImpl userDetails){
+        friendService.createFriends(friendRequestDto, userDetails, profileImage);
         return ResponseMessage.SuccessResponse("친구 추가 성공", "");
     }
 
@@ -61,8 +64,11 @@ public class FriendController {
     // 친구 번호, 사진 편집
     @Operation(summary = "친구 정보 편집", description = "친구 정보 편집")
     @PatchMapping("/{friendId}/edit")
-    public ResponseEntity updateFriendInfo(@PathVariable Long friendId, @RequestBody FriendRequestDto friendRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        friendService.updateFriendInfo(friendId, friendRequestDto, userDetails);
+    public ResponseEntity updateFriendInfo(@PathVariable Long friendId,
+                                           @RequestPart FriendRequestDto friendRequestDto,
+                                           @RequestPart(required = false) MultipartFile profileImage,
+                                           @AuthenticationPrincipal UserDetailsImpl userDetails){
+        friendService.updateFriendInfo(friendId, friendRequestDto, userDetails, profileImage);
         return ResponseMessage.SuccessResponse("친구 정보 수정 성공", "");
     }
 
