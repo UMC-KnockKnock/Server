@@ -28,7 +28,7 @@ public class NaverClient {
 
     private final NaverGeocodingClient naverGeocodingClient;
 
-    public LocalSearchResponseDto localSearch(LocalSearchRequestDto request) {
+    public LocalSearchResponseDto localSearch(String location, LocalSearchRequestDto request) {
         var uri = UriComponentsBuilder
                 .fromUriString(naverLocalSearchUrl)
                 .queryParams(request.toMultiValueMap())
@@ -53,6 +53,13 @@ public class NaverClient {
                 );
 
         LocalSearchResponseDto responseDto = responseEntity.getBody();
+        GeocodingResponse locationCodes = naverGeocodingClient.geocode(location);
+
+        if (locationCodes != null && locationCodes.getAddresses() != null && !locationCodes.getAddresses().isEmpty()) {
+            GeocodingResponse.Address addressForLocation = locationCodes.getAddresses().get(0);
+            responseDto.setLocationMapx(Double.parseDouble(addressForLocation.getX()));
+            responseDto.setLocationMapy(Double.parseDouble(addressForLocation.getY()));
+        }
 
         if (responseDto != null && responseDto.getItems() != null) {
             for (LocalSearchItem item : responseDto.getItems()) {

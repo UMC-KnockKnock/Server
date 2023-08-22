@@ -4,6 +4,7 @@ import com.example.knockknock.domain.friend.entity.Friend;
 import com.example.knockknock.domain.friend.repository.FriendRepository;
 import com.example.knockknock.domain.gathering.dto.request.GatheringRequestDto;
 import com.example.knockknock.domain.gathering.dto.request.GatheringUpdateRequestDto;
+import com.example.knockknock.domain.gathering.dto.request.LocationRecommendRequestDto;
 import com.example.knockknock.domain.gathering.dto.response.GatheringDetailResponseDto;
 import com.example.knockknock.domain.gathering.dto.response.GatheringResponseDto;
 import com.example.knockknock.domain.gathering.entity.Gathering;
@@ -15,6 +16,7 @@ import com.example.knockknock.global.exception.GlobalErrorCode;
 import com.example.knockknock.global.exception.GlobalException;
 import com.example.knockknock.global.naverclient.LocalSearchRequestDto;
 import com.example.knockknock.global.naverclient.LocalSearchResponseDto;
+import com.example.knockknock.global.naverclient.NaverGeocodingClient;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,7 @@ public class GatheringService {
     private final MemberIsLoginService memberIsLoginService;
 
     private final LocationRecommendService locationRecommendService;
+    private int queryIndex = 0;
 
     private final List<String> SEARCH_QUERIES = Arrays.asList("맛집", "카페", "술집", "관광지", "쇼핑몰");
 
@@ -54,17 +57,13 @@ public class GatheringService {
     }
 
     @Transactional
-    public LocalSearchResponseDto recommendLocation(Long gatheringId){
-
-        Gathering gathering = gatheringRepository.findById(gatheringId)
-                .orElseThrow(() -> new GlobalException(GlobalErrorCode.GATHERING_NOT_FOUND));
-
-        String location = gathering.getLocation();
-        String currentQuery = SEARCH_QUERIES.get(gathering.getQueryIndex());
-        LocalSearchRequestDto request = new LocalSearchRequestDto();
-        request.setQuery(location + currentQuery);
-        gathering.setQueryIndex((gathering.getQueryIndex() + 1) % SEARCH_QUERIES.size());;
-        return locationRecommendService.localSearch(request);
+    public LocalSearchResponseDto recommendLocation(LocationRecommendRequestDto request){
+        String location = request.getLocation();
+        String currentQuery = SEARCH_QUERIES.get(queryIndex);
+        LocalSearchRequestDto searchRequest = new LocalSearchRequestDto();
+        searchRequest.setQuery(location + currentQuery);
+        queryIndex = (queryIndex + 1) % SEARCH_QUERIES.size();
+        return locationRecommendService.localSearch(location, searchRequest);
     }
 
     @Transactional

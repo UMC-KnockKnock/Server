@@ -2,6 +2,7 @@ package com.example.knockknock.domain.gathering.controller;
 
 import com.example.knockknock.domain.gathering.dto.request.GatheringRequestDto;
 import com.example.knockknock.domain.gathering.dto.request.GatheringUpdateRequestDto;
+import com.example.knockknock.domain.gathering.dto.request.LocationRecommendRequestDto;
 import com.example.knockknock.domain.gathering.dto.response.GatheringDetailResponseDto;
 import com.example.knockknock.domain.gathering.service.GatheringService;
 import com.example.knockknock.domain.member.security.UserDetailsImpl;
@@ -27,11 +28,11 @@ public class GatheringController {
     }
 
     @Operation(summary = "내 모임 - 만남 장소 추천 (토큰X)", description = "장소 추천해드릴까요? 속 새로고침처럼 생긴 버튼 누를 때마다 서로 다른 카테고리의 장소들 5개 씩 추천")
-    @GetMapping("/{gatheringId}/location")
+    @PostMapping("/location")
     public ResponseEntity recommendLocation(
-            @PathVariable Long gatheringId
+            @RequestBody LocationRecommendRequestDto request
     ) {
-        return new ResponseEntity<>(gatheringService.recommendLocation(gatheringId), HttpStatus.OK);
+        return new ResponseEntity<>(gatheringService.recommendLocation(request), HttpStatus.OK);
     }
 
     @Operation(summary = "찐친관리 - 내 모임 목록 (토큰O)", description = "현재 로그인 한 회원이 만든 모임들 불러오기")
