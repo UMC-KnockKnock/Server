@@ -16,6 +16,7 @@ import com.example.knockknock.global.exception.GlobalErrorCode;
 import com.example.knockknock.global.exception.GlobalException;
 import com.example.knockknock.global.naverclient.LocalSearchRequestDto;
 import com.example.knockknock.global.naverclient.LocalSearchResponseDto;
+import com.example.knockknock.global.naverclient.NaverGeocodingClient;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -62,7 +63,7 @@ public class GatheringService {
         LocalSearchRequestDto searchRequest = new LocalSearchRequestDto();
         searchRequest.setQuery(location + currentQuery);
         queryIndex = (queryIndex + 1) % SEARCH_QUERIES.size();
-        return locationRecommendService.localSearch(searchRequest);
+        return locationRecommendService.localSearch(location, searchRequest);
     }
 
     @Transactional
