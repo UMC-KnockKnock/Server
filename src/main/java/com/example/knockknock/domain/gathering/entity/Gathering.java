@@ -45,7 +45,7 @@ public class Gathering extends TimeStamped {
     )
     private List<Friend> gatheringMembers = new ArrayList<>();
 
-    private int queryIndex = 0;
+
 
 
     public void updateGathering(GatheringUpdateRequestDto request, List<Friend> newGatheringMembers) {
@@ -71,9 +71,5 @@ public class Gathering extends TimeStamped {
                 }
             }
         }
-    }
-
-    public void setQueryIndex(int queryIndex) {
-        this.queryIndex = queryIndex;
     }
 }
