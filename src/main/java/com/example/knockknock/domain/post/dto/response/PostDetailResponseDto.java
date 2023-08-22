@@ -40,7 +40,7 @@ public class PostDetailResponseDto {
         if (post.getIsAnonymous()) {
             nickName = "익명";
             //익명일 때 기본 프로필 사진
-            profileImageUrl = "https://e7.pngegg.com/pngimages/195/830/png-clipart-emoji-silhouette-service-company-person-emoji-cdr-head.png";
+            profileImageUrl = "https://knockknockimage.s3.ap-northeast-2.amazonaws.com/%EA%B8%B0%EB%B3%B8+%EC%9D%B4%EB%AF%B8%EC%A7%80.png";
         } else {
             nickName = post.getMember().getNickName();
             profileImageUrl = post.getMember().getProfileImageURL();
